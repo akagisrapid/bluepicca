@@ -6,21 +6,19 @@ class PostScreenModel: ObservableObject {
         self.text = text
     }
 
-    func send() async {
-        var postItem = PostItem()
-        postItem.text = text
-        await postText(postItem: postItem)
+    func send() async throws{
+        do{
+            let postItem = PostItem(text: text, postDate: Date())
+            try await postText(postItem: postItem)
+        }
     }
     
-    func postText(postItem: PostItem) async{
+    func postText(postItem: PostItem) async throws{
         do{
             let identifier = "akagisrapid.bsky.social"
             let password = "qYmf0eXep-_Q8Iw" // とりあえず決め打ち
             let session = try await createSession(identifier: identifier, password: password)
             try await createRecord(session: session, postItem: postItem)
-        }
-        catch{
-            print(error)
         }
     }
     

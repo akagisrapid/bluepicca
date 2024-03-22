@@ -1,14 +1,15 @@
 import Foundation
 
-class PostItem{
-    var text: String = ""
-    var postDate: Date = Date()
-    func configure(text: String, postDate: Date){
+struct Record: Codable{
+    let text: String
+    let createdAt: String
+    let type: String
+    init(text: String, createdAt: String, type: String){
         self.text = text
-        self.postDate = postDate
+        self.createdAt = createdAt
+        self.type =  type
     }
 }
-
 
 enum SystemError: Error{
     case failure(String)
