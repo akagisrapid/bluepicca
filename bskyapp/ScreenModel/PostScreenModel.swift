@@ -15,10 +15,7 @@ class PostScreenModel: ObservableObject {
     
     func postText(postItem: PostItem) async throws{
         do{
-            let identifier = "akagisrapid.bsky.social"
-            let password = "qYmf0eXep-_Q8Iw" // とりあえず決め打ち
-            let session = try await createSession(identifier: identifier, password: password)
-            try await createRecord(session: session, postItem: postItem)
+            try await createRecord(postItem: postItem)
         }
     }
     

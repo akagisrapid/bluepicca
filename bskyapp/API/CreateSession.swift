@@ -13,7 +13,10 @@ struct CreateSessionResponse: Codable{
     let email: String?
 }
 
-func createSession(identifier: String, password: String) async throws -> CreateSessionResponse{
+func createSession() async throws -> CreateSessionResponse{
+    let identifier = "akagisrapid.bsky.social"
+    let password = "qYmf0eXep-_Q8Iw" // とりあえず決め打ち
+    
     let endPoint = "https://bsky.social/xrpc/"
     let createSession = "com.atproto.server.createSession"
     let urlString = endPoint + createSession
