@@ -21,9 +21,12 @@ struct PostItem{
     let text: String
     let postDate: Date
 }
-func createRecord(session: CreateSessionResponse, postItem: PostItem) async throws -> CreateRecordResponse{
+func createRecord(postItem: PostItem) async throws -> CreateRecordResponse{
     let endPoint = "https://bsky.social/xrpc/"
     let createRecord = "com.atproto.repo.createRecord"
+    
+    let session = try await createSession()
+    
     let httpMethod = HttpMethodType.post
     let urlString = endPoint + createRecord
     

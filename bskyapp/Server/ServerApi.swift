@@ -20,3 +20,4 @@ enum HttpMethodType: String {
     case post = "POST"
     case put = "PUT"
 }
+
