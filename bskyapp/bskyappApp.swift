@@ -25,10 +25,11 @@ struct bskyappApp: App {
     
     @MainActor
     var vm: PostScreenModel = PostScreenModel(text: "aaa")
-
+    
+    var timelineVm: TimelineScreenModel = TimelineScreenModel(timeline: FeedResponse(cursor: "", feed: []) )
     var body: some Scene {
         WindowGroup {
-            ContentView(postScreenVm: vm)
+            ContentView(postScreenVm: vm, timelineScreenVm:timelineVm)
         }
         .modelContainer(sharedModelContainer)
     }

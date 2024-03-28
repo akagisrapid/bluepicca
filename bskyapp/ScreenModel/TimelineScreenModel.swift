@@ -1,8 +1,17 @@
-//
-//  TimelineModel.swift
-//  bskyapp
-//
-//  Created by shuya on 2024/03/26.
-//
-
 import Foundation
+
+class TimelineScreenModel: ObservableObject{
+    var timeline: FeedResponse
+    init(timeline: FeedResponse)  {
+        self.timeline = timeline
+    }
+    
+    
+    func fetchTimeline() async throws -> Void{
+        do{
+            let timeline = try await getTimeline()
+            print(timeline)
+            self.timeline = timeline
+        }
+    }
+}

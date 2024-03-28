@@ -1,18 +1,25 @@
-//
-//  TimelineScreen.swift
-//  bskyapp
-//
-//  Created by shuya on 2024/03/26.
-//
-
 import SwiftUI
 
 struct TimelineScreen: View {
+    @StateObject var screenModel: TimelineScreenModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            Text("timelines")
+            Button("読み込む"){
+                Task{
+                    do{
+                        try await screenModel.fetchTimeline()
+                    }
+                }
+            }
+            ForEach(screenModel.timeline.feed, id: \.post.cid) {post in
+                Text("\(post.post.author)")
+            }
+        }
     }
 }
-
-#Preview {
-    TimelineScreen()
-}
+//
+//#Preview {
+//    TimelineScreen()
+//}
