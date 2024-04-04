@@ -1,16 +1,14 @@
 import Foundation
 
+
 class TimelineScreenModel: ObservableObject{
-    var timeline: FeedResponse
-    init(timeline: FeedResponse)  {
-        self.timeline = timeline
-    }
+    @Published var feeds: [FeedItem] = []
     
     
     func fetchTimeline() async throws -> Void{
         do{
-            let timeline = try await getTimeline()
-            self.timeline = timeline
+            self.feeds = try await GetTimelineApi().getTimeline().feed
+            print(self.feeds)
         }
     }
 }
