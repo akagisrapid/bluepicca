@@ -98,9 +98,14 @@ struct List: Codable {
     let viewer: Viewer
     let indexedAt: String
 }
+struct FeedRequest: Codable{
+    let algorithm: String
+    let limit: Int
+    let cursor: String
+}
 
 struct FeedResponse: Codable {
-    let cursor: String
+    let cursor: String?
     let feed: [FeedItem]
 }
 
