@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		983B2C142BB27216004E20F3 /* GetTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimeline.swift */; };
+		983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimelineApi.swift */; };
 		983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */; };
 		983B2C182BB27325004E20F3 /* TimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C172BB27325004E20F3 /* TimelineScreen.swift */; };
 		983B2C1B2BB29583004E20F3 /* GetTimelineModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C1A2BB29583004E20F3 /* GetTimelineModel.swift */; };
@@ -27,7 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		983B2C132BB27216004E20F3 /* GetTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimeline.swift; sourceTree = "<group>"; };
+		983B2C132BB27216004E20F3 /* GetTimelineApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineApi.swift; sourceTree = "<group>"; };
 		983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScreenModel.swift; sourceTree = "<group>"; };
 		983B2C172BB27325004E20F3 /* TimelineScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScreen.swift; sourceTree = "<group>"; };
 		983B2C1A2BB29583004E20F3 /* GetTimelineModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineModel.swift; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 			children = (
 				B01C96C92BAC12FA0077D572 /* CreateSession.swift */,
 				B01C96CB2BAC132C0077D572 /* CreateRecord.swift */,
-				983B2C132BB27216004E20F3 /* GetTimeline.swift */,
+				983B2C132BB27216004E20F3 /* GetTimelineApi.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -223,7 +223,7 @@
 			files = (
 				983B2C1B2BB29583004E20F3 /* GetTimelineModel.swift in Sources */,
 				B0C057832B87146D0066AD91 /* HttpClient.swift in Sources */,
-				983B2C142BB27216004E20F3 /* GetTimeline.swift in Sources */,
+				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				B01C96CC2BAC132C0077D572 /* CreateRecord.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostScreenModel.swift in Sources */,
 				983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */,

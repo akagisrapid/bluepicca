@@ -19,7 +19,7 @@ struct GetTimelineApi{
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         
         do {
-            let response = try await AF.request(urlString, method: .get, parameters: param, headers: headers)
+            let response = await AF.request(urlString, method: .get, parameters: param, headers: headers)
                 .validate()
                 .serializingDecodable(FeedResponse.self).response
             switch response.result{

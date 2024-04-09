@@ -67,21 +67,22 @@ func createRecord(postItem: PostItem) async throws -> CreateRecordResponse{
     decoder.dateDecodingStrategy = .iso8601
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     
-    var res = CreateRecordResponse(uri: "", cid: "")
-    
-    AF.request(urlString, method: .post, parameters: param, headers: headers)
-        .responseDecodable(of: CreateRecordResponse.self, decoder: decoder) { response in
-            switch response.result{
-            case .success(let value):
-                res = value
-            case.failure(let fail):
-                guard let statusCode = response.response?.statusCode else{
-                    print("status code unknown")
-                    return
-                }
-                print(response.response?.statusCode)
-                print(fail)
-            }
+    do {
+        let response = await AF.request(urlString, method: .post, parameters: param, headers: headers)
+            .validate()
+            .serializingDecodable(CreateRecordResponse.self)
+            .response
+        
+        switch response.result{
+        case .success(let value):
+            return value
+        case.failure(let error):
+            print(response.response?.statusCode)
+            print(error)
+            throw error
         }
-    return res
+    }
+    catch{
+        throw error
+    }
 }
