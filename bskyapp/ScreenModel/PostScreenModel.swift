@@ -9,7 +9,7 @@ class PostScreenModel: ObservableObject {
     func postText() async throws {
         do{
             let param = try await makeCreateRecordRequest(text: text)
-            try await createRecord(_param: param)
+            try await createRecord(param: param)
         }
     }
 }

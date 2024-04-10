@@ -32,7 +32,7 @@ struct PostItem{
 //}
 
 
-func createRecord(_param: CreateRecordRequest) async throws -> CreateRecordResponse{
+func createRecord(param: CreateRecordRequest) async throws -> CreateRecordResponse{
     let endPoint = "https://bsky.social/xrpc/"
     let createRecord = "com.atproto.repo.createRecord"
     
@@ -43,14 +43,18 @@ func createRecord(_param: CreateRecordRequest) async throws -> CreateRecordRespo
         "Content-Type": "application/json",
         "Authorization": "Bearer \(session.accessJwt)"
         ]
-    var param = _param
-//    param.repo = session.did
+    
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
     decoder.keyDecodingStrategy = .convertFromSnakeCase
     
     do {
-        let response = await AF.request(urlString, method: .post, parameters: param, headers: headers)
+        let response = await AF.request(
+                urlString,
+                method: .post, 
+                parameters: param,
+                encoder: JSONParameterEncoder.default,
+                headers: headers)
             .validate()
             .serializingDecodable(CreateRecordResponse.self)
             .response

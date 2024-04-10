@@ -16,8 +16,8 @@ struct CreateRecordRequest: Codable{
 }
 func makeCreateRecordRequest(text: String) async throws -> CreateRecordRequest{
     let record = CreateRecordPostItem(
-        text: text, createdAt:
-            Date().ISO8601Format(),
+        text: text, 
+        createdAt: Date().ISO8601Format(),
         embed: nil)
     let session = try await createSession()
     let collection = "app.bsky.feed.post"
