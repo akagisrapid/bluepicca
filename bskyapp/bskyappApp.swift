@@ -17,10 +17,10 @@ struct bskyappApp: App {
     }()
     
     @MainActor
-    var vm: PostScreenModel = PostScreenModel(text: "aaa")
+    var vm: PostScreenModel = PostScreenModel(text: "どやこんが")
     
     var timelineVm = TimelineViewModel()
-    var timelineSm = TimelineScreenModel()
+    var timelineSm = TimelineScreenModel(feeds: [])
     var body: some Scene {
         WindowGroup {
             ContentView(postScreenVm: vm, timelineScreenVm:timelineSm)

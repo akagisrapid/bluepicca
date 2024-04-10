@@ -1,24 +1,6 @@
 import Foundation
 import Alamofire
 
-struct CreateRecordRequest: Codable{
-    let repo: String
-    let collection: String
-    let record: Record
-    
-    init(did: String, text: String, createdAt: Date) {
-        repo = did
-        collection = "app.bsky.feed.post"
-        let createdAt = ISO8601DateFormatter().string(from: createdAt)
-        record = .init(text: text, createdAt: createdAt, type: collection)
-    }
-}
-/// 投稿レスポンス
-struct CreateRecordResponse: Codable {
-    let uri: String?
-    let cid: String?
-}
-
 struct PostItem{
     let text: String
     let postDate: Date
@@ -50,19 +32,19 @@ struct PostItem{
 //}
 
 
-func createRecord(postItem: PostItem) async throws -> CreateRecordResponse{
+func createRecord(_param: CreateRecordRequest) async throws -> CreateRecordResponse{
     let endPoint = "https://bsky.social/xrpc/"
     let createRecord = "com.atproto.repo.createRecord"
     
     let session = try await createSession()
     let urlString = endPoint + createRecord
-    let param = CreateRecordRequest(did: session.did, text: postItem.text, createdAt: postItem.postDate)
     
     let headers: HTTPHeaders = [
         "Content-Type": "application/json",
         "Authorization": "Bearer \(session.accessJwt)"
-    ]
-    
+        ]
+    var param = _param
+//    param.repo = session.did
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
     decoder.keyDecodingStrategy = .convertFromSnakeCase

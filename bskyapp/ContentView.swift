@@ -18,6 +18,10 @@ struct ContentView: View {
     }
 }
 //#Preview {
-//    var vm : PostScreenViewModel = PostScreenViewModel(text: "samp")
-//    ContentView(postScreenVm: vm)
+//    var vm = PostScreenModel(text: "samp")
+//    var feeds = [
+////            FeedItem(post: <#T##Post#>, reply: nil, reason: nil)
+//    ]
+//    var timeLineVm = TimelineScreenModel(feeds: [])
+//    ContentView(postScreenVm: vm, timelineScreenVm: timeLineVm)
 //}

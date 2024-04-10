@@ -25,7 +25,7 @@ struct PostScreen: View {
             Button("送信") {
                 Task{
                     do{
-                        try await screenModel.send()
+                        try await screenModel.postText()
                         self.isPostCompleted = true
                         screenModel.text = ""
                     }

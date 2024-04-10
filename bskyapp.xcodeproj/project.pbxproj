@@ -13,10 +13,11 @@
 		983B2C1B2BB29583004E20F3 /* GetTimelineModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C1A2BB29583004E20F3 /* GetTimelineModel.swift */; };
 		983B2C1E2BB575B2004E20F3 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 983B2C1D2BB575B2004E20F3 /* Alamofire */; };
 		983B2C202BB575B2004E20F3 /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 983B2C1F2BB575B2004E20F3 /* AlamofireDynamic */; };
+		98AF4B962BC55D0C007DE10F /* CreateRecordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordModel.swift */; };
 		B01C96C52BA4210F0077D572 /* PostScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostScreen.swift */; };
 		B01C96C82BAC11F00077D572 /* PostScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C72BAC11F00077D572 /* PostScreenModel.swift */; };
 		B01C96CA2BAC12FA0077D572 /* CreateSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C92BAC12FA0077D572 /* CreateSession.swift */; };
-		B01C96CC2BAC132C0077D572 /* CreateRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96CB2BAC132C0077D572 /* CreateRecord.swift */; };
+		B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */; };
 		B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C0576F2B8712D80066AD91 /* bskyappApp.swift */; };
 		B0C057722B8712D80066AD91 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C057712B8712D80066AD91 /* ContentView.swift */; };
 		B0C057742B8712D80066AD91 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C057732B8712D80066AD91 /* Item.swift */; };
@@ -31,10 +32,11 @@
 		983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScreenModel.swift; sourceTree = "<group>"; };
 		983B2C172BB27325004E20F3 /* TimelineScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScreen.swift; sourceTree = "<group>"; };
 		983B2C1A2BB29583004E20F3 /* GetTimelineModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineModel.swift; sourceTree = "<group>"; };
+		98AF4B952BC55D0C007DE10F /* CreateRecordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordModel.swift; sourceTree = "<group>"; };
 		B01C96C42BA4210F0077D572 /* PostScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScreen.swift; sourceTree = "<group>"; };
 		B01C96C72BAC11F00077D572 /* PostScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScreenModel.swift; sourceTree = "<group>"; };
 		B01C96C92BAC12FA0077D572 /* CreateSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSession.swift; sourceTree = "<group>"; };
-		B01C96CB2BAC132C0077D572 /* CreateRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecord.swift; sourceTree = "<group>"; };
+		B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApi.swift; sourceTree = "<group>"; };
 		B0C0576C2B8712D80066AD91 /* bskyapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bskyapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0C0576F2B8712D80066AD91 /* bskyappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bskyappApp.swift; sourceTree = "<group>"; };
 		B0C057712B8712D80066AD91 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				983B2C1A2BB29583004E20F3 /* GetTimelineModel.swift */,
+				98AF4B952BC55D0C007DE10F /* CreateRecordModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -88,7 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				B01C96C92BAC12FA0077D572 /* CreateSession.swift */,
-				B01C96CB2BAC132C0077D572 /* CreateRecord.swift */,
+				B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */,
 				983B2C132BB27216004E20F3 /* GetTimelineApi.swift */,
 			);
 			path = API;
@@ -224,7 +227,7 @@
 				983B2C1B2BB29583004E20F3 /* GetTimelineModel.swift in Sources */,
 				B0C057832B87146D0066AD91 /* HttpClient.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
-				B01C96CC2BAC132C0077D572 /* CreateRecord.swift in Sources */,
+				B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostScreenModel.swift in Sources */,
 				983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */,
 				B0C057722B8712D80066AD91 /* ContentView.swift in Sources */,
@@ -233,6 +236,7 @@
 				B0C057812B8714350066AD91 /* ServerApi.swift in Sources */,
 				B01C96CA2BAC12FA0077D572 /* CreateSession.swift in Sources */,
 				983B2C182BB27325004E20F3 /* TimelineScreen.swift in Sources */,
+				98AF4B962BC55D0C007DE10F /* CreateRecordModel.swift in Sources */,
 				B01C96C52BA4210F0077D572 /* PostScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

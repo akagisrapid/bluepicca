@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TimelineScreen: View {
     @StateObject var viewModel: TimelineViewModel = TimelineViewModel()
-    @StateObject var screenModel: TimelineScreenModel = TimelineScreenModel()
+    @StateObject var screenModel: TimelineScreenModel = TimelineScreenModel(feeds: [])
     
     var body: some View {
         VStack{

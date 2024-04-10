@@ -108,9 +108,9 @@ struct Post: Codable {
 
 struct PostRecord: Codable {
     let type: String?
-    let createdAt: String
+    let createdAt: String?
     let langs: [String]?
-    let text: String
+    let text: String?
 }
 
 // MARK: - Embed
@@ -134,7 +134,7 @@ struct EmbeddedExternalViewItem: Codable {
 // MARK: - EmbeddedRecordViewItem
 
 struct EmbeddedRecordViewItem: Codable {
-    let record: Record
+    let record: PostRecord?
 }
 
 // MARK: - Threadgate
