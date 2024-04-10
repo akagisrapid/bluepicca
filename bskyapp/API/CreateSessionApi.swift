@@ -1,34 +1,46 @@
 import Foundation
-
-struct CreateSessionRequest: Codable {
-    let identifier: String
-    let password: String
-}
-
-struct CreateSessionResponse: Codable{
-    let accessJwt: String
-    let refreshJwt: String
-    let handle: String
-    let did: String
-    let email: String?
-}
+import Alamofire
 
 func createSession() async throws -> CreateSessionResponse{
+    // TODO: idとpwはとりあえず決め打ちにしてるからenvファイルとかに移す
     let identifier = "akagisrapid.bsky.social"
-    let password = "qYmf0eXep-_Q8Iw" // とりあえず決め打ち
+    let password = "qYmf0eXep-_Q8Iw"
     
     let endPoint = "https://bsky.social/xrpc/"
     let createSession = "com.atproto.server.createSession"
     let urlString = endPoint + createSession
     
-    var req = URLRequest(url: URL(string: urlString)!)
-    req.httpMethod = "POST"
-    req.addValue("application/json", forHTTPHeaderField: "Content-Type")
-    req.httpBody = try JSONEncoder().encode(CreateSessionRequest(identifier: identifier, password: password))
-    let (data, response) = try await URLSession.shared.data(for: req)
-    guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-        print(response)
-        throw URLError(.badServerResponse)
+    let headers: HTTPHeaders = [
+        "Content-Type": "application/json"
+        ]
+    
+    let param: CreateSessionRequest = CreateSessionRequest(identifier: identifier, password: password)
+    
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+    
+    do {
+        let response = await AF.request(
+                urlString,
+                method: .post,
+                parameters: param,
+                encoder: JSONParameterEncoder.default,
+                headers: headers)
+            .validate()
+            .serializingDecodable(CreateSessionResponse.self)
+            .response
+        
+        switch response.result{
+        case .success(let value):
+            return value
+        case.failure(let error):
+            print(response.response?.statusCode)
+            print(error)
+            throw error
+        }
     }
-    return try JSONDecoder().decode(CreateSessionResponse.self, from: data)
+    catch{
+        throw error
+    }
 }
