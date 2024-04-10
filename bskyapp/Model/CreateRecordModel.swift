@@ -14,6 +14,8 @@ struct CreateRecordRequest: Codable{
     let record: CreateRecordPostItem
     let swapCommit: String?
 }
+
+
 func makeCreateRecordRequest(text: String) async throws -> CreateRecordRequest{
     let record = CreateRecordPostItem(
         text: text, 
