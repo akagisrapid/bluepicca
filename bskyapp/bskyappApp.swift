@@ -1,10 +1,3 @@
-//
-//  bskyappApp.swift
-//  bskyapp
-//
-//  Created by 名鉄開発用 on 2024/02/22.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -24,12 +17,13 @@ struct bskyappApp: App {
     }()
     
     @MainActor
-    var vm: PostScreenModel = PostScreenModel(text: "aaa")
+    var vm: PostScreenModel = PostScreenModel(text: "どやこんが")
     
-    var timelineVm: TimelineScreenModel = TimelineScreenModel(timeline: FeedResponse(cursor: "", feed: []) )
+    var timelineVm = TimelineViewModel()
+    var timelineSm = TimelineScreenModel(feeds: [])
     var body: some Scene {
         WindowGroup {
-            ContentView(postScreenVm: vm, timelineScreenVm:timelineVm)
+            ContentView(postScreenVm: vm, timelineScreenVm:timelineSm)
         }
         .modelContainer(sharedModelContainer)
     }
