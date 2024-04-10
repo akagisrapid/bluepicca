@@ -3,6 +3,7 @@ import SwiftUI
 struct TimelineScreen: View {
     @StateObject var viewModel: TimelineViewModel = TimelineViewModel()
     @StateObject var screenModel: TimelineScreenModel = TimelineScreenModel(feeds: [])
+    @State var isFetchTimelineFailed:Bool = false
     
     var body: some View {
         VStack{
@@ -12,6 +13,7 @@ struct TimelineScreen: View {
                     do {
                         try await screenModel.fetchTimeline()
                     } catch {
+                        self.isFetchTimelineFailed = true
                         print("Error fetching timeline: \(error)")
                     }
                 }
@@ -20,13 +22,13 @@ struct TimelineScreen: View {
                 Text("\(post.post.record.text)")
             }
         }
+        
+        .alert(isPresented: $isFetchTimelineFailed){
+            Alert(title: Text("タイムラインの受信に失敗しました"), message: nil)
+        }
     }
 }
 
 class TimelineViewModel: ObservableObject{
     @Published var isShowButton: Bool = false
 }
-//
-//#Preview {
-//    TimelineScreen()
-//}
