@@ -17,7 +17,7 @@ struct bskyappApp: App {
     }()
     
     @MainActor
-    var vm: PostScreenModel = PostScreenModel(text: "どやこんが")
+    var vm: PostScreenModel = PostScreenModel(text: "")
     
     var timelineVm = TimelineViewModel()
     var timelineSm = TimelineScreenModel(feeds: [])
