@@ -19,7 +19,7 @@ struct TimelineScreen: View {
                 }
             }
             List(screenModel.feeds, id: \.post.cid) { post in
-                Text("\(post.post.record.text)")
+                Text("\(post.timelineText)")
             }
         }
         
