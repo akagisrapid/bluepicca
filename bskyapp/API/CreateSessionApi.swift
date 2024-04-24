@@ -1,10 +1,9 @@
 import Foundation
 import Alamofire
+import Keys
 
 func createSession() async throws -> CreateSessionResponse{
-    // TODO: idとpwはとりあえず決め打ちにしてるからenvファイルとかに移す
     let identifier = "akagisrapid.bsky.social"
-    let password = "qYmf0eXep-_Q8Iw"
     
     let endPoint = "https://bsky.social/xrpc/"
     let createSession = "com.atproto.server.createSession"
@@ -13,6 +12,8 @@ func createSession() async throws -> CreateSessionResponse{
     let headers: HTTPHeaders = [
         "Content-Type": "application/json"
         ]
+    
+    let password = getBskyPasswordFromKeychain()
     
     let param: CreateSessionRequest = CreateSessionRequest(identifier: identifier, password: password)
     
