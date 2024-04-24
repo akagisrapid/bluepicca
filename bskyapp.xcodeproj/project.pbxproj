@@ -13,6 +13,7 @@
 		983B2C1B2BB29583004E20F3 /* GetTimelineModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C1A2BB29583004E20F3 /* GetTimelineModel.swift */; };
 		98AF4B962BC55D0C007DE10F /* CreateRecordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionModel.swift */; };
+		98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */; };
 		B01C96C52BA4210F0077D572 /* PostScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostScreen.swift */; };
 		B01C96C82BAC11F00077D572 /* PostScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C72BAC11F00077D572 /* PostScreenModel.swift */; };
 		B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */; };
@@ -36,6 +37,7 @@
 		983B2C1A2BB29583004E20F3 /* GetTimelineModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineModel.swift; sourceTree = "<group>"; };
 		98AF4B952BC55D0C007DE10F /* CreateRecordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordModel.swift; sourceTree = "<group>"; };
 		98AF4B972BC6F653007DE10F /* CreateSessionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionModel.swift; sourceTree = "<group>"; };
+		98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetKeysFromKeychain.swift; sourceTree = "<group>"; };
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
 		B01C96C42BA4210F0077D572 /* PostScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScreen.swift; sourceTree = "<group>"; };
 		B01C96C72BAC11F00077D572 /* PostScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostScreenModel.swift; sourceTree = "<group>"; };
@@ -90,6 +92,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		98E37E532BD9596E009D33CD /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		B01C96C32BA420F80077D572 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +149,7 @@
 		B0C0576E2B8712D80066AD91 /* bskyapp */ = {
 			isa = PBXGroup;
 			children = (
+				98E37E532BD9596E009D33CD /* Utils */,
 				983B2C192BB29573004E20F3 /* Model */,
 				B01C96CD2BAC13350077D572 /* API */,
 				B01C96C62BAC11E00077D572 /* ScreenModel */,
@@ -292,6 +303,7 @@
 				B0C057832B87146D0066AD91 /* HttpClient.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */,
+				98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostScreenModel.swift in Sources */,
 				98AF4B982BC6F653007DE10F /* CreateSessionModel.swift in Sources */,
 				983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */,
