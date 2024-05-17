@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		98289CC62BF76AFA007EA3C5 /* TimelineCardScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC52BF76AFA007EA3C5 /* TimelineCardScreen.swift */; };
+		98289CC82BF76B09007EA3C5 /* TimelineCardScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC72BF76B09007EA3C5 /* TimelineCardScreenModel.swift */; };
+		98289CCB2BF772D1007EA3C5 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CCA2BF772D1007EA3C5 /* FeedItem.swift */; };
 		983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimelineApi.swift */; };
 		983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */; };
 		983B2C182BB27325004E20F3 /* TimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C172BB27325004E20F3 /* TimelineScreen.swift */; };
@@ -31,6 +34,9 @@
 /* Begin PBXFileReference section */
 		63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bskyapp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		918BC1AC096FC7FE34F70BAA /* Pods-bskyapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.release.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.release.xcconfig"; sourceTree = "<group>"; };
+		98289CC52BF76AFA007EA3C5 /* TimelineCardScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardScreen.swift; sourceTree = "<group>"; };
+		98289CC72BF76B09007EA3C5 /* TimelineCardScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardScreenModel.swift; sourceTree = "<group>"; };
+		98289CCA2BF772D1007EA3C5 /* FeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
 		983B2C132BB27216004E20F3 /* GetTimelineApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineApi.swift; sourceTree = "<group>"; };
 		983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScreenModel.swift; sourceTree = "<group>"; };
 		983B2C172BB27325004E20F3 /* TimelineScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScreen.swift; sourceTree = "<group>"; };
@@ -82,6 +88,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		98289CC92BF772C3007EA3C5 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				98289CCA2BF772D1007EA3C5 /* FeedItem.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		983B2C192BB29573004E20F3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -105,6 +119,7 @@
 			children = (
 				B01C96C42BA4210F0077D572 /* PostScreen.swift */,
 				983B2C172BB27325004E20F3 /* TimelineScreen.swift */,
+				98289CC52BF76AFA007EA3C5 /* TimelineCardScreen.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -114,6 +129,7 @@
 			children = (
 				B01C96C72BAC11F00077D572 /* PostScreenModel.swift */,
 				983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */,
+				98289CC72BF76B09007EA3C5 /* TimelineCardScreenModel.swift */,
 			);
 			path = ScreenModel;
 			sourceTree = "<group>";
@@ -149,6 +165,7 @@
 		B0C0576E2B8712D80066AD91 /* bskyapp */ = {
 			isa = PBXGroup;
 			children = (
+				98289CC92BF772C3007EA3C5 /* Extension */,
 				98E37E532BD9596E009D33CD /* Utils */,
 				983B2C192BB29573004E20F3 /* Model */,
 				B01C96CD2BAC13350077D572 /* API */,
@@ -303,11 +320,14 @@
 				B0C057832B87146D0066AD91 /* HttpClient.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */,
+				98289CC62BF76AFA007EA3C5 /* TimelineCardScreen.swift in Sources */,
 				98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */,
+				98289CCB2BF772D1007EA3C5 /* FeedItem.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostScreenModel.swift in Sources */,
 				98AF4B982BC6F653007DE10F /* CreateSessionModel.swift in Sources */,
 				983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */,
 				B0C057722B8712D80066AD91 /* ContentView.swift in Sources */,
+				98289CC82BF76B09007EA3C5 /* TimelineCardScreenModel.swift in Sources */,
 				B0C057742B8712D80066AD91 /* Item.swift in Sources */,
 				B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */,
 				B0C057812B8714350066AD91 /* ServerApi.swift in Sources */,
