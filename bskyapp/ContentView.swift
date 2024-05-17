@@ -3,7 +3,6 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
     var postScreenVm : PostScreenModel
     var timelineScreenVm: TimelineScreenModel
     
@@ -13,8 +12,25 @@ struct ContentView: View {
                 PostScreen(screenModel: postScreenVm)
                 TimelineScreen(screenModel: timelineScreenVm)
             }
+            .toolbar{
+                ToolbarItem(placement: .bottomBar){
+                    HStack{
+                        Button("Refresh", systemImage: "arrow.clockwise"){
+                            Task {
+                                do {
+                                    try await timelineScreenVm.fetchTimeline()
+                                } catch {
+                                    print("Error fetching timeline: \(error)")
+                                }
+                            }
+                        }
+                        Button("Post", systemImage: "rectangle.and.pencil.and.ellipsis"){
+                            
+                        }
+                    }
+                }
+            }
         }
-        
     }
 }
 //#Preview {
