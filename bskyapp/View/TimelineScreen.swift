@@ -4,7 +4,6 @@ struct TimelineScreen: View {
     @StateObject var viewModel: TimelineViewModel = TimelineViewModel()
     @StateObject var screenModel: TimelineScreenModel = TimelineScreenModel(feeds: [])
     @State var isFetchTimelineFailed:Bool = false
-    
     var body: some View {
         VStack{
             Text("timelines")
@@ -13,13 +12,19 @@ struct TimelineScreen: View {
                     do {
                         try await screenModel.fetchTimeline()
                     } catch {
-                        self.isFetchTimelineFailed = true
                         print("Error fetching timeline: \(error)")
                     }
                 }
             }
-            List(screenModel.feeds, id: \.post.cid) { post in
-                Text("\(post.timelineText)")
+            if screenModel.isFetchingTimeline{
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .scaleEffect(2.0) // サイズを調整したい場合
+                    .padding()
+            }else{
+                List(screenModel.feeds, id: \.post.cid) { post in
+                    Text("\(post.timelineText)")
+                }
             }
         }
         

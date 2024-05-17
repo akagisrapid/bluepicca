@@ -5,6 +5,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     var postScreenVm : PostScreenModel
     var timelineScreenVm: TimelineScreenModel
+    @State var isFetchTimelineFailed:Bool = false
     
     var body: some View {
         NavigationStack {
@@ -20,6 +21,7 @@ struct ContentView: View {
                                 do {
                                     try await timelineScreenVm.fetchTimeline()
                                 } catch {
+                                    self.isFetchTimelineFailed = true
                                     print("Error fetching timeline: \(error)")
                                 }
                             }
@@ -30,6 +32,9 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .alert(isPresented: $isFetchTimelineFailed){
+            Alert(title: Text("タイムラインの受信に失敗しました"), message: nil)
         }
     }
 }
