@@ -23,7 +23,7 @@ struct TimelineScreen: View {
                     .padding()
             }else{
                 List(screenModel.feeds, id: \.post.cid) { post in
-                    Text("\(post.timelineText)")
+                    TimelineCardScreen(feed: post)
                 }
             }
         }
