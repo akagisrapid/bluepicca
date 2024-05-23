@@ -7,47 +7,31 @@ extension FeedItem{
         }
         return text // nilでないとき
     }
+    
     var authorText: String{
-        return self.post.author.displayName 
+        return self.post.author.displayName
     }
+    
+    var postTimeDate: Date? {
+        let iso8601StringWithMilliseconds = self.post.record.createdAt ?? ""
+        // 正規表現でミリ秒部分を取り除く
+        let pattern = "\\.\\d{3}Z"
+        let regex = try! NSRegularExpression(pattern: pattern)
+        let range = NSRange(location: 0, length: iso8601StringWithMilliseconds.utf16.count)
+        let modifiedString = regex.stringByReplacingMatches(in: iso8601StringWithMilliseconds, options: [], range: range, withTemplate: "Z")
+        
+        let formatter = ISO8601DateFormatter()
+        return formatter.date(from: modifiedString)
+    }
+    
     var postTimeDiffText: String{
-        let dateString = self.post.record.createdAt ?? ""
-        let formatter = DateFormatter()
+        let formatter = RelativeDateTimeFormatter()
         formatter.locale = Locale(identifier: "ja_JP")
-        formatter.doesRelativeDateFormatting = true
-        
-        guard let d = formatter.date(from: dateString) else{
-            return "invalid date"
+        guard let date = formatter.string(for: self.postTimeDate) else{
+            return "invalid"
         }
-        return formatter.string(from: d)
-        
-       
-        let calendar = Calendar.current
-        guard let fromDate = formatter.date(from: dateString)
-        else {
-            return "inva"
-        }
-            
-            // 時間の差を計算
-        let components = calendar.dateComponents([.minute, .hour, .day, .month], from: fromDate, to: Date())
-            
-            if let minutes = components.minute, let hours = components.hour, let days = components.day {
-                // 1時間以内の場合
-                if hours == 0 && days == 0 {
-                    return "\(minutes)分前"
-                }
-                
-                // 1日以内の場合
-                if days == 0 {
-                    return "\(hours)時間前"
-                }
-                
-                // 1ヶ月以内の場合
-                return "\(days)日前"
-            }
-            
-            return fromDate.ISO8601Format()
-        }
+        return date
+    }
 
     
 }
