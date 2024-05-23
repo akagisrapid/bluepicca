@@ -6,7 +6,7 @@ struct Author: Codable {
     let did: String
     let handle: String
     let displayName: String
-    let avatar: String
+    let avatar: String?
     let associated: Associated?
     let viewer: AuthorViewer?
     let labels: [Label]
@@ -47,7 +47,7 @@ struct MutedByList: Codable {
     let cid: String
     let name: String
     let purpose: DefsModListItem?
-    let avatar: String
+    let avatar: String?
     let labels: [Label]
     let viewer: MutedByListViewer?
     let indexedAt: String
@@ -67,7 +67,7 @@ struct BlockingByList: Codable {
     let cid: String
     let name: String
     let purpose: DefsModListItem
-    let avatar: String
+    let avatar: String?
     let labels: [Label]
     let viewer: MutedByListViewer?
     let indexedAt: Date?
