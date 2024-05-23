@@ -1,14 +1,6 @@
 import Foundation
 
 
-extension FeedItem{
-    var timelineText: String{
-        guard let text = self.post.record.text else {
-            return "no record text!"
-        }
-        return text // nilでないとき
-    }
-}
 class TimelineScreenModel: ObservableObject{
     @Published var feeds: [FeedItem] = []
     @Published var isFetchingTimeline: Bool = false;
