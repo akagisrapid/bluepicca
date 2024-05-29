@@ -7,15 +7,6 @@ struct TimelineScreen: View {
     var body: some View {
         VStack{
             Text("timelines")
-            Button("読み込む") {
-                Task {
-                    do {
-                        try await screenModel.fetchTimeline()
-                    } catch {
-                        print("Error fetching timeline: \(error)")
-                    }
-                }
-            }
             if screenModel.isFetchingTimeline{
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
