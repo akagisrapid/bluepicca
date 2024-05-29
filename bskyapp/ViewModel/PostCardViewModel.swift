@@ -1,6 +1,7 @@
 import Foundation
+    
 
-class PostScreenModel: ObservableObject {
+class PostCardViewModel:  ObservableObject {
     @Published var text: String = ""
     init(text: String){
         self.text = text

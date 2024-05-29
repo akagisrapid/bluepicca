@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct PostScreen: View {
-    @StateObject var screenModel: PostScreenModel
+struct PostView: View {
+    @StateObject var viewModel: PostCardViewModel
     @State var isPostCompleted:Bool = false
     @State var isPostFailed:Bool = false
     @State var isTextValid: Bool = true
@@ -9,25 +9,25 @@ struct PostScreen: View {
     var body: some View {
         VStack{
             Text("hello world")
-            TextField("つぶやきたいこと", text:$screenModel.text)
+            TextField("つぶやきたいこと", text:$viewModel.text)
                 .textFieldStyle(.roundedBorder)
                 .border(isTextValid ? Color.green : Color.red)
-                .onChange(of: screenModel.text) {
+                .onChange(of: viewModel.text) {
                     // ユーザー名のバリデーション
-                    isTextValid = 0 < screenModel.text.count && screenModel.text.count <= maxTextCount
+                    isTextValid = 0 < viewModel.text.count && viewModel.text.count <= maxTextCount
                 }
-            Text("\(screenModel.text.count) / \(maxTextCount)")
+            Text("\(viewModel.text.count) / \(maxTextCount)")
             if !isTextValid {
-                Text(screenModel.text.count == 0 ? "何か言うことはないか": "言いたいことが多すぎる")
+                Text(viewModel.text.count == 0 ? "何か言うことはないか": "言いたいことが多すぎる")
             }
                 
             
             Button("送信") {
                 Task{
                     do{
-                        try await screenModel.postText()
+                        try await viewModel.postText()
                         self.isPostCompleted = true
-                        screenModel.text = ""
+                        viewModel.text = ""
                     }
                     catch{
                         self.isPostFailed = true
