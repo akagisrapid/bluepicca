@@ -4,9 +4,9 @@ struct TimelineCardView: View {
     @StateObject var feed: FeedItem
     var body: some View {
         VStack{
-            Text(feed.authorText).font(.headline)
-            Text(feed.timelineText).frame(alignment: .leading)
-            Text(feed.postTimeDiffText).dynamicTypeSize(.xSmall)
+            Text(feed.post.author.displayName).font(.headline)
+            Text(feed.post.record.text ?? "").frame(alignment: .leading)
+            Text(feed.post.record.createdAt?.parseToDateRemovingMilliseconds?.relativeDateString ?? "").dynamicTypeSize(.xSmall)
         }
     }
 }
