@@ -37,6 +37,8 @@
 		987153412C08AD3800E08633 /* AspectRatio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153402C08AD3800E08633 /* AspectRatio.swift */; };
 		987153432C08AD5200E08633 /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153422C08AD5200E08633 /* ImageItem.swift */; };
 		987153452C08ADFC00E08633 /* DefsModListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153442C08ADFC00E08633 /* DefsModListItem.swift */; };
+		987153472C08AF6300E08633 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153462C08AF6300E08633 /* DateExtension.swift */; };
+		987153492C08B06B00E08633 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153482C08B06B00E08633 /* StringExtension.swift */; };
 		98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */; };
 		98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */; };
@@ -85,6 +87,8 @@
 		987153402C08AD3800E08633 /* AspectRatio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectRatio.swift; sourceTree = "<group>"; };
 		987153422C08AD5200E08633 /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
 		987153442C08ADFC00E08633 /* DefsModListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefsModListItem.swift; sourceTree = "<group>"; };
+		987153462C08AF6300E08633 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		987153482C08B06B00E08633 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApiModel.swift; sourceTree = "<group>"; };
 		98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApiModel.swift; sourceTree = "<group>"; };
 		98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetKeysFromKeychain.swift; sourceTree = "<group>"; };
@@ -134,6 +138,8 @@
 			isa = PBXGroup;
 			children = (
 				98289CCA2BF772D1007EA3C5 /* FeedItem.swift */,
+				987153462C08AF6300E08633 /* DateExtension.swift */,
+				987153482C08B06B00E08633 /* StringExtension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -225,6 +231,7 @@
 		9871531D2C08A83D00E08633 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				98289CC92BF772C3007EA3C5 /* Extension */,
 				98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */,
 			);
 			path = Utils;
@@ -276,7 +283,6 @@
 				987153102C076F7700E08633 /* ViewModel */,
 				987153142C0772FE00E08633 /* Service */,
 				9871530F2C076E3C00E08633 /* Screen */,
-				98289CC92BF772C3007EA3C5 /* Extension */,
 				B01C96C62BAC11E00077D572 /* ScreenModel */,
 				B0C057732B8712D80066AD91 /* Item.swift */,
 				B0C057752B8712D90066AD91 /* Assets.xcassets */,
@@ -419,6 +425,7 @@
 				B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */,
 				987153352C08ABB400E08633 /* ThreadgateList.swift in Sources */,
 				9871533B2C08ACA300E08633 /* Reply.swift in Sources */,
+				987153492C08B06B00E08633 /* StringExtension.swift in Sources */,
 				987153232C08A90E00E08633 /* Viewer.swift in Sources */,
 				98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */,
 				98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */,
@@ -428,6 +435,7 @@
 				B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */,
 				987153312C08AAAD00E08633 /* EmbeddedRecordViewItem.swift in Sources */,
 				98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */,
+				987153472C08AF6300E08633 /* DateExtension.swift in Sources */,
 				983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */,
 				9871532F2C08AA8E00E08633 /* EmbeddedExternalViewItem.swift in Sources */,
 				9871531A2C07754800E08633 /* Label.swift in Sources */,
