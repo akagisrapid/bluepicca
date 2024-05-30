@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */; };
 		98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */; };
-		98289CCB2BF772D1007EA3C5 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CCA2BF772D1007EA3C5 /* FeedItem.swift */; };
 		983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimelineApi.swift */; };
 		983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */; };
 		983B2C182BB27325004E20F3 /* TimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C172BB27325004E20F3 /* TimelineScreen.swift */; };
@@ -429,7 +428,6 @@
 				987153232C08A90E00E08633 /* Viewer.swift in Sources */,
 				98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */,
 				98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */,
-				98289CCB2BF772D1007EA3C5 /* FeedItem.swift in Sources */,
 				987153392C08AC6F00E08633 /* FeedResponse.swift in Sources */,
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */,
