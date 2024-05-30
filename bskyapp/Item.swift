@@ -1,10 +1,3 @@
-//
-//  Item.swift
-//  bskyapp
-//
-//  Created by 名鉄開発用 on 2024/02/22.
-//
-
 import Foundation
 import SwiftData
 

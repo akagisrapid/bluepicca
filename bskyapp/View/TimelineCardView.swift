@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct TimelineCardView: View {
-    @StateObject var feed: FeedItem
+    @StateObject var viewModel: TimelineCardViewModel
     var body: some View {
         VStack{
-            Text(feed.post.author.displayName).font(.headline)
-            Text(feed.post.record.text ?? "").frame(alignment: .leading)
-            Text(feed.post.record.createdAt?.parseToDateRemovingMilliseconds?.relativeDateString ?? "").dynamicTypeSize(.xSmall)
+            Text(viewModel.authorName).font(.headline)
+            Text(viewModel.text).frame(alignment: .leading)
+            Text(viewModel.postedTimeRelative).dynamicTypeSize(.xSmall)
         }
     }
 }

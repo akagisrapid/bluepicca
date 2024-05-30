@@ -15,11 +15,13 @@ struct bskyappApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    var contentViewModel = ContentViewModel()
     
     @MainActor
     var body: some Scene {
         WindowGroup {
-            ContentView(timelineScreenVm:TimelineScreenModel(feeds: []))
+            ContentView(
+                viewModel: contentViewModel)
         }
         .modelContainer(sharedModelContainer)
     }

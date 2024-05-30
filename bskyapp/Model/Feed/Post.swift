@@ -1,6 +1,6 @@
 import Foundation
 
-struct Post: Codable {
+class Post: Codable, ObservableObject {
     let uri: String
     let cid: String
     let author: Author

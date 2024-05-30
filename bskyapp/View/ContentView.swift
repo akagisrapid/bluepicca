@@ -3,23 +3,34 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    var timelineScreenVm: TimelineScreenModel
-    @State var isFetchTimelineFailed:Bool = false
+    @StateObject var viewModel: ContentViewModel
     
     var body: some View {
         NavigationStack {
             VStack{
-                TimelineScreen(screenModel: timelineScreenVm)
+            Text("timelines")
+                if viewModel.isFetchingTimeline{
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .scaleEffect(2.0) // サイズを調整したい場合
+                    .padding()
+            }else{
+                List(viewModel.posts, id: \.cid) { post in
+                    var timelineCardViewModel = TimelineCardViewModel(post: post)
+                    TimelineCardView(
+                        viewModel: timelineCardViewModel)
+                }
             }
+        }
+        
             .toolbar{
                 ToolbarItem(placement: .bottomBar){
                     HStack{
                         Button("Refresh", systemImage: "arrow.clockwise"){
                             Task {
                                 do {
-                                    try await timelineScreenVm.fetchTimeline()
+                                    try await viewModel.fetchTimeline()
                                 } catch {
-                                    self.isFetchTimelineFailed = true
                                     print("Error fetching timeline: \(error)")
                                 }
                             }
@@ -32,11 +43,9 @@ struct ContentView: View {
                 }
             }
         }
-        .alert(isPresented: $isFetchTimelineFailed){
-            Alert(title: Text("タイムラインの受信に失敗しました"), message: nil)
-        }
     }
 }
 #Preview {
-    ContentView(timelineScreenVm: TimelineScreenModel(feeds: []))
+    var vm = ContentViewModel()
+    return ContentView(viewModel: vm)
 }
