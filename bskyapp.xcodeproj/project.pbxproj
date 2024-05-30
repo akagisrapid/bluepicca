@@ -163,9 +163,9 @@
 		987153102C076F7700E08633 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
 				B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */,
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
-				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -182,8 +182,8 @@
 		987153142C0772FE00E08633 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */,
 				B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */,
+				B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */,
 				983B2C132BB27216004E20F3 /* GetTimelineApi.swift */,
 			);
 			path = Service;
@@ -192,30 +192,30 @@
 		987153162C0774F900E08633 /* Feed */ = {
 			isa = PBXGroup;
 			children = (
-				983B2C1A2BB29583004E20F3 /* FeedItem.swift */,
-				987153172C07751E00E08633 /* Post.swift */,
-				987153192C07754800E08633 /* Label.swift */,
-				9871531B2C07755D00E08633 /* BlockingByList.swift */,
-				9871531E2C08A89600E08633 /* MutedByList.swift */,
-				987153202C08A8E100E08633 /* MutedByListViewer.swift */,
-				987153222C08A90E00E08633 /* Viewer.swift */,
-				987153242C08A93D00E08633 /* Author.swift */,
+				987153402C08AD3800E08633 /* AspectRatio.swift */,
 				987153262C08A95E00E08633 /* Associated.swift */,
+				987153242C08A93D00E08633 /* Author.swift */,
 				987153282C08A97B00E08633 /* AuthorViewer.swift */,
-				9871532A2C08A9A300E08633 /* PostRecord.swift */,
+				9871531B2C07755D00E08633 /* BlockingByList.swift */,
+				987153442C08ADFC00E08633 /* DefsModListItem.swift */,
 				9871532C2C08A9BD00E08633 /* Embed.swift */,
 				9871532E2C08AA8E00E08633 /* EmbeddedExternalViewItem.swift */,
 				987153302C08AAAD00E08633 /* EmbeddedRecordViewItem.swift */,
-				987153322C08AAD100E08633 /* Threadgate.swift */,
-				987153342C08ABB400E08633 /* ThreadgateList.swift */,
+				9871533E2C08AD1E00E08633 /* EmbedImagesViewItem.swift */,
+				983B2C1A2BB29583004E20F3 /* FeedItem.swift */,
 				987153362C08ABD900E08633 /* FeedRequest.swift */,
 				987153382C08AC6F00E08633 /* FeedResponse.swift */,
-				9871533A2C08ACA300E08633 /* Reply.swift */,
-				9871533C2C08ACC700E08633 /* Reason.swift */,
-				9871533E2C08AD1E00E08633 /* EmbedImagesViewItem.swift */,
-				987153402C08AD3800E08633 /* AspectRatio.swift */,
 				987153422C08AD5200E08633 /* ImageItem.swift */,
-				987153442C08ADFC00E08633 /* DefsModListItem.swift */,
+				987153192C07754800E08633 /* Label.swift */,
+				9871531E2C08A89600E08633 /* MutedByList.swift */,
+				987153202C08A8E100E08633 /* MutedByListViewer.swift */,
+				987153172C07751E00E08633 /* Post.swift */,
+				9871532A2C08A9A300E08633 /* PostRecord.swift */,
+				9871533C2C08ACC700E08633 /* Reason.swift */,
+				9871533A2C08ACA300E08633 /* Reply.swift */,
+				987153322C08AAD100E08633 /* Threadgate.swift */,
+				987153342C08ABB400E08633 /* ThreadgateList.swift */,
+				987153222C08A90E00E08633 /* Viewer.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -268,17 +268,17 @@
 		B0C0576E2B8712D80066AD91 /* bskyapp */ = {
 			isa = PBXGroup;
 			children = (
-				9871534F2C08C96A00E08633 /* Item.swift */,
 				B0C0576F2B8712D80066AD91 /* bskyappApp.swift */,
-				9871531D2C08A83D00E08633 /* Utils */,
+				9871534F2C08C96A00E08633 /* Item.swift */,
+				B0C057752B8712D90066AD91 /* Assets.xcassets */,
 				983B2C192BB29573004E20F3 /* Model */,
-				B01C96C32BA420F80077D572 /* View */,
-				987153102C076F7700E08633 /* ViewModel */,
-				987153142C0772FE00E08633 /* Service */,
+				B0C057772B8712D90066AD91 /* Preview Content */,
 				9871530F2C076E3C00E08633 /* Screen */,
 				B01C96C62BAC11E00077D572 /* ScreenModel */,
-				B0C057752B8712D90066AD91 /* Assets.xcassets */,
-				B0C057772B8712D90066AD91 /* Preview Content */,
+				987153142C0772FE00E08633 /* Service */,
+				9871531D2C08A83D00E08633 /* Utils */,
+				B01C96C32BA420F80077D572 /* View */,
+				987153102C076F7700E08633 /* ViewModel */,
 			);
 			path = bskyapp;
 			sourceTree = "<group>";
