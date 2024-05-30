@@ -41,7 +41,7 @@
 		98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */; };
 		98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */; };
-		B01C96C52BA4210F0077D572 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostView.swift */; };
+		B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostCardView.swift */; };
 		B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */; };
 		B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */; };
 		B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */; };
@@ -92,7 +92,7 @@
 		98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApiModel.swift; sourceTree = "<group>"; };
 		98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetKeysFromKeychain.swift; sourceTree = "<group>"; };
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
-		B01C96C42BA4210F0077D572 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
+		B01C96C42BA4210F0077D572 /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardViewModel.swift; sourceTree = "<group>"; };
 		B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApi.swift; sourceTree = "<group>"; };
 		B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApi.swift; sourceTree = "<group>"; };
@@ -239,7 +239,7 @@
 		B01C96C32BA420F80077D572 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				B01C96C42BA4210F0077D572 /* PostView.swift */,
+				B01C96C42BA4210F0077D572 /* PostCardView.swift */,
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
 			);
 			path = View;
@@ -456,7 +456,7 @@
 				9871533F2C08AD1E00E08633 /* EmbedImagesViewItem.swift in Sources */,
 				987153432C08AD5200E08633 /* ImageItem.swift in Sources */,
 				98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */,
-				B01C96C52BA4210F0077D572 /* PostView.swift in Sources */,
+				B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
