@@ -10,8 +10,6 @@
 		98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */; };
 		98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */; };
 		983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimelineApi.swift */; };
-		983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */; };
-		983B2C182BB27325004E20F3 /* TimelineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C172BB27325004E20F3 /* TimelineScreen.swift */; };
 		983B2C1B2BB29583004E20F3 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C1A2BB29583004E20F3 /* FeedItem.swift */; };
 		987153182C07751E00E08633 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153172C07751E00E08633 /* Post.swift */; };
 		9871531A2C07754800E08633 /* Label.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153192C07754800E08633 /* Label.swift */; };
@@ -60,8 +58,6 @@
 		98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardView.swift; sourceTree = "<group>"; };
 		98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardViewModel.swift; sourceTree = "<group>"; };
 		983B2C132BB27216004E20F3 /* GetTimelineApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineApi.swift; sourceTree = "<group>"; };
-		983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScreenModel.swift; sourceTree = "<group>"; };
-		983B2C172BB27325004E20F3 /* TimelineScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScreen.swift; sourceTree = "<group>"; };
 		983B2C1A2BB29583004E20F3 /* FeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
 		987153172C07751E00E08633 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		987153192C07754800E08633 /* Label.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Label.swift; sourceTree = "<group>"; };
@@ -152,14 +148,6 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		9871530F2C076E3C00E08633 /* Screen */ = {
-			isa = PBXGroup;
-			children = (
-				983B2C172BB27325004E20F3 /* TimelineScreen.swift */,
-			);
-			path = Screen;
-			sourceTree = "<group>";
-		};
 		987153102C076F7700E08633 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -239,14 +227,6 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		B01C96C62BAC11E00077D572 /* ScreenModel */ = {
-			isa = PBXGroup;
-			children = (
-				983B2C152BB27312004E20F3 /* TimelineScreenModel.swift */,
-			);
-			path = ScreenModel;
-			sourceTree = "<group>";
-		};
 		B0C057632B8712D80066AD91 = {
 			isa = PBXGroup;
 			children = (
@@ -273,8 +253,6 @@
 				B0C057752B8712D90066AD91 /* Assets.xcassets */,
 				983B2C192BB29573004E20F3 /* Model */,
 				B0C057772B8712D90066AD91 /* Preview Content */,
-				9871530F2C076E3C00E08633 /* Screen */,
-				B01C96C62BAC11E00077D572 /* ScreenModel */,
 				987153142C0772FE00E08633 /* Service */,
 				9871531D2C08A83D00E08633 /* Utils */,
 				B01C96C32BA420F80077D572 /* View */,
@@ -428,7 +406,6 @@
 				987153312C08AAAD00E08633 /* EmbeddedRecordViewItem.swift in Sources */,
 				98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */,
 				987153472C08AF6300E08633 /* DateExtension.swift in Sources */,
-				983B2C162BB27312004E20F3 /* TimelineScreenModel.swift in Sources */,
 				9871532F2C08AA8E00E08633 /* EmbeddedExternalViewItem.swift in Sources */,
 				9871531A2C07754800E08633 /* Label.swift in Sources */,
 				B0C057722B8712D80066AD91 /* ContentView.swift in Sources */,
@@ -442,7 +419,6 @@
 				987153452C08ADFC00E08633 /* DefsModListItem.swift in Sources */,
 				987153252C08A93D00E08633 /* Author.swift in Sources */,
 				B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */,
-				983B2C182BB27325004E20F3 /* TimelineScreen.swift in Sources */,
 				9871534E2C08C39200E08633 /* ContentViewModel.swift in Sources */,
 				987153272C08A95E00E08633 /* Associated.swift in Sources */,
 				987153292C08A97B00E08633 /* AuthorViewer.swift in Sources */,
