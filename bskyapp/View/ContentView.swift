@@ -37,7 +37,7 @@ struct ContentView: View {
                         }
                         Spacer()
                         NavigationLink(destination:
-                                        PostView(
+                                        PostCardView(
                                             viewModel: PostCardViewModel(text: "")
                                         )
                         ){

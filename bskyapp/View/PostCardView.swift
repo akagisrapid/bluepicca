@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PostView: View {
+struct PostCardView: View {
     @StateObject var viewModel: PostCardViewModel
     var maxTextCount: Int = 300
     var body: some View {
