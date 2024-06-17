@@ -36,8 +36,12 @@ struct ContentView: View {
                             }
                         }
                         Spacer()
-                        Button("Post", systemImage: "rectangle.and.pencil.and.ellipsis"){
-                            
+                        NavigationLink(destination:
+                                        PostView(
+                                            viewModel: PostCardViewModel(text: "")
+                                        )
+                        ){
+                            Image(systemName: "square.and.pencil")
                         }
                     }
                 }
