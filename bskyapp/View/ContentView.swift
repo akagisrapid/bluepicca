@@ -23,7 +23,7 @@ struct ContentView: View {
                                 TimelineCardView(
                                     viewModel: timelineCardViewModel)
                             }
-                        }
+                        }.listStyle(.plain)
                     }
                 }
                 if viewModel.isShowPostCard{
