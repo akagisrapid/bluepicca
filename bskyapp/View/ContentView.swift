@@ -18,8 +18,11 @@ struct ContentView: View {
                     }else{
                         List(viewModel.posts, id: \.cid) { post in
                             var timelineCardViewModel = TimelineCardViewModel(post: post)
-                            TimelineCardView(
-                                viewModel: timelineCardViewModel)
+                            var postDetailViewModel = PostDetailViewModel(post: post)
+                            NavigationLink(destination: PostDetailView(viewModel: postDetailViewModel)){
+                                TimelineCardView(
+                                    viewModel: timelineCardViewModel)
+                            }
                         }
                     }
                 }

@@ -38,6 +38,8 @@
 		987153492C08B06B00E08633 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153482C08B06B00E08633 /* StringExtension.swift */; };
 		9871534E2C08C39200E08633 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9871534D2C08C39200E08633 /* ContentViewModel.swift */; };
 		987153502C08C96A00E08633 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9871534F2C08C96A00E08633 /* Item.swift */; };
+		987153522C29ADBD00E08633 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153512C29ADBD00E08633 /* PostDetailViewModel.swift */; };
+		987153542C29ADF300E08633 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153532C29ADF300E08633 /* PostDetailView.swift */; };
 		98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */; };
 		98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */; };
@@ -86,6 +88,8 @@
 		987153482C08B06B00E08633 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		9871534D2C08C39200E08633 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		9871534F2C08C96A00E08633 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		987153512C29ADBD00E08633 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
+		987153532C29ADF300E08633 /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
 		98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApiModel.swift; sourceTree = "<group>"; };
 		98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApiModel.swift; sourceTree = "<group>"; };
 		98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetKeysFromKeychain.swift; sourceTree = "<group>"; };
@@ -151,6 +155,7 @@
 		987153102C076F7700E08633 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				987153512C29ADBD00E08633 /* PostDetailViewModel.swift */,
 				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
 				B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */,
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
@@ -223,6 +228,7 @@
 				B0C057712B8712D80066AD91 /* ContentView.swift */,
 				B01C96C42BA4210F0077D572 /* PostCardView.swift */,
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
+				987153532C29ADF300E08633 /* PostDetailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -404,6 +410,7 @@
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */,
 				987153312C08AAAD00E08633 /* EmbeddedRecordViewItem.swift in Sources */,
+				987153522C29ADBD00E08633 /* PostDetailViewModel.swift in Sources */,
 				98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */,
 				987153472C08AF6300E08633 /* DateExtension.swift in Sources */,
 				9871532F2C08AA8E00E08633 /* EmbeddedExternalViewItem.swift in Sources */,
@@ -425,6 +432,7 @@
 				987153182C07751E00E08633 /* Post.swift in Sources */,
 				9871533F2C08AD1E00E08633 /* EmbedImagesViewItem.swift in Sources */,
 				987153432C08AD5200E08633 /* ImageItem.swift in Sources */,
+				987153542C29ADF300E08633 /* PostDetailView.swift in Sources */,
 				98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */,
 				B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */,
 			);
