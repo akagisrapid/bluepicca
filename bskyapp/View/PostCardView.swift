@@ -18,6 +18,9 @@ struct PostCardView: View {
                 }
             }
             HStack{
+                Button("Close", systemImage: "xmark.circle.fill"){
+                    isShowPostCard.toggle()
+                }
                 Spacer()
                 Button(
                     "ポスト",
@@ -28,7 +31,7 @@ struct PostCardView: View {
                             viewModel.isPostCompleted = true
                             viewModel.text = ""
                             withAnimation{
-                                isShowPostCard = false
+                                isShowPostCard.toggle()
                             }
                         }
                         catch{
