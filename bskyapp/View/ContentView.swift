@@ -7,48 +7,48 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack{
-                VStack{
-                    Text("timelines")
-                    if viewModel.isFetchingTimeline{
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .scaleEffect(2.0) // サイズを調整したい場合
-                            .padding()
-                    }else{
-                        List(viewModel.posts, id: \.cid) { post in
-                            var timelineCardViewModel = TimelineCardViewModel(post: post)
-                            var postDetailViewModel = PostDetailViewModel(post: post)
-                            NavigationLink(destination: PostDetailView(viewModel: postDetailViewModel)){
-                                TimelineCardView(
-                                    viewModel: timelineCardViewModel)
-                            }
-                        }.listStyle(.plain)
-                    }
+            VStack{
+                Text("timelines")
+                if viewModel.isFetchingTimeline{
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .scaleEffect(2.0) // サイズを調整したい場合
+                        .padding()
+                } else {
+                    List(viewModel.posts, id: \.cid) { post in
+                        var timelineCardViewModel = TimelineCardViewModel(post: post)
+                        var postDetailViewModel = PostDetailViewModel(post: post)
+                        NavigationLink(
+                            destination: PostDetailView(viewModel: postDetailViewModel)
+                        ){
+                            TimelineCardView(
+                                viewModel: timelineCardViewModel)
+                        }
+                    }.listStyle(.plain)
                 }
-                if viewModel.isShowPostCard{
-                    ZStack {
-                        Color.black.opacity(0.4) // 背景を半透明に
-                            .edgesIgnoringSafeArea(.all)
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    viewModel.isShowPostCard = false
-                                }
-                            }
-                        
-                        PostCardView(viewModel: PostCardViewModel(text: ""),isShowPostCard: $viewModel.isShowPostCard)
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(10)
-                            .shadow(radius: 5)
-                            .padding()
-                            .transition(.scale)
-                            .onDisappear{
-                                viewModel.isShowPostCard = false
-                            }
+            }
+            
+            
+            .sheet(isPresented: $viewModel.isShowPostCard){
+                ZStack{
+                    PostCardView(
+                        viewModel: PostCardViewModel(text: ""),isShowPostCard: $viewModel.isShowPostCard)
+                    .padding()
+                    .background(.clear) // PostCardViewの背景色
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                    .padding()
+                    .transition(.scale)
+                    .onDisappear{
+                        viewModel.isShowPostCard = false
                     }
                 }
             }
+            .gesture(DragGesture().onEnded { gesture in
+                if gesture.translation.height > 100 {
+                    viewModel.isShowPostCard.toggle()
+                }
+            })
         }
         
         .toolbar{
