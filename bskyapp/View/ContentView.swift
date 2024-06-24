@@ -54,6 +54,12 @@ struct ContentView: View {
         .toolbar{
             ToolbarItem(placement: .bottomBar){
                 HStack{
+                    Button("Post", systemImage: "square.and.pencil"){
+                        withAnimation (.easeInOut(duration: 0.3)){
+                            viewModel.isShowPostCard.toggle()
+                        }
+                    }
+                    Spacer()
                     Button("Refresh", systemImage: "arrow.clockwise"){
                         Task {
                             do {
@@ -61,12 +67,6 @@ struct ContentView: View {
                             } catch {
                                 print("Error fetching timeline: \(error)")
                             }
-                        }
-                    }
-                    Spacer()
-                    Button("Post", systemImage: "square.and.pencil"){
-                        withAnimation (.easeInOut(duration: 0.3)){
-                            viewModel.isShowPostCard.toggle()
                         }
                     }
                 }
