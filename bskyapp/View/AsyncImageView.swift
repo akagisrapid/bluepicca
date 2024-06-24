@@ -7,7 +7,10 @@ struct AsyncImageView: View {
         ZStack{
             // サムネ色
             AsyncImage(url: viewModel.url){ image in
-                image.image?.resizable().frame(maxWidth: viewModel.imageSize.maxWidth, maxHeight: viewModel.imageSize.maxHeight)
+                image.image?
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: viewModel.imageSize.maxWidth, maxHeight: viewModel.imageSize.maxHeight)
             }
             .gesture(
                 TapGesture().onEnded{
@@ -22,13 +25,24 @@ struct AsyncImageView: View {
                             .aspectRatio(contentMode: .fit)
                             .background(Color.black.opacity(0.4))
                             .edgesIgnoringSafeArea(.all) // 全画面表示するためにsafe areaを無視する
-                            .onTapGesture {
-                                // 画像をタップしたら拡大表示を終了する
-                                isFullsizeView.toggle()
-                            }
                     }
                     if !viewModel.alt.isEmpty{
                         Text("alt: \(viewModel.alt)")
+                    }
+                }
+                .gesture(DragGesture().onEnded { gesture in
+                    if gesture.translation.height > 100 {
+                        isFullsizeView.toggle()
+                    }
+                })
+                
+                HStack{
+                    Button("Save", systemImage: "square.and.arrow.down.fill"){
+                        // 画像を保存する処理
+                    }
+                    Spacer()
+                    Button("Close", systemImage: "xmark.circle.fill"){
+                        isFullsizeView.toggle()
                     }
                 }
             }

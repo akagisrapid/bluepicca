@@ -13,13 +13,15 @@ struct PostDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             VStack{
-                ForEach(viewModel.embeddedImages, id: \.thumb){ embed in
-                    let vm = AsyncImageViewModel(
-                        url: embed.thumbUrl,
-                        imageSize: .thumbnail,
-                        alt: embed.alt, fullSizeUrl: embed.fullsizeUrl
-                    )
-                    AsyncImageView(viewModel: vm)
+                ScrollView{
+                    ForEach(viewModel.embeddedImages, id: \.thumb){ embed in
+                        let vm = AsyncImageViewModel(
+                            url: embed.thumbUrl,
+                            imageSize: .thumbnail,
+                            alt: embed.alt, fullSizeUrl: embed.fullsizeUrl
+                        )
+                        AsyncImageView(viewModel: vm)
+                    }
                 }
             }
             
