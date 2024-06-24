@@ -40,6 +40,8 @@
 		987153502C08C96A00E08633 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9871534F2C08C96A00E08633 /* Item.swift */; };
 		987153522C29ADBD00E08633 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153512C29ADBD00E08633 /* PostDetailViewModel.swift */; };
 		987153542C29ADF300E08633 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153532C29ADF300E08633 /* PostDetailView.swift */; };
+		987153582C29BC4E00E08633 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153572C29BC4E00E08633 /* AsyncImageView.swift */; };
+		9871535A2C29BC8200E08633 /* AsyncImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153592C29BC8200E08633 /* AsyncImageViewModel.swift */; };
 		98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */; };
 		98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */; };
@@ -90,6 +92,8 @@
 		9871534F2C08C96A00E08633 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		987153512C29ADBD00E08633 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
 		987153532C29ADF300E08633 /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
+		987153572C29BC4E00E08633 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
+		987153592C29BC8200E08633 /* AsyncImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageViewModel.swift; sourceTree = "<group>"; };
 		98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApiModel.swift; sourceTree = "<group>"; };
 		98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApiModel.swift; sourceTree = "<group>"; };
 		98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetKeysFromKeychain.swift; sourceTree = "<group>"; };
@@ -159,6 +163,7 @@
 				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
 				B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */,
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
+				987153592C29BC8200E08633 /* AsyncImageViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -229,6 +234,7 @@
 				B01C96C42BA4210F0077D572 /* PostCardView.swift */,
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
 				987153532C29ADF300E08633 /* PostDetailView.swift */,
+				987153572C29BC4E00E08633 /* AsyncImageView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -418,6 +424,7 @@
 				B0C057722B8712D80066AD91 /* ContentView.swift in Sources */,
 				9871531C2C07755D00E08633 /* BlockingByList.swift in Sources */,
 				98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */,
+				987153582C29BC4E00E08633 /* AsyncImageView.swift in Sources */,
 				987153412C08AD3800E08633 /* AspectRatio.swift in Sources */,
 				9871531F2C08A89600E08633 /* MutedByList.swift in Sources */,
 				B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */,
@@ -425,6 +432,7 @@
 				987153332C08AAD100E08633 /* Threadgate.swift in Sources */,
 				987153452C08ADFC00E08633 /* DefsModListItem.swift in Sources */,
 				987153252C08A93D00E08633 /* Author.swift in Sources */,
+				9871535A2C29BC8200E08633 /* AsyncImageViewModel.swift in Sources */,
 				B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */,
 				9871534E2C08C39200E08633 /* ContentViewModel.swift in Sources */,
 				987153272C08A95E00E08633 /* Associated.swift in Sources */,

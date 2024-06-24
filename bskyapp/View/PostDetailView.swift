@@ -5,9 +5,7 @@ struct PostDetailView: View {
     var body: some View {
         VStack{
             HStack{
-                AsyncImage(url: viewModel.avatarUrl){ avatar in
-                    avatar.image?.resizable().frame(width: 50, height: 50)
-                }
+                AsyncImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar))
                 Text(viewModel.displayName).font(.headline)
                 Spacer()
             }
@@ -17,9 +15,7 @@ struct PostDetailView: View {
             VStack{
                 ForEach(viewModel.embeddedImages, id: \.thumb){
                     embed in
-                    AsyncImage(url: embed.thumbUrl){ image in
-                        image.image?.resizable().frame(maxWidth:300, maxHeight: 300)
-                    }
+                    AsyncImageView(viewModel: AsyncImageViewModel(url: embed.thumbUrl, imageSize: .thumbnail))
                 }
             }
             
