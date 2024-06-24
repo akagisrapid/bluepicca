@@ -13,10 +13,16 @@ struct PostDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             VStack{
-                ForEach(viewModel.embeddedImages, id: \.thumb){
-                    embed in
-                    AsyncImageView(viewModel: AsyncImageViewModel(url: embed.thumbUrl, imageSize: .thumbnail))
-                }
+//                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                    ForEach(viewModel.embeddedImages, id: \.thumb){
+                        embed in
+                        let vm = AsyncImageViewModel(
+                                url: embed.thumbUrl,
+                                imageSize: .thumbnail, 
+                                fullSizeUrl: embed.fullsizeUrl)
+                        AsyncImageView(viewModel: vm)
+                    }
+//                }
             }
             
             Text(viewModel.indexedAt)
