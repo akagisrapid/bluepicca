@@ -23,8 +23,7 @@ struct AsyncImageView: View {
                         image.image?
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .background(Color.black.opacity(0.4))
-                            .edgesIgnoringSafeArea(.all) // 全画面表示するためにsafe areaを無視する
+                            .edgesIgnoringSafeArea(.horizontal) // 全画面表示するためにsafe areaを無視する
                     }
                     if !viewModel.alt.isEmpty{
                         Text("alt: \(viewModel.alt)")
@@ -44,7 +43,7 @@ struct AsyncImageView: View {
                     Button("Close", systemImage: "xmark.circle.fill"){
                         isFullsizeView.toggle()
                     }
-                }
+                }.padding()
             }
         }
         
