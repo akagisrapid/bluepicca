@@ -2,13 +2,15 @@ import SwiftUI
 
 struct PostCardView: View {
     @StateObject var viewModel: PostCardViewModel
+    @Binding var isShowPostCard: Bool
+    
     var maxTextCount: Int = 300
     var body: some View {
         VStack{
-            Text("hello world")
             TextField("つぶやきたいこと", text:$viewModel.text)
                 .textFieldStyle(.roundedBorder)
                 .border(viewModel.isTextValid ? Color.green : Color.red)
+                .frame(height: 200)
                 .onChange(of: viewModel.text) {
                     // ユーザー名のバリデーション
                     viewModel.isTextValid = 0 < viewModel.text.count && viewModel.text.count <= maxTextCount
@@ -25,6 +27,9 @@ struct PostCardView: View {
                         try await viewModel.postText()
                         viewModel.isPostCompleted = true
                         viewModel.text = ""
+                        withAnimation{
+                            isShowPostCard = false
+                        }
                     }
                     catch{
                         viewModel.isPostFailed = true

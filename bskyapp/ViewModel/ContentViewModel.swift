@@ -4,7 +4,7 @@ class ContentViewModel: ObservableObject{
     @Published var feeds: [FeedItem] = []
     @Published var posts: [Post] = []
     @Published var isFetchingTimeline: Bool = false;
-    
+    @Published var isShowPostCard: Bool = false;
     init() {
         Task{
             try await fetchTimeline()
