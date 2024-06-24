@@ -26,6 +26,7 @@ struct PostDetailView: View {
             Text(viewModel.indexedAt)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding()
-        }
+            Spacer()
+        }.padding()
     }
 }
