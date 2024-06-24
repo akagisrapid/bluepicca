@@ -5,7 +5,7 @@ struct PostDetailView: View {
     var body: some View {
         VStack{
             HStack{
-                AsyncImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar))
+                AsyncImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""))
                 Text(viewModel.displayName).font(.headline)
                 Spacer()
             }
@@ -13,16 +13,14 @@ struct PostDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             VStack{
-//                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                    ForEach(viewModel.embeddedImages, id: \.thumb){
-                        embed in
-                        let vm = AsyncImageViewModel(
-                                url: embed.thumbUrl,
-                                imageSize: .thumbnail, 
-                                fullSizeUrl: embed.fullsizeUrl)
-                        AsyncImageView(viewModel: vm)
-                    }
-//                }
+                ForEach(viewModel.embeddedImages, id: \.thumb){ embed in
+                    let vm = AsyncImageViewModel(
+                        url: embed.thumbUrl,
+                        imageSize: .thumbnail,
+                        alt: embed.alt, fullSizeUrl: embed.fullsizeUrl
+                    )
+                    AsyncImageView(viewModel: vm)
+                }
             }
             
             Text(viewModel.indexedAt)

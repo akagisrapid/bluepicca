@@ -15,16 +15,21 @@ struct AsyncImageView: View {
                 }
             )
             .fullScreenCover(isPresented: $isFullsizeView){
-                AsyncImage(url: viewModel.zoomedUrl) { image in
-                    image.image?
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .background(Color.black.opacity(0.4))
-                        .edgesIgnoringSafeArea(.all) // 全画面表示するためにsafe areaを無視する
-                        .onTapGesture {
-                            // 画像をタップしたら拡大表示を終了する
-                            isFullsizeView.toggle()
-                        }
+                VStack{
+                    AsyncImage(url: viewModel.fullSizeUrl ?? viewModel.url) { image in
+                        image.image?
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .background(Color.black.opacity(0.4))
+                            .edgesIgnoringSafeArea(.all) // 全画面表示するためにsafe areaを無視する
+                            .onTapGesture {
+                                // 画像をタップしたら拡大表示を終了する
+                                isFullsizeView.toggle()
+                            }
+                    }
+                    if !viewModel.alt.isEmpty{
+                        Text("alt: \(viewModel.alt)")
+                    }
                 }
             }
         }
