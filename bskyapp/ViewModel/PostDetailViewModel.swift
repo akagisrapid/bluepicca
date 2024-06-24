@@ -7,10 +7,7 @@ class PostDetailViewModel: ObservableObject{
         self.post = post
     }
     var avatarUrl: URL?{
-        guard let avatar = post.author.avatar else{
-            return nil
-        }
-        return URL(string: avatar)
+        post.author.avatarUrl
     }
     var displayName : String{
         post.author.displayName

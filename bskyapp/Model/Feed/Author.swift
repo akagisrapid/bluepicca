@@ -1,11 +1,6 @@
-//
-//  Author.swift
-//  bskyapp
-//
-//  Created by shuya on 2024/05/30.
-//
-
 import Foundation
+import SwiftUI
+
 struct Author: Codable {
     let did: String
     let handle: String
@@ -14,4 +9,13 @@ struct Author: Codable {
     let associated: Associated?
     let viewer: AuthorViewer?
     let labels: [Label]
+}
+
+extension Author{
+    var avatarUrl: URL?{
+        guard let avatar = avatar else{
+            return nil
+        }
+        return URL(string: avatar)
+    }
 }
