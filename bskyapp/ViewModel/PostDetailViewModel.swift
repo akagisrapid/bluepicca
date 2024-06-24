@@ -21,4 +21,10 @@ class PostDetailViewModel: ObservableObject{
         }
         return date.formatted(.dateTime)
     }
+    var embeddedImages : [EmbedImagesViewItem]{
+        guard let images = post.embed?.images else{
+            return []
+        }
+        return images
+    }
 }

@@ -14,6 +14,15 @@ struct PostDetailView: View {
             Text(viewModel.text)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
+            VStack{
+                ForEach(viewModel.embeddedImages, id: \.thumb){
+                    embed in
+                    AsyncImage(url: embed.thumbUrl){ image in
+                        image.image?.resizable().frame(maxWidth:300, maxHeight: 300)
+                    }
+                }
+            }
+            
             Text(viewModel.indexedAt)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding()
