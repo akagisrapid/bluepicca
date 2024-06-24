@@ -26,17 +26,17 @@ extension ImageSize{
     var maxWidth: CGFloat{
         switch self {
         case .avatar:
-            return 40
+            return 60
         case .thumbnail:
-            return 100
+            return 250
         }
     }
     var maxHeight: CGFloat{
         switch self {
         case .avatar:
-            return 40
+            return 60
         case .thumbnail:
-            return 100
+            return 250
         }
     }
 }
