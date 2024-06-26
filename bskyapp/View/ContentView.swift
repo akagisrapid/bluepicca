@@ -39,16 +39,8 @@ struct ContentView: View {
                     .shadow(radius: 5)
                     .padding()
                     .transition(.scale)
-                    .onDisappear{
-                        viewModel.isShowPostCard = false
-                    }
                 }
             }
-            .gesture(DragGesture().onEnded { gesture in
-                if gesture.translation.height > 100 {
-                    viewModel.isShowPostCard.toggle()
-                }
-            })
         }
         
         .toolbar{
