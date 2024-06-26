@@ -24,11 +24,22 @@ struct PostDetailView: View {
                     }
                 }
             }
-            
-            Text(viewModel.indexedAt)
-                .frame(maxWidth: .infinity, alignment: .trailing)
+            HStack{
+                Spacer()
+                Button(String(viewModel.post.likeCount ?? 0), systemImage: "star.fill"){
+                    // いいね処理
+                }
                 .padding()
-            Spacer()
+                Button(String(viewModel.post.repostCount ?? 0), systemImage: "arrow.rectanglepath"){
+                    // リポスト処理
+                }
+                .padding()
+            }
+            HStack{
+                Text(viewModel.post.viewer.repost ?? "")
+                Spacer()
+                Text(viewModel.indexedAt)
+            }
         }.padding()
     }
 }

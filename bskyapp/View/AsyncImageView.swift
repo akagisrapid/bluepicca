@@ -17,7 +17,7 @@ struct AsyncImageView: View {
                     isFullsizeView = true
                 }
             )
-            .fullScreenCover(isPresented: $isFullsizeView){
+            .sheet(isPresented: $isFullsizeView){
                 VStack{
                     AsyncImage(url: viewModel.fullSizeUrl ?? viewModel.url) { image in
                         image.image?
@@ -29,11 +29,11 @@ struct AsyncImageView: View {
                         Text("alt: \(viewModel.alt)")
                     }
                 }
-                .gesture(DragGesture().onEnded { gesture in
-                    if gesture.translation.height > 100 {
-                        isFullsizeView.toggle()
-                    }
-                })
+//                .gesture(DragGesture().onEnded { gesture in
+//                    if gesture.translation.height > 100 {
+//                        isFullsizeView.toggle()
+//                    }
+//                })
                 
                 HStack{
                     Button("Save", systemImage: "square.and.arrow.down.fill"){
