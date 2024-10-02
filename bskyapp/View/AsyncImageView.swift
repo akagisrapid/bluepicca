@@ -2,7 +2,9 @@ import SwiftUI
 
 struct AsyncImageView: View {
     @StateObject var viewModel: AsyncImageViewModel
+    @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
     @State var isFullsizeView = false
+    @State var isProfileView = false
     var body: some View {
         ZStack{
             // サムネ色
@@ -14,7 +16,15 @@ struct AsyncImageView: View {
             }
             .gesture(
                 TapGesture().onEnded{
-                    isFullsizeView = true
+                    switch viewModel.tapToOpen {
+                    case .profile:
+                        isProfileView = true
+                    case .fullSize:
+                        isFullsizeView = true
+                    case .none:
+                        isProfileView = false
+                        isFullsizeView = false
+                    }
                 }
             )
             .sheet(isPresented: $isFullsizeView){
@@ -45,6 +55,9 @@ struct AsyncImageView: View {
                     }
                 }.padding()
             }
+        }
+        .sheet(isPresented: $isProfileView){
+            ProfileView(viewModel: profileViewModel)
         }
         
     }

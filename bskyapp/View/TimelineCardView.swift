@@ -4,7 +4,7 @@ struct TimelineCardView: View {
     @StateObject var viewModel: TimelineCardViewModel
     var body: some View {
         HStack{
-            AsyncImageView(viewModel: AsyncImageViewModel(url: viewModel.post.author.avatarUrl, imageSize: .avatar, alt: ""))
+            AsyncImageView(viewModel: AsyncImageViewModel(url: viewModel.post.author.avatarUrl, imageSize: .avatar, alt: "", tapToOpen: .profile))
             VStack(alignment: .leading){
                 Text(viewModel.authorName).font(.headline)
                 Text(viewModel.text)
