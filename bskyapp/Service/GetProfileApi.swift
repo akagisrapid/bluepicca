@@ -1,14 +1,13 @@
 import Foundation
 import Alamofire
 
-struct GetTimelineApi{
-    func getTimeline() async throws -> FeedResponse{
+struct GetProfileApi{
+    func getProfile(param: GetProfileApiRequest) async throws -> GetProfileApiResponse{
         let session = try await createSession()
         let endPoint = "https://bsky.social/xrpc/"
-        let repo = "app.bsky.feed.getTimeline"
+        let repo = "app.bsky.actor.getProfile"
         let urlString = endPoint + repo
         
-        let param: FeedRequest = FeedRequest(algorithm: "", limit: 100, cursor: nil)
         let headers: HTTPHeaders =
         [
             "Content-Type": "application/json",
@@ -21,7 +20,7 @@ struct GetTimelineApi{
         do {
             let response = await AF.request(urlString, method: .get, parameters: param, headers: headers)
                 .validate()
-                .serializingDecodable(FeedResponse.self).response
+                .serializingDecodable(GetProfileApiResponse.self).response
             switch response.result{
             case .success(let res):
                 return res

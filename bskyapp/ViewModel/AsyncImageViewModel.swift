@@ -5,13 +5,11 @@ class AsyncImageViewModel: ObservableObject{
     @Published var imageSize: ImageSize
     @Published var alt: String
     @Published var fullSizeUrl: URL?
-    @Published var tapToOpen: TapToOpen?
-    init(url: URL?, imageSize: ImageSize, alt: String, fullSizeUrl: URL? = nil, tapToOpen: TapToOpen? = nil) {
+    init(url: URL?, imageSize: ImageSize, alt: String, fullSizeUrl: URL? = nil) {
         self.url = url
         self.alt = alt
         self.fullSizeUrl = fullSizeUrl
         self.imageSize = imageSize
-        self.tapToOpen = tapToOpen
     }
 }
 
@@ -22,11 +20,6 @@ extension AsyncImageViewModel{
 enum ImageSize{
     case avatar
     case thumbnail
-}
-
-enum TapToOpen{
-    case profile
-    case fullSize
 }
 
 extension ImageSize{

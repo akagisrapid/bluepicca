@@ -32,6 +32,7 @@ func createRecord(param: CreateRecordRequest) async throws -> CreateRecordRespon
         case .success(let value):
             return value
         case.failure(let error):
+            print(response.request?.url)
             print(response.response?.statusCode)
             print(error)
             throw error

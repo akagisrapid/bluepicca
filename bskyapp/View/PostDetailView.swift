@@ -5,7 +5,7 @@ struct PostDetailView: View {
     var body: some View {
         VStack{
             HStack{
-                AsyncImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: "", tapToOpen: .profile))
+                ProfileImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""), actor: viewModel.post.author.did)
                 Text(viewModel.displayName).font(.headline)
                 Spacer()
             }
@@ -18,7 +18,7 @@ struct PostDetailView: View {
                         let vm = AsyncImageViewModel(
                             url: embed.thumbUrl,
                             imageSize: .thumbnail,
-                            alt: embed.alt, fullSizeUrl: embed.fullsizeUrl, tapToOpen: .fullSize
+                            alt: embed.alt, fullSizeUrl: embed.fullsizeUrl
                         )
                         AsyncImageView(viewModel: vm)
                     }
