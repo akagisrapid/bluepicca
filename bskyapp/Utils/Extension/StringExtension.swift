@@ -1,6 +1,7 @@
 import Foundation
 
 extension String{
+    // APIで取得したString型の日付を、ms部分を取り除いてパース
     var parseToDateRemovingMilliseconds: Date? {
         let iso8601StringWithMilliseconds = self
         // 正規表現でミリ秒部分を取り除く

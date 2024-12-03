@@ -1,0 +1,28 @@
+import SwiftUI
+
+struct ProfileImageView: View {
+    @StateObject var viewModel: AsyncImageViewModel
+    @State var actor: String 
+    @State var isProfileView = false
+    var body: some View {
+        ZStack{
+            // サムネ色
+            AsyncImage(url: viewModel.url){ image in
+                image.image?
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: viewModel.imageSize.maxWidth, maxHeight: viewModel.imageSize.maxHeight)
+            }
+            .gesture(
+                TapGesture().onEnded{
+                    isProfileView = true
+                }
+            )
+            
+            .sheet(isPresented: $isProfileView){
+                var vm: ProfileViewModel = .init(actor: actor, profile: .init(did: "", handle: "", labels: []))
+                ProfileView(viewModel: vm, asyncImageViewModel: viewModel)
+            }
+        }
+    }
+}

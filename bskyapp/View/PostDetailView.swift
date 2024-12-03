@@ -5,7 +5,7 @@ struct PostDetailView: View {
     var body: some View {
         VStack{
             HStack{
-                AsyncImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""))
+                ProfileImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""), actor: viewModel.post.author.did)
                 Text(viewModel.displayName).font(.headline)
                 Spacer()
             }
