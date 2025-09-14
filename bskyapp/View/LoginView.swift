@@ -1,10 +1,10 @@
 import SwiftUI
 import Combine
 
-
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     @Binding var isLoggedIn: Bool
+    @State private var isPasswordVisible: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -37,10 +37,30 @@ struct LoginView: View {
                         .foregroundColor(.secondary)
                         .padding(.top, 10)
                     
-                    SecureField("アプリパスワードを入力", text: $viewModel.password)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
+                    HStack {
+                        if isPasswordVisible {
+                            // パスワードを表示モードで表示
+                            TextField("アプリパスワードを入力", text: $viewModel.password)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .autocapitalization(.none)
+                                .disableAutocorrection(true)
+                        } else {
+                            // パスワードを非表示モードで表示
+                            SecureField("アプリパスワードを入力", text: $viewModel.password)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .autocapitalization(.none)
+                                .disableAutocorrection(true)
+                        }
+                        
+                        // 表示/非表示切り替えボタン
+                        Button(action: {
+                            isPasswordVisible.toggle()
+                        }) {
+                            Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.trailing, 8)
+                    }
                 }
                 .padding(.horizontal, 30)
                 .padding(.top, 20)
