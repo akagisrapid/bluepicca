@@ -28,14 +28,20 @@ struct PostCardView: View {
                     Task{
                         do{
                             try await viewModel.postText()
-                            viewModel.isPostCompleted = true
-                            viewModel.text = ""
-                            withAnimation{
-                                isShowPostCard.toggle()
+                            // Update UI on the main thread
+                            await MainActor.run {
+                                viewModel.isPostCompleted = true
+                                viewModel.text = ""
+                                withAnimation{
+                                    isShowPostCard.toggle()
+                                }
                             }
                         }
                         catch{
-                            viewModel.isPostFailed = true
+                            // Update UI on the main thread
+                            await MainActor.run {
+                                viewModel.isPostFailed = true
+                            }
                         }
                     }
                     }.disabled(!viewModel.isTextValid)

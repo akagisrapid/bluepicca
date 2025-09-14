@@ -19,13 +19,21 @@ class SessionManager {
         
         // Otherwise create a new session
         let newSession = try await createSession()
-        currentSession = newSession
-        lastSessionTime = Date()
+        
+        // Update session properties on the main thread
+        await MainActor.run {
+            currentSession = newSession
+            lastSessionTime = Date()
+        }
+        
         return newSession
     }
     
     func clearSession() {
-        currentSession = nil
-        lastSessionTime = nil
+        // Ensure we're on the main thread when updating properties
+        DispatchQueue.main.async {
+            self.currentSession = nil
+            self.lastSessionTime = nil
+        }
     }
 }
