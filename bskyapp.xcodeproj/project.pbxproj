@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -50,6 +50,8 @@
 		98D959602CADA2AA00E6A6B7 /* GetProfileApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */; };
 		98D959622CADA8CF00E6A6B7 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */; };
 		98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */; };
+		98F8CD522CFF2C11005D201B /* GetLikesApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */; };
+		98F8CD542CFF48A5005D201B /* GetLikesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F8CD532CFF489D005D201B /* GetLikesApi.swift */; };
 		B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostCardView.swift */; };
 		B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */; };
 		B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */; };
@@ -107,6 +109,8 @@
 		98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProfileApiModel.swift; sourceTree = "<group>"; };
 		98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetKeysFromKeychain.swift; sourceTree = "<group>"; };
+		98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLikesApiModel.swift; sourceTree = "<group>"; };
+		98F8CD532CFF489D005D201B /* GetLikesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLikesApi.swift; sourceTree = "<group>"; };
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
 		B01C96C42BA4210F0077D572 /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardViewModel.swift; sourceTree = "<group>"; };
@@ -118,6 +122,10 @@
 		B0C057752B8712D90066AD91 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0C057782B8712D90066AD91 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		980FD1CA2E770BE900AE29EF /* Session */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Session; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		B0C057692B8712D80066AD91 /* Frameworks */ = {
@@ -182,6 +190,7 @@
 		987153132C0772AE00E08633 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */,
 				98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */,
 				98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */,
 				98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */,
@@ -192,6 +201,7 @@
 		987153142C0772FE00E08633 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				98F8CD532CFF489D005D201B /* GetLikesApi.swift */,
 				98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */,
 				B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */,
 				B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */,
@@ -275,6 +285,7 @@
 		B0C0576E2B8712D80066AD91 /* bskyapp */ = {
 			isa = PBXGroup;
 			children = (
+				980FD1CA2E770BE900AE29EF /* Session */,
 				B0C0576F2B8712D80066AD91 /* bskyappApp.swift */,
 				9871534F2C08C96A00E08633 /* Item.swift */,
 				B0C057752B8712D90066AD91 /* Assets.xcassets */,
@@ -312,6 +323,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				980FD1CA2E770BE900AE29EF /* Session */,
 			);
 			name = bskyapp;
 			packageProductDependencies = (
@@ -398,9 +412,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-bskyapp/Pods-bskyapp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-bskyapp/Pods-bskyapp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -448,12 +466,14 @@
 				9871532D2C08A9BD00E08633 /* Embed.swift in Sources */,
 				987153332C08AAD100E08633 /* Threadgate.swift in Sources */,
 				987153452C08ADFC00E08633 /* DefsModListItem.swift in Sources */,
+				98F8CD522CFF2C11005D201B /* GetLikesApiModel.swift in Sources */,
 				987153252C08A93D00E08633 /* Author.swift in Sources */,
 				9871535A2C29BC8200E08633 /* AsyncImageViewModel.swift in Sources */,
 				B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */,
 				9871534E2C08C39200E08633 /* ContentViewModel.swift in Sources */,
 				987153272C08A95E00E08633 /* Associated.swift in Sources */,
 				98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */,
+				98F8CD542CFF48A5005D201B /* GetLikesApi.swift in Sources */,
 				98D9595A2CAD9F0000E6A6B7 /* ProfileViewModel.swift in Sources */,
 				987153292C08A97B00E08633 /* AuthorViewer.swift in Sources */,
 				987153182C07751E00E08633 /* Post.swift in Sources */,

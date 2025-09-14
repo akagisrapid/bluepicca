@@ -2,9 +2,14 @@ import Foundation
 
 class PostDetailViewModel: ObservableObject{
     @Published var post: Post
+    var likesResponse: GetLikesApiResponse = .init(uri: "", likes: [])
     
     init(post: Post) {
         self.post = post
+        Task{
+            self.likesResponse = try await GetLikesApi().getLikes(param: .init(uri: post.uri,cid: post.cid))
+        }
+        print(likesResponse)
     }
     var avatarUrl: URL?{
         post.author.avatarUrl

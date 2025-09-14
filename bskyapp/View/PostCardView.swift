@@ -44,7 +44,7 @@ struct PostCardView: View {
             Alert(title: Text("送信完了"), message: nil)
         }
         .alert(isPresented: $viewModel.isPostFailed){
-            Alert(title: Text("送信エラー"), message: nil)
+            Alert(title: Text("送信エラー"), message: Text(viewModel.errorMessage))
         }
     }
 }
