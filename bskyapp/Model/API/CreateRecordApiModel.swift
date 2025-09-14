@@ -1,4 +1,5 @@
 import Foundation
+import Alamofire
 
 struct CreateRecordPostItem: Codable {
     let text: String
@@ -21,7 +22,7 @@ func makeCreateRecordRequest(text: String) async throws -> CreateRecordRequest{
         text: text, 
         createdAt: Date().ISO8601Format(),
         embed: nil)
-    let session = try await createSession()
+    let session = try await SessionManager.shared.getSession()
     let collection = "app.bsky.feed.post"
     return CreateRecordRequest(
         repo: session.did,

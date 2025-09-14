@@ -5,7 +5,7 @@ func createRecord(param: CreateRecordRequest) async throws -> CreateRecordRespon
     let endPoint = "https://bsky.social/xrpc/"
     let createRecord = "com.atproto.repo.createRecord"
     
-    let session = try await createSession()
+    let session = try await SessionManager.shared.getSession()
     let urlString = endPoint + createRecord
     
     let headers: HTTPHeaders = [

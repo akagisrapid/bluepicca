@@ -28,14 +28,20 @@ struct PostCardView: View {
                     Task{
                         do{
                             try await viewModel.postText()
-                            viewModel.isPostCompleted = true
-                            viewModel.text = ""
-                            withAnimation{
-                                isShowPostCard.toggle()
+                            // Update UI on the main thread
+                            await MainActor.run {
+                                viewModel.isPostCompleted = true
+                                viewModel.text = ""
+                                withAnimation{
+                                    isShowPostCard.toggle()
+                                }
                             }
                         }
                         catch{
-                            viewModel.isPostFailed = true
+                            // Update UI on the main thread
+                            await MainActor.run {
+                                viewModel.isPostFailed = true
+                            }
                         }
                     }
                     }.disabled(!viewModel.isTextValid)
@@ -44,7 +50,7 @@ struct PostCardView: View {
             Alert(title: Text("送信完了"), message: nil)
         }
         .alert(isPresented: $viewModel.isPostFailed){
-            Alert(title: Text("送信エラー"), message: nil)
+            Alert(title: Text("送信エラー"), message: Text(viewModel.errorMessage))
         }
     }
 }
