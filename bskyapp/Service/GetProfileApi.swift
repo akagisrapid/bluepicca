@@ -3,7 +3,7 @@ import Alamofire
 
 struct GetProfileApi{
     func getProfile(param: GetProfileApiRequest) async throws -> GetProfileApiResponse{
-        let session = try await createSession()
+        let session = try await SessionManager.shared.getSession()
         let endPoint = "https://bsky.social/xrpc/"
         let repo = "app.bsky.actor.getProfile"
         let urlString = endPoint + repo
