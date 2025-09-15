@@ -18,6 +18,7 @@ extension AsyncImageViewModel{
 
 
 enum ImageSize{
+    case timeline
     case avatar
     case thumbnail
 }
@@ -25,6 +26,8 @@ enum ImageSize{
 extension ImageSize{
     var maxWidth: CGFloat{
         switch self {
+        case .timeline:
+            return 30
         case .avatar:
             return 60
         case .thumbnail:
@@ -37,6 +40,8 @@ extension ImageSize{
             return 60
         case .thumbnail:
             return 250
+        case .timeline:
+            return 30
         }
     }
 }

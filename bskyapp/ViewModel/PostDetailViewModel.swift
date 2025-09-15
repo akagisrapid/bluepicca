@@ -13,7 +13,6 @@ class PostDetailViewModel: ObservableObject{
                 self.likesResponse = try await GetLikesApi().getLikes(param: .init(uri: uri, cid: post.cid))
             }
         }
-        print(likesResponse)
     }
     var avatarUrl: URL?{
         post.author?.avatarUrl
