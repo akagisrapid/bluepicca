@@ -3,7 +3,7 @@ import Alamofire
 
 struct GetTimelineApi{
     func getTimeline() async throws -> FeedResponse{
-        let session = try await createSession()
+        let session = try await SessionManager.shared.getSession()
         let endPoint = "https://bsky.social/xrpc/"
         let repo = "app.bsky.feed.getTimeline"
         let urlString = endPoint + repo
