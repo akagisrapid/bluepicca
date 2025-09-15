@@ -9,9 +9,16 @@ struct PostDetailView: View {
                 Text(viewModel.displayName).font(.headline)
                 Spacer()
             }
-            Text(viewModel.textWithLinks)
+            Text(viewModel.text)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
+                
+            // すべてのリンクをexternalLink形式で表示
+            ForEach(viewModel.linkCards, id: \.uri) { externalLink in
+                LinkCardView(externalLink: externalLink)
+                    .padding(.horizontal)
+                    .padding(.bottom, 4)
+            }
             VStack{
                 ScrollView{
                     ForEach(viewModel.embeddedImages, id: \.thumb){ embed in

@@ -31,7 +31,7 @@ extension String{
             return AttributedString(attributedString)
         }
         
-        let matches = detector.matches(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count))
+        let matches = detector.matches(in: self, range: NSRange(location: 0, length: self.count))
         
         for match in matches {
             if let url = match.url {
