@@ -7,6 +7,6 @@
 
 import Foundation
 struct Reply: Codable {
-    let root: Post
-    let parent: Post
+    let root: Post?
+    let parent: Post?
 }

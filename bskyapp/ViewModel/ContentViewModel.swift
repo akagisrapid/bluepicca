@@ -14,7 +14,8 @@ class ContentViewModel: ObservableObject{
         do{
             self.isFetchingTimeline = true
             self.feeds = try await GetTimelineApi().getTimeline().feed
-            self.posts = self.feeds.map { $0.post }
+            // postフィールドがnilの場合は除外する
+            self.posts = self.feeds.compactMap { $0.post }
             self.isFetchingTimeline = false
         }
         catch{

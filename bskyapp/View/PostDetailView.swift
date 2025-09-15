@@ -5,11 +5,11 @@ struct PostDetailView: View {
     var body: some View {
         VStack{
             HStack{
-                ProfileImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""), actor: viewModel.post.author.did)
+                ProfileImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""), actor: viewModel.post.author?.did ?? "")
                 Text(viewModel.displayName).font(.headline)
                 Spacer()
             }
-            Text(viewModel.text)
+            Text(viewModel.textWithLinks)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             VStack{
@@ -36,7 +36,7 @@ struct PostDetailView: View {
                 .padding()
             }
             HStack{
-                Text(viewModel.post.viewer.repost ?? "")
+                Text(viewModel.post.viewer?.repost ?? "")
                 Spacer()
                 Text(viewModel.indexedAt)
             }

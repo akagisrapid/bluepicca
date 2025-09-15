@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 class PostDetailViewModel: ObservableObject{
     @Published var post: Post
@@ -7,21 +8,28 @@ class PostDetailViewModel: ObservableObject{
     init(post: Post) {
         self.post = post
         Task{
-            self.likesResponse = try await GetLikesApi().getLikes(param: .init(uri: post.uri,cid: post.cid))
+            // uriやcidがnilの場合でも問題なく動作するようにする
+            if let uri = post.uri {
+                self.likesResponse = try await GetLikesApi().getLikes(param: .init(uri: uri, cid: post.cid))
+            }
         }
         print(likesResponse)
     }
     var avatarUrl: URL?{
-        post.author.avatarUrl
+        post.author?.avatarUrl
     }
     var displayName : String{
-        post.author.displayName
+        post.author?.displayName ?? ""
     }
     var text: String{
-        post.record.text ?? ""
+        post.record?.text ?? ""
+    }
+    
+    var textWithLinks: AttributedString {
+        text.detectLinks()
     }
     var indexedAt: String{
-        guard let date =  post.indexedAt.parseToDateRemovingMilliseconds else{
+        guard let indexedAt = post.indexedAt, let date = indexedAt.parseToDateRemovingMilliseconds else{
             return ""
         }
         return date.formatted(.dateTime)
