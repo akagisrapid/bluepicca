@@ -10,6 +10,8 @@
 		980FD1D62E77149600AE29EF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1D52E77149600AE29EF /* LoginView.swift */; };
 		980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1D72E7714B500AE29EF /* LoginViewModel.swift */; };
 		980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E12E77B95300AE29EF /* LinkCardView.swift */; };
+		980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */; };
+		980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */; };
 		98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */; };
 		98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */; };
 		983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimelineApi.swift */; };
@@ -72,6 +74,8 @@
 		980FD1D52E77149600AE29EF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		980FD1D72E7714B500AE29EF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		980FD1E12E77B95300AE29EF /* LinkCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCardView.swift; sourceTree = "<group>"; };
+		980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadBlobApi.swift; sourceTree = "<group>"; };
+		980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressionHelper.swift; sourceTree = "<group>"; };
 		98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardView.swift; sourceTree = "<group>"; };
 		98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardViewModel.swift; sourceTree = "<group>"; };
 		983B2C132BB27216004E20F3 /* GetTimelineApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineApi.swift; sourceTree = "<group>"; };
@@ -210,6 +214,7 @@
 			children = (
 				98F8CD532CFF489D005D201B /* GetLikesApi.swift */,
 				98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */,
+				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
 				B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */,
 				B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */,
 				983B2C132BB27216004E20F3 /* GetTimelineApi.swift */,
@@ -253,6 +258,7 @@
 			children = (
 				98289CC92BF772C3007EA3C5 /* Extension */,
 				98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */,
+				980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -457,6 +463,7 @@
 				98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */,
 				98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */,
 				98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */,
+				980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */,
 				98D959622CADA8CF00E6A6B7 /* ProfileImageView.swift in Sources */,
 				987153392C08AC6F00E08633 /* FeedResponse.swift in Sources */,
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,
@@ -492,6 +499,7 @@
 				987153432C08AD5200E08633 /* ImageItem.swift in Sources */,
 				987153542C29ADF300E08633 /* PostDetailView.swift in Sources */,
 				98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */,
+				980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */,
 				980FD1D62E77149600AE29EF /* LoginView.swift in Sources */,
 				B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */,
 				98D959602CADA2AA00E6A6B7 /* GetProfileApiModel.swift in Sources */,
