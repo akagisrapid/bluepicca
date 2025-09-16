@@ -36,6 +36,7 @@ func createRecord(param: CreateRecordRequest) async throws -> CreateRecordRespon
             "repo": param.repo,
             "collection": param.collection,
             "record": [
+                "$type": "app.bsky.feed.post",
                 "text": param.record.text,
                 "createdAt": param.record.createdAt ?? Date().ISO8601Format()
             ]
@@ -77,7 +78,8 @@ func createRecord(param: CreateRecordRequest) async throws -> CreateRecordRespon
                         "ref": [
                             "$link": response.blob.cid
                         ],
-                        "mimeType": response.blob.mimeType
+                        "mimeType": response.blob.mimeType,
+                        "size": 999_999_999_999 // サイズは適宜設定してください
                     ]
                 ]
                 
@@ -85,29 +87,15 @@ func createRecord(param: CreateRecordRequest) async throws -> CreateRecordRespon
             }
         }
         
-        if imagesArray.isEmpty {
-            // 画像が取得できなかった場合は、ダミーの画像情報を使用
-            imagesArray = [
-                [
-                    "alt": "画像の説明",
-                    "image": [
-                        "$type": "blob",
-                        "ref": [
-                            "$link": "3jdmaeokc2m2a"  // ダミーのCID
-                        ],
-                        "mimeType": "image/jpeg"
-                    ]
-                ]
-            ]
-        }
-        
         let embedDict: [String: Any] = [
             "$type": "app.bsky.embed.images",
             "images": imagesArray
         ]
-        
+        recordDict["$type"] = "app.bsky.feed.post"
+        recordDict["text"] = param.record.text
+        recordDict["createdAt"] = param.record.createdAt ?? Date().ISO8601Format()
         recordDict["embed"] = embedDict
-        paramDict["record"] = recordDict
+//        paramDict["record"] = recordDict
         
         print("送信するパラメータ: \(paramDict)")
         

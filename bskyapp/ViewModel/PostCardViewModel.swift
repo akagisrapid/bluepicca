@@ -113,7 +113,7 @@ class PostCardViewModel: ObservableObject {
                 }
                 
                 print("アップロードされた画像数: \(uploadedImages?.count ?? 0)")
-                
+
                 // 画像がアップロードされたかどうかを確認
                 if let images = uploadedImages, !images.isEmpty {
                     print("アップロードされた画像情報:")
@@ -121,69 +121,41 @@ class PostCardViewModel: ObservableObject {
                         print("画像[\(index)] - cid: \(image.blobReference.cid), mimeType: \(image.blobReference.mimeType)")
                     }
                 } else {
-                    print("画像のアップロードに失敗したか、画像が選択されていません")
+                    print("画像のアップロードに失敗したため、画像なしのポストとして処理します")
+                    // 画像なしのポストとして処理
+                    let param = try await makeCreateRecordRequest(text: text)
+                    try await createRecord(param: param)
+                    return
                 }
             }
             
             // 画像埋め込みを含むポストを作成
             if !selectedImages.isEmpty {
                 print("画像埋め込みを含むポストを作成します")
-                
+
                 // 画像埋め込み用の辞書を作成
                 var imagesArray: [[String: Any]] = []
-                
-                for (index, image) in selectedImages.enumerated() {
-                    guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-                        continue
-                    }
-                    
-                    print("画像[\(index)]の再アップロード開始: サイズ=\(imageData.count)バイト")
-                    
-                    // 直接APIを呼び出す
-                    let endPoint = "https://bsky.social/xrpc/"
-                    let uploadBlobEndpoint = "com.atproto.repo.uploadBlob"
-                    let urlString = endPoint + uploadBlobEndpoint
-                    
-                    let session = try await SessionManager.shared.getSession()
-                    let uploadHeaders: HTTPHeaders = [
-                        "Content-Type": "image/jpeg",
-                        "Authorization": "Bearer \(session.accessJwt)"
-                    ]
-                    
-                    print("画像[\(index)]の再アップロードリクエスト送信")
-                    let response = await AF.upload(imageData, to: urlString, method: .post, headers: uploadHeaders)
-                        .validate()
-                        .serializingDecodable(UploadBlobResponse.self)
-                        .response
-                    
-                    switch response.result {
-                    case .success(let value):
-                        print("画像[\(index)]の再アップロード成功: cid=\(value.blob.cid)")
-                        
+
+                // 既にアップロードされた画像を使用
+                if let uploadedImages = uploadedImages {
+                    for (index, uploadedImage) in uploadedImages.enumerated() {
+                        print("画像[\(index)]のblob refを使用: cid=\(uploadedImage.blobReference.cid)")
+
+                        // 画像情報を辞書に追加（blob refの正しい形式）
                         let imageDict: [String: Any] = [
-                            "alt": "画像の説明",
+                            "alt": uploadedImage.alt,
                             "image": [
                                 "$type": "blob",
                                 "ref": [
-                                    "$link": value.blob.cid
+                                    "$link": uploadedImage.blobReference.cid
                                 ],
-                                "mimeType": value.blob.mimeType
+                                "mimeType": uploadedImage.blobReference.mimeType,
+                                "size": uploadedImage.imageData.count
                             ]
                         ]
-                        
+
                         imagesArray.append(imageDict)
-                    case .failure(let error):
-                        print("画像[\(index)]の再アップロード失敗: \(error)")
-                        print("URL: \(response.request?.url?.absoluteString ?? "unknown")")
-                        print("ステータスコード: \(response.response?.statusCode ?? 0)")
-                        
-                        if let data = response.data, let responseString = String(data: data, encoding: .utf8) {
-                            print("レスポンスボディ: \(responseString)")
-                        }
-                        
-                        // エラーが発生しても処理を続行
                     }
-                    
                 }
                 
                 // 画像埋め込み用の辞書を作成
@@ -194,6 +166,7 @@ class PostCardViewModel: ObservableObject {
                 
                 // ポストレコードを作成
                 let recordDict: [String: Any] = [
+                    "$type": "app.bsky.feed.post",
                     "text": text,
                     "createdAt": Date().ISO8601Format(),
                     "embed": embedDict
@@ -208,6 +181,21 @@ class PostCardViewModel: ObservableObject {
                 ]
                 
                 print("送信するパラメータ: \(paramDict)")
+
+                // 画像埋め込み部分を詳細に確認
+                if let embed = paramDict["record"] as? [String: Any],
+                   let embedDict = embed["embed"] as? [String: Any],
+                   let images = embedDict["images"] as? [[String: Any]],
+                   let firstImage = images.first,
+                   let image = firstImage["image"] as? [String: Any] {
+                    print("最初の画像のblob ref: \(image)")
+                    if let ref = image["ref"] as? [String: Any],
+                       let link = ref["$link"] as? String {
+                        print("CID: \(link)")
+                        print("CIDプレフィックス: \(link.prefix(4))")
+                        print("CID長さ: \(link.count)")
+                    }
+                }
                 
                 // 直接APIを呼び出す
                 let endPoint = "https://bsky.social/xrpc/"
