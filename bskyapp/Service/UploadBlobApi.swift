@@ -120,6 +120,17 @@ public struct BlobReference: Codable {
 }
 
 public func uploadBlob(imageData: Data, mimeType: String) async throws -> UploadBlobResponse {
+    // ファイルサイズをチェック
+    let fileSizeString = ImageCompressionHelper.formatFileSize(imageData.count)
+    print("アップロード予定の画像サイズ: \(fileSizeString)")
+    
+    // ファイルサイズ制限チェック
+    if ImageCompressionHelper.isFileSizeExceeded(imageData) {
+        print("警告: ファイルサイズが制限を超えています: \(fileSizeString)")
+        throw NSError(domain: "UploadError", code: 413, userInfo: [
+            NSLocalizedDescriptionKey: "ファイルサイズが大きすぎます (\(fileSizeString)). 最大サイズは\(ImageCompressionHelper.formatFileSize(ImageCompressionHelper.maxFileSizeBytes))です。"
+        ])
+    }
     let endPoint = "https://bsky.social/xrpc/"
     let uploadBlob = "com.atproto.repo.uploadBlob"
     

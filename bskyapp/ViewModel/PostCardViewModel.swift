@@ -43,12 +43,26 @@ class PostCardViewModel: ObservableObject {
                 for (index, image) in selectedImages.enumerated() {
                     print("画像[\(index)]の処理を開始")
                     
-                    guard let imageData = image.jpegData(compressionQuality: 0.8) else {
-                        print("画像[\(index)]のJPEGデータ変換に失敗")
+                    // 画像圧縮ヘルパーを使用してファイルサイズ制限内に圧縮
+                    guard let imageData = ImageCompressionHelper.compressImage(image) else {
+                        print("画像[\(index)]の圧縮に失敗")
+                        await MainActor.run {
+                            errorMessage = "画像[\(index + 1)]の圧縮に失敗しました"
+                        }
                         continue
                     }
                     
-                    print("画像[\(index)]のサイズ: \(imageData.count)バイト")
+                    let fileSizeString = ImageCompressionHelper.formatFileSize(imageData.count)
+                    print("画像[\(index)]のサイズ: \(imageData.count)バイト (\(fileSizeString))")
+                    
+                    // ファイルサイズ制限チェック
+                    if ImageCompressionHelper.isFileSizeExceeded(imageData) {
+                        print("警告: 画像[\(index)]がファイルサイズ制限を超えています: \(fileSizeString)")
+                        await MainActor.run {
+                            errorMessage = "画像[\(index + 1)]のファイルサイズが大きすぎます (\(fileSizeString))"
+                        }
+                        continue
+                    }
                     
                     do {
                         print("画像[\(index)]のアップロード開始: サイズ=\(imageData.count)バイト")
@@ -297,17 +311,43 @@ class PostCardViewModel: ObservableObject {
                 
                 print("UIImageへの変換成功: \(image.size.width) x \(image.size.height)")
                 
-                // UIの更新はメインスレッドで行う
-                await MainActor.run {
-                    if selectedImages.count < maxImageCount {
-                        // 既存の画像に追加
-                        selectedImages.append(image)
-                        print("画像が追加されました。現在の画像数: \(selectedImages.count)")
-                        
-                        // 画像が追加されたことを通知するために、オブジェクトを更新
-                        objectWillChange.send()
-                    } else {
-                        print("最大画像数に達しているため追加できません")
+                // 画像サイズをチェックして圧縮が必要かどうか確認
+                let originalSize = imageData.count
+                let originalSizeString = ImageCompressionHelper.formatFileSize(originalSize)
+                print("元の画像サイズ: \(originalSizeString)")
+                
+                // 圧縮後のサイズを事前にチェック
+                if let compressedData = ImageCompressionHelper.compressImage(image) {
+                    let compressedSize = compressedData.count
+                    let compressedSizeString = ImageCompressionHelper.formatFileSize(compressedSize)
+                    
+                    if originalSize > ImageCompressionHelper.maxFileSizeBytes {
+                        print("画像が圧縮されます: \(originalSizeString) → \(compressedSizeString)")
+                    }
+                    
+                    // UIの更新はメインスレッドで行う
+                    await MainActor.run {
+                        if selectedImages.count < maxImageCount {
+                            // 既存の画像に追加
+                            selectedImages.append(image)
+                            print("画像が追加されました。現在の画像数: \(selectedImages.count)")
+                            
+                            // 圧縮が必要だった場合はメッセージを表示
+                            if originalSize > ImageCompressionHelper.maxFileSizeBytes {
+                                errorMessage = "画像が大きいため、投稿時に圧縮されます (\(originalSizeString) → \(compressedSizeString))"
+                            }
+                            
+                            // 画像が追加されたことを通知するために、オブジェクトを更新
+                            objectWillChange.send()
+                        } else {
+                            print("最大画像数に達しているため追加できません")
+                            errorMessage = "最大\(maxImageCount)枚まで選択できます"
+                        }
+                    }
+                } else {
+                    print("画像の圧縮テストに失敗")
+                    await MainActor.run {
+                        errorMessage = "この画像は使用できません"
                     }
                 }
             } catch {

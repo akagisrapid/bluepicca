@@ -11,6 +11,7 @@
 		980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1D72E7714B500AE29EF /* LoginViewModel.swift */; };
 		980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E12E77B95300AE29EF /* LinkCardView.swift */; };
 		980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */; };
+		980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */; };
 		98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */; };
 		98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */; };
 		983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimelineApi.swift */; };
@@ -74,6 +75,7 @@
 		980FD1D72E7714B500AE29EF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		980FD1E12E77B95300AE29EF /* LinkCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCardView.swift; sourceTree = "<group>"; };
 		980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadBlobApi.swift; sourceTree = "<group>"; };
+		980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressionHelper.swift; sourceTree = "<group>"; };
 		98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardView.swift; sourceTree = "<group>"; };
 		98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardViewModel.swift; sourceTree = "<group>"; };
 		983B2C132BB27216004E20F3 /* GetTimelineApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineApi.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			children = (
 				98289CC92BF772C3007EA3C5 /* Extension */,
 				98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */,
+				980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -460,6 +463,7 @@
 				98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */,
 				98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */,
 				98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */,
+				980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */,
 				98D959622CADA8CF00E6A6B7 /* ProfileImageView.swift in Sources */,
 				987153392C08AC6F00E08633 /* FeedResponse.swift in Sources */,
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,
