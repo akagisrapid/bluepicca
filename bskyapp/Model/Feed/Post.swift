@@ -8,9 +8,9 @@ class Post: Codable, ObservableObject {
     let embed: Embed?
     let replyCount: Int?
     var repostCount: Int?
-    let likeCount: Int?
+    var likeCount: Int?
     let indexedAt: String?
-    let viewer: Viewer?
+    var viewer: Viewer?
     let labels: [Label]?
     let threadgate: Threadgate?
 }

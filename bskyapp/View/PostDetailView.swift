@@ -3,7 +3,21 @@ import SwiftUI
 struct PostDetailView: View {
     @StateObject var viewModel: PostDetailViewModel
     var body: some View {
-        VStack{
+        VStack(alignment: .leading){
+            // リポスト情報を表示
+            if viewModel.isRepost {
+                HStack {
+                    Image(systemName: "repeat")
+                        .foregroundColor(.gray)
+                        .font(.caption)
+                    Text("\(viewModel.repostAuthorName)がリポストしました")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    Spacer()
+                }
+                .padding(.bottom, 4)
+            }
+            
             HStack{
                 ProfileImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""), actor: viewModel.post.author?.did ?? "")
                 Text(viewModel.displayName).font(.headline)
@@ -33,21 +47,39 @@ struct PostDetailView: View {
             }
             HStack{
                 Spacer()
-                Button(String(viewModel.post.likeCount ?? 0), systemImage: "star.fill"){
-                    // いいね処理
-                }
-                .padding()
-                Button(String(viewModel.post.repostCount ?? 0), systemImage: "arrow.rectanglepath"){
+                Button(action: {
                     Task {
-                        await viewModel.repost()
+                        await viewModel.toggleLike()
+                    }
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: viewModel.isLiked ? "star.fill" : "star")
+                            .foregroundColor(viewModel.isLiked ? .yellow : .gray)
+                        Text("\(viewModel.likeCount)")
+                            .foregroundColor(.gray)
+                    }
+                }
+                .disabled(viewModel.isLiking)
+                .opacity(viewModel.isLiking ? 0.6 : 1.0)
+                .padding()
+                
+                Button(action: {
+                    Task {
+                        await viewModel.toggleRepost()
+                    }
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "arrow.rectanglepath")
+                            .foregroundColor(viewModel.isReposted ? .red : .gray)
+                        Text("\(viewModel.repostCount)")
+                            .foregroundColor(.gray)
                     }
                 }
                 .disabled(viewModel.isReposting)
-                .opacity(viewModel.isReposting ? 0.5 : 1.0)
+                .opacity(viewModel.isReposting ? 0.6 : 1.0)
                 .padding()
             }
             HStack{
-                Text(viewModel.post.viewer?.repost ?? "")
                 Spacer()
                 Text(viewModel.indexedAt)
             }
