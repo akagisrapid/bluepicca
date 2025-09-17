@@ -12,14 +12,17 @@ class ContentViewModel: ObservableObject{
     }
     
     init() {
-        Task{
+        Task { @MainActor in
             try await fetchTimeline()
         }
     }
+    
+    @MainActor
     func fetchTimeline() async throws -> Void{
         do{
             self.isFetchingTimeline = true
-            self.feeds = try await GetTimelineApi().getTimeline().feed
+            let timelineResponse = try await GetTimelineApi().getTimeline()
+            self.feeds = timelineResponse.feed
             // postフィールドがnilの場合は除外する
             self.posts = self.feeds.compactMap { $0.post }
             self.isFetchingTimeline = false

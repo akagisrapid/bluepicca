@@ -11,7 +11,10 @@ class PostDetailViewModel: ObservableObject{
         Task{
             // uriやcidがnilの場合でも問題なく動作するようにする
             if let uri = post.uri {
-                self.likesResponse = try await GetLikesApi().getLikes(param: .init(uri: uri, cid: post.cid))
+                let response = try await GetLikesApi().getLikes(param: .init(uri: uri, cid: post.cid))
+                await MainActor.run {
+                    self.likesResponse = response
+                }
             }
         }
     }
