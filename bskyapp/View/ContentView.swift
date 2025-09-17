@@ -4,6 +4,7 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject var viewModel: ContentViewModel
+    @State private var isShowReplies = false
     
     var body: some View {
         NavigationStack {
@@ -53,6 +54,9 @@ struct ContentView: View {
                             viewModel.isShowPostCard.toggle()
                         }
                     }
+                    Button("Replies", systemImage: "bubble.left.and.bubble.right"){
+                        isShowReplies = true
+                    }
                     Spacer()
                     Button("Refresh", systemImage: "arrow.clockwise"){
                         Task {
@@ -65,6 +69,9 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .sheet(isPresented: $isShowReplies) {
+            RepliesView(viewModel: RepliesViewModel())
         }
     }
 }
