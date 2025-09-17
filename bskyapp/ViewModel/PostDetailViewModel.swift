@@ -3,6 +3,7 @@ import SwiftUI
 
 class PostDetailViewModel: ObservableObject{
     @Published var post: Post
+    @Published var isReposting: Bool = false
     var likesResponse: GetLikesApiResponse = .init(uri: "", likes: [])
     
     init(post: Post) {
@@ -96,5 +97,33 @@ class PostDetailViewModel: ObservableObject{
             return []
         }
         return images
+    }
+    
+    // リポスト機能
+    @MainActor
+    func repost() async {
+        guard let uri = post.uri, let cid = post.cid else {
+            print("リポストに必要な情報（uri, cid）が不足しています")
+            return
+        }
+        
+        isReposting = true
+        
+        do {
+            let response = try await createRepost(postUri: uri, postCid: cid)
+            print("リポスト成功: \(response)")
+            
+            // リポスト数を更新
+            if let currentCount = post.repostCount {
+                post.repostCount = currentCount + 1
+            } else {
+                post.repostCount = 1
+            }
+            
+        } catch {
+            print("リポストエラー: \(error)")
+        }
+        
+        isReposting = false
     }
 }

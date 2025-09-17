@@ -7,7 +7,7 @@ class Post: Codable, ObservableObject {
     let record: PostRecord?
     let embed: Embed?
     let replyCount: Int?
-    let repostCount: Int?
+    var repostCount: Int?
     let likeCount: Int?
     let indexedAt: String?
     let viewer: Viewer?
