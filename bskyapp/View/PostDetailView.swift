@@ -83,6 +83,44 @@ struct PostDetailView: View {
                 Spacer()
                 Text(viewModel.indexedAt)
             }
+            
+            // リプライ一覧セクション
+            if !viewModel.replies.isEmpty || viewModel.isFetchingReplies {
+                VStack(alignment: .leading, spacing: 8) {
+                    Divider()
+                    
+                    HStack {
+                        Text("リプライ (\(viewModel.replies.count))")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        Spacer()
+                        
+                        Button("更新", systemImage: "arrow.clockwise") {
+                            Task {
+                                await viewModel.fetchReplies()
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    if viewModel.isFetchingReplies {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .scaleEffect(1.5)
+                                .padding()
+                            Spacer()
+                        }
+                    } else {
+                        ForEach(viewModel.replies) { reply in
+                            ReplyItemView(threadViewPost: reply)
+                                .padding(.horizontal)
+                        }
+                    }
+                }
+            }
         }.padding()
     }
 }

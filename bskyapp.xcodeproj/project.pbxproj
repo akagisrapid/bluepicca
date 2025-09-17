@@ -19,6 +19,11 @@
 		980FD2052E7AFAE600AE29EF /* GetRepliesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2042E7AFAE600AE29EF /* GetRepliesApi.swift */; };
 		980FD2072E7AFAF700AE29EF /* RepliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2062E7AFAF700AE29EF /* RepliesView.swift */; };
 		980FD2092E7AFB0400AE29EF /* RepliesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */; };
+		980FD20B2E7B005500AE29EF /* ReplyPostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */; };
+		980FD20D2E7B006200AE29EF /* ReplyPostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD20C2E7B006200AE29EF /* ReplyPostCardView.swift */; };
+		980FD20F2E7B041900AE29EF /* GetPostThreadApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD20E2E7B041900AE29EF /* GetPostThreadApi.swift */; };
+		980FD2122E7B042900AE29EF /* PostThreadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2102E7B042900AE29EF /* PostThreadResponse.swift */; };
+		980FD2142E7B044900AE29EF /* ReplyItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2132E7B044900AE29EF /* ReplyItemView.swift */; };
 		98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */; };
 		98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */; };
 		983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimelineApi.swift */; };
@@ -90,6 +95,11 @@
 		980FD2042E7AFAE600AE29EF /* GetRepliesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRepliesApi.swift; sourceTree = "<group>"; };
 		980FD2062E7AFAF700AE29EF /* RepliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesView.swift; sourceTree = "<group>"; };
 		980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesViewModel.swift; sourceTree = "<group>"; };
+		980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyPostCardViewModel.swift; sourceTree = "<group>"; };
+		980FD20C2E7B006200AE29EF /* ReplyPostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyPostCardView.swift; sourceTree = "<group>"; };
+		980FD20E2E7B041900AE29EF /* GetPostThreadApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetPostThreadApi.swift; sourceTree = "<group>"; };
+		980FD2102E7B042900AE29EF /* PostThreadResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostThreadResponse.swift; sourceTree = "<group>"; };
+		980FD2132E7B044900AE29EF /* ReplyItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyItemView.swift; sourceTree = "<group>"; };
 		98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardView.swift; sourceTree = "<group>"; };
 		98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardViewModel.swift; sourceTree = "<group>"; };
 		983B2C132BB27216004E20F3 /* GetTimelineApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineApi.swift; sourceTree = "<group>"; };
@@ -188,6 +198,14 @@
 			path = Notification;
 			sourceTree = "<group>";
 		};
+		980FD2112E7B042900AE29EF /* Thread */ = {
+			isa = PBXGroup;
+			children = (
+				980FD2102E7B042900AE29EF /* PostThreadResponse.swift */,
+			);
+			path = Thread;
+			sourceTree = "<group>";
+		};
 		98289CC92BF772C3007EA3C5 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -203,6 +221,7 @@
 				987153132C0772AE00E08633 /* API */,
 				987153162C0774F900E08633 /* Feed */,
 				980FD2022E7AFACD00AE29EF /* Notification */,
+				980FD2112E7B042900AE29EF /* Thread */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -212,6 +231,7 @@
 			children = (
 				987153512C29ADBD00E08633 /* PostDetailViewModel.swift */,
 				980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */,
+				980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */,
 				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
 				980FD1D72E7714B500AE29EF /* LoginViewModel.swift */,
 				B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */,
@@ -240,6 +260,7 @@
 				98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */,
 				980FD1F12E7AEE4A00AE29EF /* CreateRepostApi.swift */,
 				980FD1F92E7AF6F800AE29EF /* CreateLikeApi.swift */,
+				980FD20E2E7B041900AE29EF /* GetPostThreadApi.swift */,
 				980FD2042E7AFAE600AE29EF /* GetRepliesApi.swift */,
 				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
 				B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */,
@@ -301,6 +322,8 @@
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
 				987153532C29ADF300E08633 /* PostDetailView.swift */,
 				980FD1E12E77B95300AE29EF /* LinkCardView.swift */,
+				980FD2132E7B044900AE29EF /* ReplyItemView.swift */,
+				980FD20C2E7B006200AE29EF /* ReplyPostCardView.swift */,
 				987153572C29BC4E00E08633 /* AsyncImageView.swift */,
 				98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */,
 				98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */,
@@ -484,9 +507,11 @@
 				980FD1F22E7AEE4A00AE29EF /* CreateRepostApi.swift in Sources */,
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
+				980FD2122E7B042900AE29EF /* PostThreadResponse.swift in Sources */,
 				B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */,
 				987153352C08ABB400E08633 /* ThreadgateList.swift in Sources */,
 				980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */,
+				980FD20B2E7B005500AE29EF /* ReplyPostCardViewModel.swift in Sources */,
 				9871533B2C08ACA300E08633 /* Reply.swift in Sources */,
 				987153492C08B06B00E08633 /* StringExtension.swift in Sources */,
 				987153232C08A90E00E08633 /* Viewer.swift in Sources */,
@@ -508,10 +533,12 @@
 				9871531A2C07754800E08633 /* Label.swift in Sources */,
 				B0C057722B8712D80066AD91 /* ContentView.swift in Sources */,
 				980FD2052E7AFAE600AE29EF /* GetRepliesApi.swift in Sources */,
+				980FD2142E7B044900AE29EF /* ReplyItemView.swift in Sources */,
 				9871531C2C07755D00E08633 /* BlockingByList.swift in Sources */,
 				98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */,
 				987153582C29BC4E00E08633 /* AsyncImageView.swift in Sources */,
 				987153412C08AD3800E08633 /* AspectRatio.swift in Sources */,
+				980FD20D2E7B006200AE29EF /* ReplyPostCardView.swift in Sources */,
 				9871531F2C08A89600E08633 /* MutedByList.swift in Sources */,
 				980FD2032E7AFACD00AE29EF /* NotificationResponse.swift in Sources */,
 				B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */,
@@ -527,6 +554,7 @@
 				980FD2072E7AFAF700AE29EF /* RepliesView.swift in Sources */,
 				98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */,
 				98F8CD542CFF48A5005D201B /* GetLikesApi.swift in Sources */,
+				980FD20F2E7B041900AE29EF /* GetPostThreadApi.swift in Sources */,
 				98D9595A2CAD9F0000E6A6B7 /* ProfileViewModel.swift in Sources */,
 				987153292C08A97B00E08633 /* AuthorViewer.swift in Sources */,
 				987153182C07751E00E08633 /* Post.swift in Sources */,

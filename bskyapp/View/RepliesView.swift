@@ -10,6 +10,8 @@ import SwiftUI
 struct RepliesView: View {
     @StateObject var viewModel: RepliesViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedNotification: NotificationItem?
+    @State private var isShowReplyCard = false
     
     var body: some View {
         NavigationView {
@@ -22,6 +24,10 @@ struct RepliesView: View {
                 } else {
                     List(viewModel.replyNotifications) { notification in
                         ReplyCardView(notification: notification)
+                            .onTapGesture {
+                                selectedNotification = notification
+                                isShowReplyCard = true
+                            }
                     }
                     .listStyle(.plain)
                 }
@@ -46,6 +52,14 @@ struct RepliesView: View {
         .onAppear {
             Task {
                 await viewModel.fetchReplies()
+            }
+        }
+        .sheet(isPresented: $isShowReplyCard) {
+            if let notification = selectedNotification {
+                ReplyPostCardView(
+                    notification: notification,
+                    isShowReplyCard: $isShowReplyCard
+                )
             }
         }
     }
