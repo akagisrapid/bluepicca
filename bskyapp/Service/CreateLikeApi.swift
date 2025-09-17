@@ -1,36 +1,51 @@
 import Foundation
 import Alamofire
 
-struct CreateRepostRequest: Codable {
-    let repo: String
-    let collection: String = "app.bsky.feed.repost"
-    let record: RepostRecord
+// MARK: - いいね作成のレスポンス
+struct CreateLikeResponse: Codable {
+    let uri: String
+    let cid: String
 }
 
-struct RepostRecord: Codable {
-    let subject: RepostSubject
+// MARK: - いいね作成のリクエスト
+struct CreateLikeRequest: Codable {
+    let repo: String
+    let collection: String = "app.bsky.feed.like"
+    let record: LikeRecord
+}
+
+struct LikeRecord: Codable {
+    let subject: LikeSubject
     let createdAt: String
     
-    private enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case subject, createdAt
     }
 }
 
-struct RepostSubject: Codable {
+struct LikeSubject: Codable {
     let uri: String
     let cid: String
 }
 
-struct CreateRepostResponse: Codable {
-    let uri: String
-    let cid: String
-}
-
-func createRepost(postUri: String, postCid: String) async throws -> CreateRepostResponse {
+// MARK: - いいね作成API
+func createLike(postUri: String, postCid: String) async throws -> CreateLikeResponse {
+    let session = try await SessionManager.shared.getSession()
+    
+    let likeRecord = LikeRecord(
+        subject: LikeSubject(uri: postUri, cid: postCid),
+        createdAt: Date().ISO8601Format()
+    )
+    
+    let request = CreateLikeRequest(
+        repo: session.did,
+        record: likeRecord
+    )
+    
+    print("いいねリクエスト: \(request)")
+    
     let endPoint = "https://bsky.social/xrpc/"
     let createRecord = "com.atproto.repo.createRecord"
-    
-    let session = try await SessionManager.shared.getSession()
     let urlString = endPoint + createRecord
     
     let headers: HTTPHeaders = [
@@ -38,35 +53,17 @@ func createRepost(postUri: String, postCid: String) async throws -> CreateRepost
         "Authorization": "Bearer \(session.accessJwt)"
     ]
     
-    let repostRecord = RepostRecord(
-        subject: RepostSubject(uri: postUri, cid: postCid),
-        createdAt: Date().ISO8601Format()
-    )
-    
-    let request = CreateRepostRequest(
-        repo: session.did,
-        record: repostRecord
-    )
-    
-    print("リポストリクエスト: \(request)")
-    
-    let response = await AF.request(
-        urlString,
-        method: .post,
-        parameters: request,
-        encoder: JSONParameterEncoder.default,
-        headers: headers
-    )
-    .validate()
-    .serializingDecodable(CreateRepostResponse.self)
-    .response
+    let response = await AF.request(urlString, method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers)
+        .validate()
+        .serializingDecodable(CreateLikeResponse.self)
+        .response
     
     switch response.result {
     case .success(let value):
-        print("リポスト成功: \(value)")
+        print("いいね成功: \(value)")
         return value
     case .failure(let error):
-        print("リポスト失敗: \(error)")
+        print("いいね失敗: \(error)")
         print("URL: \(response.request?.url?.absoluteString ?? "unknown")")
         print("ステータスコード: \(response.response?.statusCode ?? 0)")
         
@@ -78,13 +75,13 @@ func createRepost(postUri: String, postCid: String) async throws -> CreateRepost
     }
 }
 
-// MARK: - リポスト削除API
-func deleteRepost(repostUri: String) async throws {
+// MARK: - いいね削除API
+func deleteLike(likeUri: String) async throws {
     let session = try await SessionManager.shared.getSession()
     
     // URIからrkey（レコードキー）を抽出
-    guard let rkey = extractRkeyFromRepostUri(repostUri) else {
-        throw NSError(domain: "InvalidURI", code: 0, userInfo: [NSLocalizedDescriptionKey: "無効なリポストURIです"])
+    guard let rkey = extractRkeyFromUri(likeUri) else {
+        throw NSError(domain: "InvalidURI", code: 0, userInfo: [NSLocalizedDescriptionKey: "無効ないいねURIです"])
     }
     
     let endPoint = "https://bsky.social/xrpc/"
@@ -93,11 +90,11 @@ func deleteRepost(repostUri: String) async throws {
     
     let parameters: [String: Any] = [
         "repo": session.did,
-        "collection": "app.bsky.feed.repost",
+        "collection": "app.bsky.feed.like",
         "rkey": rkey
     ]
     
-    print("リポスト削除リクエスト: \(parameters)")
+    print("いいね削除リクエスト: \(parameters)")
     
     let headers: HTTPHeaders = [
         "Content-Type": "application/json",
@@ -111,9 +108,9 @@ func deleteRepost(repostUri: String) async throws {
     
     switch response.result {
     case .success:
-        print("リポスト削除成功")
+        print("いいね削除成功")
     case .failure(let error):
-        print("リポスト削除失敗: \(error)")
+        print("いいね削除失敗: \(error)")
         print("URL: \(response.request?.url?.absoluteString ?? "unknown")")
         print("ステータスコード: \(response.response?.statusCode ?? 0)")
         
@@ -126,8 +123,8 @@ func deleteRepost(repostUri: String) async throws {
 }
 
 // MARK: - ヘルパー関数
-private func extractRkeyFromRepostUri(_ uri: String) -> String? {
-    // URI形式: at://did:plc:xxx/app.bsky.feed.repost/yyy
+private func extractRkeyFromUri(_ uri: String) -> String? {
+    // URI形式: at://did:plc:xxx/app.bsky.feed.like/yyy
     // rkeyは最後の部分（yyy）
     let components = uri.components(separatedBy: "/")
     return components.last
