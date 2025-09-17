@@ -38,8 +38,12 @@ struct PostDetailView: View {
                 }
                 .padding()
                 Button(String(viewModel.post.repostCount ?? 0), systemImage: "arrow.rectanglepath"){
-                    // リポスト処理
+                    Task {
+                        await viewModel.repost()
+                    }
                 }
+                .disabled(viewModel.isReposting)
+                .opacity(viewModel.isReposting ? 0.5 : 1.0)
                 .padding()
             }
             HStack{
