@@ -5,6 +5,12 @@ class ContentViewModel: ObservableObject{
     @Published var posts: [Post] = []
     @Published var isFetchingTimeline: Bool = false;
     @Published var isShowPostCard: Bool = false;
+    
+    // postフィールドがnilでないFeedItemのみを返す
+    var validFeeds: [FeedItem] {
+        return feeds.filter { $0.post != nil }
+    }
+    
     init() {
         Task{
             try await fetchTimeline()

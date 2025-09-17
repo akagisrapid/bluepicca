@@ -15,14 +15,16 @@ struct ContentView: View {
                         .scaleEffect(2.0) // サイズを調整したい場合
                         .padding()
                 } else {
-                    List(viewModel.posts, id: \.cid) { post in
-                        var timelineCardViewModel = TimelineCardViewModel(post: post)
-                        var postDetailViewModel = PostDetailViewModel(post: post)
-                        NavigationLink(
-                            destination: PostDetailView(viewModel: postDetailViewModel)
-                        ){
-                            TimelineCardView(
-                                viewModel: timelineCardViewModel)
+                    List(viewModel.validFeeds) { feedItem in
+                        if let post = feedItem.post {
+                            var timelineCardViewModel = TimelineCardViewModel(post: post, reason: feedItem.reason)
+                            var postDetailViewModel = PostDetailViewModel(post: post)
+                            NavigationLink(
+                                destination: PostDetailView(viewModel: postDetailViewModel)
+                            ){
+                                TimelineCardView(
+                                    viewModel: timelineCardViewModel)
+                            }
                         }
                     }.listStyle(.plain)
                 }
