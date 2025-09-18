@@ -12,6 +12,6 @@ struct AuthorViewer: Codable {
     let blockedBy: Bool
     let blocking: String?
     let blockingByList: BlockingByList?
-    let following: String?
+    var following: String?
     let followedBy: String?
 }
