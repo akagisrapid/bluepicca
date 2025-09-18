@@ -6,6 +6,8 @@ class PostDetailViewModel: ObservableObject{
     @Published var reason: Reason?
     @Published var isReposting: Bool = false
     @Published var isLiking: Bool = false
+    @Published var replies: [ThreadViewPost] = []
+    @Published var isFetchingReplies: Bool = false
     var likesResponse: GetLikesApiResponse = .init(uri: "", likes: [])
     
     init(post: Post, reason: Reason? = nil) {
@@ -21,6 +23,9 @@ class PostDetailViewModel: ObservableObject{
                 await MainActor.run {
                     self.likesResponse = response
                 }
+                
+                // リプライを取得
+                await fetchReplies()
             }
         }
     }
@@ -99,7 +104,7 @@ class PostDetailViewModel: ObservableObject{
         guard let indexedAt = post.indexedAt, let date = indexedAt.parseToDateRemovingMilliseconds else{
             return ""
         }
-        return date.formatted(.dateTime)
+        return date.formatted(.dateTime.hour().minute())
     }
     var embeddedImages : [EmbedImagesViewItem]{
         guard let images = post.embed?.images else{
@@ -336,5 +341,28 @@ class PostDetailViewModel: ObservableObject{
         }
         
         isReposting = false
+    }
+    
+    // MARK: - リプライ機能
+    
+    /// リプライを取得
+    @MainActor
+    func fetchReplies() async {
+        guard let postUri = post.uri else {
+            print("リプライ取得に必要な情報（uri）が不足しています")
+            return
+        }
+        
+        isFetchingReplies = true
+        
+        do {
+            let response = try await GetPostThreadApi().getPostThread(uri: postUri)
+            replies = response.thread.replies ?? []
+            print("リプライ取得成功: \(replies.count)件")
+        } catch {
+            print("リプライ取得エラー: \(error)")
+        }
+        
+        isFetchingReplies = false
     }
 }
