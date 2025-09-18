@@ -22,6 +22,23 @@ struct ProfileView: View {
                     
                     }
                 }
+                
+                Button(action: {
+                    Task {
+                        await viewModel.toggleFollow()
+                    }
+                }) {
+                    Text(viewModel.isFollowing ? "フォロー解除" : "フォロー")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(viewModel.isFollowing ? Color.red : Color.blue)
+                        .cornerRadius(10)
+                }
+                .disabled(viewModel.isProcessingFollow)
+                .padding(.vertical, 5)
+
                 HStack{
                     Image(systemName: "person.fill")
                     Text("Name")
