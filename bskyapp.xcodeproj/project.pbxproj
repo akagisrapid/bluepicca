@@ -59,6 +59,8 @@
 		987153542C29ADF300E08633 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153532C29ADF300E08633 /* PostDetailView.swift */; };
 		987153582C29BC4E00E08633 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153572C29BC4E00E08633 /* AsyncImageView.swift */; };
 		9871535A2C29BC8200E08633 /* AsyncImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153592C29BC8200E08633 /* AsyncImageViewModel.swift */; };
+		9874EC5B2E7C335800F116D0 /* LikesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC5A2E7C335800F116D0 /* LikesView.swift */; };
+		9874EC5D2E7C335F00F116D0 /* LikesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */; };
 		98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */; };
 		98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */; };
@@ -135,6 +137,8 @@
 		987153532C29ADF300E08633 /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
 		987153572C29BC4E00E08633 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
 		987153592C29BC8200E08633 /* AsyncImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageViewModel.swift; sourceTree = "<group>"; };
+		9874EC5A2E7C335800F116D0 /* LikesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesView.swift; sourceTree = "<group>"; };
+		9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewModel.swift; sourceTree = "<group>"; };
 		98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApiModel.swift; sourceTree = "<group>"; };
 		98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApiModel.swift; sourceTree = "<group>"; };
 		98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -233,6 +237,7 @@
 				980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */,
 				980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */,
 				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
+				9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */,
 				980FD1D72E7714B500AE29EF /* LoginViewModel.swift */,
 				B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */,
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
@@ -319,6 +324,7 @@
 				B0C057712B8712D80066AD91 /* ContentView.swift */,
 				B01C96C42BA4210F0077D572 /* PostCardView.swift */,
 				980FD2062E7AFAF700AE29EF /* RepliesView.swift */,
+				9874EC5A2E7C335800F116D0 /* LikesView.swift */,
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
 				987153532C29ADF300E08633 /* PostDetailView.swift */,
 				980FD1E12E77B95300AE29EF /* LinkCardView.swift */,
@@ -508,6 +514,7 @@
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				980FD2122E7B042900AE29EF /* PostThreadResponse.swift in Sources */,
+				9874EC5B2E7C335800F116D0 /* LikesView.swift in Sources */,
 				B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */,
 				987153352C08ABB400E08633 /* ThreadgateList.swift in Sources */,
 				980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */,
@@ -521,6 +528,7 @@
 				980FD2092E7AFB0400AE29EF /* RepliesViewModel.swift in Sources */,
 				98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */,
 				980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */,
+				9874EC5D2E7C335F00F116D0 /* LikesViewModel.swift in Sources */,
 				98D959622CADA8CF00E6A6B7 /* ProfileImageView.swift in Sources */,
 				987153392C08AC6F00E08633 /* FeedResponse.swift in Sources */,
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,

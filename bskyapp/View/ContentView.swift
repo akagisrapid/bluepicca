@@ -5,6 +5,8 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject var viewModel: ContentViewModel
     @State private var isShowReplies = false
+    @State private var isShowLikes = false
+    @State private var selectedPostForLikes: Post?
     
     var body: some View {
         NavigationStack {
@@ -57,6 +59,13 @@ struct ContentView: View {
                     Button("Replies", systemImage: "bubble.left.and.bubble.right"){
                         isShowReplies = true
                     }
+                    Button("Likes", systemImage: "heart"){
+                        // 最初の投稿を選択していいね一覧を表示
+                        if let firstPost = viewModel.validFeeds.first?.post {
+                            selectedPostForLikes = firstPost
+                            isShowLikes = true
+                        }
+                    }
                     Spacer()
                     Button("Refresh", systemImage: "arrow.clockwise"){
                         Task {
@@ -72,6 +81,15 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isShowReplies) {
             RepliesView(viewModel: RepliesViewModel())
+        }
+        .sheet(isPresented: $isShowLikes) {
+            if let post = selectedPostForLikes {
+                LikesView(
+                    viewModel: LikesViewModel(),
+                    postUri: post.uri ?? "" ,
+                    postCid: post.cid
+                )
+            }
         }
     }
 }
