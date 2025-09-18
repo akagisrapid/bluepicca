@@ -65,6 +65,12 @@
 		9874EC612E7C59B800F116D0 /* CreateFollowApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC5E2E7C59B800F116D0 /* CreateFollowApi.swift */; };
 		9874EC642E7C59CD00F116D0 /* DeleteRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC632E7C59CD00F116D0 /* DeleteRecordApiModel.swift */; };
 		9874EC652E7C59CD00F116D0 /* CreateFollowApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC622E7C59CD00F116D0 /* CreateFollowApiModel.swift */; };
+		9874EC6B2E7C5DCF00F116D0 /* FollowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC6A2E7C5DCF00F116D0 /* FollowListView.swift */; };
+		9874EC6D2E7C5DD700F116D0 /* FollowListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC6C2E7C5DD700F116D0 /* FollowListViewModel.swift */; };
+		9874EC702E7C5DE500F116D0 /* GetFollowersApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC6E2E7C5DE500F116D0 /* GetFollowersApi.swift */; };
+		9874EC712E7C5DE500F116D0 /* GetFollowsApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC6F2E7C5DE500F116D0 /* GetFollowsApi.swift */; };
+		9874EC742E7C5DEF00F116D0 /* GetFollowsApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC732E7C5DEF00F116D0 /* GetFollowsApiModel.swift */; };
+		9874EC752E7C5DEF00F116D0 /* GetFollowersApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC722E7C5DEF00F116D0 /* GetFollowersApiModel.swift */; };
 		98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */; };
 		98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */; };
@@ -148,6 +154,12 @@
 		9874EC622E7C59CD00F116D0 /* CreateFollowApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFollowApiModel.swift; sourceTree = "<group>"; };
 		9874EC632E7C59CD00F116D0 /* DeleteRecordApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteRecordApiModel.swift; sourceTree = "<group>"; };
 		9874EC662E7C5B9100F116D0 /* HTTPHeadersExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPHeadersExtension.swift; sourceTree = "<group>"; };
+		9874EC6A2E7C5DCF00F116D0 /* FollowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowListView.swift; sourceTree = "<group>"; };
+		9874EC6C2E7C5DD700F116D0 /* FollowListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowListViewModel.swift; sourceTree = "<group>"; };
+		9874EC6E2E7C5DE500F116D0 /* GetFollowersApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFollowersApi.swift; sourceTree = "<group>"; };
+		9874EC6F2E7C5DE500F116D0 /* GetFollowsApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFollowsApi.swift; sourceTree = "<group>"; };
+		9874EC722E7C5DEF00F116D0 /* GetFollowersApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFollowersApiModel.swift; sourceTree = "<group>"; };
+		9874EC732E7C5DEF00F116D0 /* GetFollowsApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFollowsApiModel.swift; sourceTree = "<group>"; };
 		98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApiModel.swift; sourceTree = "<group>"; };
 		98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApiModel.swift; sourceTree = "<group>"; };
 		98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -245,6 +257,7 @@
 			children = (
 				987153512C29ADBD00E08633 /* PostDetailViewModel.swift */,
 				980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */,
+				9874EC6C2E7C5DD700F116D0 /* FollowListViewModel.swift */,
 				980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */,
 				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
 				9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */,
@@ -262,6 +275,8 @@
 			children = (
 				9874EC622E7C59CD00F116D0 /* CreateFollowApiModel.swift */,
 				9874EC632E7C59CD00F116D0 /* DeleteRecordApiModel.swift */,
+				9874EC722E7C5DEF00F116D0 /* GetFollowersApiModel.swift */,
+				9874EC732E7C5DEF00F116D0 /* GetFollowsApiModel.swift */,
 				98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */,
 				98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */,
 				98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */,
@@ -275,6 +290,8 @@
 			children = (
 				98F8CD532CFF489D005D201B /* GetLikesApi.swift */,
 				98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */,
+				9874EC6E2E7C5DE500F116D0 /* GetFollowersApi.swift */,
+				9874EC6F2E7C5DE500F116D0 /* GetFollowsApi.swift */,
 				9874EC5E2E7C59B800F116D0 /* CreateFollowApi.swift */,
 				9874EC5F2E7C59B800F116D0 /* DeleteRecordApi.swift */,
 				980FD1F12E7AEE4A00AE29EF /* CreateRepostApi.swift */,
@@ -345,6 +362,7 @@
 				980FD2132E7B044900AE29EF /* ReplyItemView.swift */,
 				980FD20C2E7B006200AE29EF /* ReplyPostCardView.swift */,
 				987153572C29BC4E00E08633 /* AsyncImageView.swift */,
+				9874EC6A2E7C5DCF00F116D0 /* FollowListView.swift */,
 				98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */,
 				98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */,
 			);
@@ -525,6 +543,7 @@
 				987153372C08ABD900E08633 /* FeedRequest.swift in Sources */,
 				9871533D2C08ACC700E08633 /* Reason.swift in Sources */,
 				980FD1F22E7AEE4A00AE29EF /* CreateRepostApi.swift in Sources */,
+				9874EC6D2E7C5DD700F116D0 /* FollowListViewModel.swift in Sources */,
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				980FD2122E7B042900AE29EF /* PostThreadResponse.swift in Sources */,
@@ -553,16 +572,18 @@
 				987153472C08AF6300E08633 /* DateExtension.swift in Sources */,
 				9871532F2C08AA8E00E08633 /* EmbeddedExternalViewItem.swift in Sources */,
 				9871531A2C07754800E08633 /* Label.swift in Sources */,
-				9874EC672E7C5B9100F116D0 /* HTTPHeadersExtension.swift in Sources */,
 				B0C057722B8712D80066AD91 /* ContentView.swift in Sources */,
 				980FD2052E7AFAE600AE29EF /* GetRepliesApi.swift in Sources */,
 				980FD2142E7B044900AE29EF /* ReplyItemView.swift in Sources */,
+				9874EC6B2E7C5DCF00F116D0 /* FollowListView.swift in Sources */,
 				9871531C2C07755D00E08633 /* BlockingByList.swift in Sources */,
 				98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */,
 				987153582C29BC4E00E08633 /* AsyncImageView.swift in Sources */,
 				987153412C08AD3800E08633 /* AspectRatio.swift in Sources */,
 				980FD20D2E7B006200AE29EF /* ReplyPostCardView.swift in Sources */,
 				9871531F2C08A89600E08633 /* MutedByList.swift in Sources */,
+				9874EC702E7C5DE500F116D0 /* GetFollowersApi.swift in Sources */,
+				9874EC712E7C5DE500F116D0 /* GetFollowsApi.swift in Sources */,
 				980FD2032E7AFACD00AE29EF /* NotificationResponse.swift in Sources */,
 				B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */,
 				9874EC602E7C59B800F116D0 /* DeleteRecordApi.swift in Sources */,
@@ -580,6 +601,8 @@
 				98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */,
 				98F8CD542CFF48A5005D201B /* GetLikesApi.swift in Sources */,
 				980FD20F2E7B041900AE29EF /* GetPostThreadApi.swift in Sources */,
+				9874EC742E7C5DEF00F116D0 /* GetFollowsApiModel.swift in Sources */,
+				9874EC752E7C5DEF00F116D0 /* GetFollowersApiModel.swift in Sources */,
 				98D9595A2CAD9F0000E6A6B7 /* ProfileViewModel.swift in Sources */,
 				987153292C08A97B00E08633 /* AuthorViewer.swift in Sources */,
 				987153182C07751E00E08633 /* Post.swift in Sources */,
