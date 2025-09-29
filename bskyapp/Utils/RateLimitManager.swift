@@ -11,13 +11,16 @@ class RateLimitManager {
     
     private let queue = DispatchQueue(label: "RateLimitManager", attributes: .concurrent)
     
-    // デフォルトのレート制限設定
+    // デフォルトのレート制限設定（より緩い制限に変更）
     private let defaultLimits: [String: (requests: Int, timeWindow: TimeInterval)] = [
-        "timeline": (requests: 30, timeWindow: 300), // 5分間に30回
-        "profile": (requests: 20, timeWindow: 300),  // 5分間に20回
-        "like": (requests: 50, timeWindow: 300),     // 5分間に50回
-        "follow": (requests: 10, timeWindow: 300),   // 5分間に10回
-        "default": (requests: 100, timeWindow: 300)  // デフォルト: 5分間に100回
+        "timeline": (requests: 100, timeWindow: 300), // 5分間に100回（緩和）
+        "profile": (requests: 50, timeWindow: 300),   // 5分間に50回（緩和）
+        "like": (requests: 100, timeWindow: 300),     // 5分間に100回（緩和）
+        "follow": (requests: 30, timeWindow: 300),    // 5分間に30回（緩和）
+        "replies": (requests: 50, timeWindow: 300),   // 5分間に50回（緩和）
+        "thread": (requests: 50, timeWindow: 300),    // 5分間に50回（緩和）
+        "likes": (requests: 50, timeWindow: 300),     // 5分間に50回（緩和）
+        "default": (requests: 200, timeWindow: 300)   // デフォルト: 5分間に200回（緩和）
     ]
     
     private init() {}
@@ -28,22 +31,31 @@ class RateLimitManager {
             let now = Date()
             let limits = defaultLimits[endpoint] ?? defaultLimits["default"]!
             
+            print("RateLimitManager: Checking \(endpoint) - limits: \(limits.requests)/\(limits.timeWindow)s")
+            
             // 429エラー後の待機時間をチェック
             if let retryTime = retryAfter[endpoint], now < retryTime {
+                let remainingWait = retryTime.timeIntervalSinceNow
+                print("RateLimitManager: \(endpoint) still in retry period, remaining: \(remainingWait)s")
                 return false
             }
             
             // 時間窓をリセット
             if let lastReset = lastResetTime[endpoint],
                now.timeIntervalSince(lastReset) >= limits.timeWindow {
+                print("RateLimitManager: Resetting count for \(endpoint) (window expired)")
                 requestCounts[endpoint] = 0
                 lastResetTime[endpoint] = now
             } else if lastResetTime[endpoint] == nil {
+                print("RateLimitManager: First request for \(endpoint)")
                 lastResetTime[endpoint] = now
             }
             
             let currentCount = requestCounts[endpoint] ?? 0
-            return currentCount < limits.requests
+            let canMake = currentCount < limits.requests
+            print("RateLimitManager: \(endpoint) current count: \(currentCount)/\(limits.requests) - canMake: \(canMake)")
+            
+            return canMake
         }
     }
     
@@ -111,21 +123,35 @@ class SafeAPIExecutor {
         
         while retryCount <= maxRetries {
             // レート制限チェック
-            if !rateLimitManager.canMakeRequest(for: endpoint) {
+            let canMakeRequest = rateLimitManager.canMakeRequest(for: endpoint)
+            print("SafeAPIExecutor: Checking rate limit for \(endpoint) - canMakeRequest: \(canMakeRequest)")
+            
+            if !canMakeRequest {
                 let waitTime = rateLimitManager.getWaitTime(for: endpoint)
+                print("Rate limit reached for \(endpoint). Wait time: \(waitTime) seconds")
+                
                 if waitTime > 0 {
-                    print("Rate limit reached for \(endpoint). Waiting \(waitTime) seconds...")
+                    print("Waiting \(waitTime) seconds before retry...")
                     try await Task.sleep(nanoseconds: UInt64(waitTime * 1_000_000_000))
+                } else {
+                    // 待機時間が0の場合は少し待つ
+                    print("No specific wait time, waiting 1 second...")
+                    try await Task.sleep(nanoseconds: 1_000_000_000)
                 }
+                continue
             }
             
             do {
                 // API呼び出し実行
+                print("SafeAPIExecutor: Making API call for \(endpoint)")
                 rateLimitManager.recordRequest(for: endpoint)
                 let result = try await apiCall()
+                print("SafeAPIExecutor: API call successful for \(endpoint)")
                 return result
                 
             } catch {
+                print("SafeAPIExecutor: API call failed for \(endpoint) - \(error)")
+                
                 // 429エラーの処理
                 if let afError = error as? AFError,
                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: 429)) = afError {

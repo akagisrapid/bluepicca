@@ -9,8 +9,10 @@ struct GetTimelineApi{
             return cachedTimeline
         }
         
+        print("Fetching timeline from API with cursor: \(cursor ?? "nil")")
+        
         // SafeAPIExecutorを使用してレート制限対応
-        return try await SafeAPIExecutor.shared.execute(endpoint: "timeline") {
+        let result = try await SafeAPIExecutor.shared.execute(endpoint: "timeline") {
             let session = try await SessionManager.shared.getSession()
             let endPoint = "https://bsky.social/xrpc/"
             let repo = "app.bsky.feed.getTimeline"
@@ -22,31 +24,30 @@ struct GetTimelineApi{
                 "Content-Type": "application/json",
                 "Authorization": "Bearer \(session.accessJwt)"
             ]
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             
-            do {
-                let response = await AF.request(urlString, method: .get, parameters: param, headers: headers)
-                    .validate()
-                    .serializingDecodable(FeedResponse.self).response
-                switch response.result{
-                case .success(let res):
-                    // 初回読み込み時のみキャッシュに保存
-                    if cursor == nil {
-                        TimelineCacheManager.shared.cacheTimeline(res)
-                    }
-                    return res
-                case .failure(let error):
-                    print(response.request?.url)
-                    print(response.response?.statusCode)
-                    print(error)
-                    throw error
+            print("Making timeline request to: \(urlString)")
+            
+            let response = await AF.request(urlString, method: .get, parameters: param, headers: headers)
+                .validate()
+                .serializingDecodable(FeedResponse.self).response
+            
+            switch response.result{
+            case .success(let res):
+                print("Timeline API success: received \(res.feed.count) items")
+                // 初回読み込み時のみキャッシュに保存
+                if cursor == nil {
+                    TimelineCacheManager.shared.cacheTimeline(res)
                 }
-            }
-            catch{
+                return res
+            case .failure(let error):
+                print("Timeline API error:")
+                print("URL: \(response.request?.url?.absoluteString ?? "unknown")")
+                print("Status Code: \(response.response?.statusCode ?? 0)")
+                print("Error: \(error)")
                 throw error
             }
         }
+        
+        return result
     }
 }

@@ -141,3 +141,62 @@ class ProfileCacheManager {
         cacheManager.remove(forKey: key)
     }
 }
+
+/// リプライ・通知専用のキャッシュマネージャー
+class RepliesCacheManager {
+    static let shared = RepliesCacheManager()
+    
+    private let cacheManager = CacheManager.shared
+    private let repliesCacheTTL: TimeInterval = 120 // 2分間有効
+    private let threadCacheTTL: TimeInterval = 180 // 3分間有効
+    
+    private init() {}
+    
+    /// 通知リストをキャッシュに保存
+    func cacheNotifications(_ notifications: NotificationResponse) {
+        let key = "notifications"
+        cacheManager.set(notifications, forKey: key, ttl: repliesCacheTTL)
+    }
+    
+    /// キャッシュされた通知リストを取得
+    func getCachedNotifications() -> NotificationResponse? {
+        let key = "notifications"
+        return cacheManager.get(NotificationResponse.self, forKey: key)
+    }
+    
+    /// ポストスレッドをキャッシュに保存
+    func cachePostThread(_ thread: PostThreadResponse, for postUri: String) {
+        let key = "thread_\(postUri.hashValue)"
+        cacheManager.set(thread, forKey: key, ttl: threadCacheTTL)
+    }
+    
+    /// キャッシュされたポストスレッドを取得
+    func getCachedPostThread(for postUri: String) -> PostThreadResponse? {
+        let key = "thread_\(postUri.hashValue)"
+        return cacheManager.get(PostThreadResponse.self, forKey: key)
+    }
+    
+    /// いいね情報をキャッシュに保存
+    func cacheLikes(_ likes: GetLikesApiResponse, for postUri: String) {
+        let key = "likes_\(postUri.hashValue)"
+        cacheManager.set(likes, forKey: key, ttl: repliesCacheTTL)
+    }
+    
+    /// キャッシュされたいいね情報を取得
+    func getCachedLikes(for postUri: String) -> GetLikesApiResponse? {
+        let key = "likes_\(postUri.hashValue)"
+        return cacheManager.get(GetLikesApiResponse.self, forKey: key)
+    }
+    
+    /// 通知キャッシュをクリア
+    func clearNotifications() {
+        let key = "notifications"
+        cacheManager.remove(forKey: key)
+    }
+    
+    /// 特定のスレッドキャッシュを削除
+    func clearPostThread(for postUri: String) {
+        let key = "thread_\(postUri.hashValue)"
+        cacheManager.remove(forKey: key)
+    }
+}
