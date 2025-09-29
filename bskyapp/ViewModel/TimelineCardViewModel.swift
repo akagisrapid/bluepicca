@@ -86,7 +86,7 @@ class TimelineCardViewModel: ObservableObject{
         return post.viewer?.like != nil
     }
     
-    /// いいね処理
+    /// いいね処理（バッチ処理対応）
     @MainActor
     func toggleLike() async {
         guard let postUri = post.uri, let postCid = post.cid else {
@@ -96,54 +96,51 @@ class TimelineCardViewModel: ObservableObject{
         
         isLiking = true
         
-        do {
-            if isLiked {
-                // いいね取り消し
-                if let likeUri = post.viewer?.like {
-                    try await deleteLike(likeUri: likeUri)
-                    
-                    // ローカル状態を更新
-                    post.viewer = Viewer(
-                        repost: post.viewer?.repost,
-                        like: nil,
-                        replyDisabled: post.viewer?.replyDisabled
-                    )
-                    
-                    // いいね数を減らす
-                    if let currentCount = post.likeCount, currentCount > 0 {
-                        post.likeCount = currentCount - 1
-                    }
-                    
-                    // 永続化状態を更新
-                    PostStateManager.shared.removeLiked(postUri: postUri)
-                    
-                    print("いいね取り消し成功")
-                }
-            } else {
-                // いいね追加
-                let response = try await createLike(postUri: postUri, postCid: postCid)
+        if isLiked {
+            // いいね取り消しをバッチ処理に追加
+            if let likeUri = post.viewer?.like {
+                BatchActionHelper.shared.queueUnlike(likeUri: likeUri)
                 
-                // ローカル状態を更新
+                // ローカル状態を即座に更新
                 post.viewer = Viewer(
                     repost: post.viewer?.repost,
-                    like: response.uri,
+                    like: nil,
                     replyDisabled: post.viewer?.replyDisabled
                 )
                 
-                // いいね数を増やす
-                if let currentCount = post.likeCount {
-                    post.likeCount = currentCount + 1
-                } else {
-                    post.likeCount = 1
+                // いいね数を減らす
+                if let currentCount = post.likeCount, currentCount > 0 {
+                    post.likeCount = currentCount - 1
                 }
                 
                 // 永続化状態を更新
-                PostStateManager.shared.setLiked(postUri: postUri, likeUri: response.uri)
+                PostStateManager.shared.removeLiked(postUri: postUri)
                 
-                print("いいね成功: \(response)")
+                print("いいね取り消しをキューに追加")
             }
-        } catch {
-            print("いいねエラー: \(error)")
+        } else {
+            // いいね追加をバッチ処理に追加
+            BatchActionHelper.shared.queueLike(postUri: postUri, postCid: postCid)
+            
+            // ローカル状態を即座に更新（仮のURI）
+            let tempLikeUri = "pending_like_\(postUri)"
+            post.viewer = Viewer(
+                repost: post.viewer?.repost,
+                like: tempLikeUri,
+                replyDisabled: post.viewer?.replyDisabled
+            )
+            
+            // いいね数を増やす
+            if let currentCount = post.likeCount {
+                post.likeCount = currentCount + 1
+            } else {
+                post.likeCount = 1
+            }
+            
+            // 永続化状態を更新
+            PostStateManager.shared.setLiked(postUri: postUri, likeUri: tempLikeUri)
+            
+            print("いいねをキューに追加")
         }
         
         isLiking = false
@@ -161,7 +158,7 @@ class TimelineCardViewModel: ObservableObject{
         return post.repostCount ?? 0
     }
     
-    /// リポスト処理
+    /// リポスト処理（バッチ処理対応）
     @MainActor
     func toggleRepost() async {
         guard let postUri = post.uri, let postCid = post.cid else {
@@ -171,54 +168,51 @@ class TimelineCardViewModel: ObservableObject{
         
         isReposting = true
         
-        do {
-            if isReposted {
-                // リポスト取り消し
-                if let repostUri = post.viewer?.repost {
-                    try await deleteRepost(repostUri: repostUri)
-                    
-                    // ローカル状態を更新
-                    post.viewer = Viewer(
-                        repost: nil,
-                        like: post.viewer?.like,
-                        replyDisabled: post.viewer?.replyDisabled
-                    )
-                    
-                    // リポスト数を減らす
-                    if let currentCount = post.repostCount, currentCount > 0 {
-                        post.repostCount = currentCount - 1
-                    }
-                    
-                    // 永続化状態を更新
-                    PostStateManager.shared.removeReposted(postUri: postUri)
-                    
-                    print("リポスト取り消し成功")
-                }
-            } else {
-                // リポスト追加
-                let response = try await createRepost(postUri: postUri, postCid: postCid)
+        if isReposted {
+            // リポスト取り消しをバッチ処理に追加
+            if let repostUri = post.viewer?.repost {
+                BatchActionHelper.shared.queueUnrepost(repostUri: repostUri)
                 
-                // ローカル状態を更新
+                // ローカル状態を即座に更新
                 post.viewer = Viewer(
-                    repost: response.uri,
+                    repost: nil,
                     like: post.viewer?.like,
                     replyDisabled: post.viewer?.replyDisabled
                 )
                 
-                // リポスト数を増やす
-                if let currentCount = post.repostCount {
-                    post.repostCount = currentCount + 1
-                } else {
-                    post.repostCount = 1
+                // リポスト数を減らす
+                if let currentCount = post.repostCount, currentCount > 0 {
+                    post.repostCount = currentCount - 1
                 }
                 
                 // 永続化状態を更新
-                PostStateManager.shared.setReposted(postUri: postUri, repostUri: response.uri)
+                PostStateManager.shared.removeReposted(postUri: postUri)
                 
-                print("リポスト成功: \(response)")
+                print("リポスト取り消しをキューに追加")
             }
-        } catch {
-            print("リポストエラー: \(error)")
+        } else {
+            // リポスト追加をバッチ処理に追加
+            BatchActionHelper.shared.queueRepost(postUri: postUri, postCid: postCid)
+            
+            // ローカル状態を即座に更新（仮のURI）
+            let tempRepostUri = "pending_repost_\(postUri)"
+            post.viewer = Viewer(
+                repost: tempRepostUri,
+                like: post.viewer?.like,
+                replyDisabled: post.viewer?.replyDisabled
+            )
+            
+            // リポスト数を増やす
+            if let currentCount = post.repostCount {
+                post.repostCount = currentCount + 1
+            } else {
+                post.repostCount = 1
+            }
+            
+            // 永続化状態を更新
+            PostStateManager.shared.setReposted(postUri: postUri, repostUri: tempRepostUri)
+            
+            print("リポストをキューに追加")
         }
         
         isReposting = false
