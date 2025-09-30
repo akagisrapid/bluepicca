@@ -4,20 +4,35 @@ import PhotosUI
 struct PostCardView: View {
     @StateObject var viewModel: PostCardViewModel
     @Binding var isShowPostCard: Bool
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack(spacing: 10) {
-            HStack {
-                TextEditor(text: $viewModel.text)
-                    .frame(height: 200)
-                    .border(viewModel.isTextValid ? Color.green : Color.red)
-                    .onChange(of: viewModel.text) {
-                        viewModel.checkTextCount()
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 10) {
+                    GeometryReader { geometry in
+                        ZStack(alignment: .bottomTrailing) {
+                            TextEditor(text: $viewModel.text)
+                                .frame(
+                                    width: geometry.size.width * 0.8,
+                                    height: geometry.size.height * 0.7
+                                )
+                                .border(viewModel.isTextValid ? Color.green : Color.red)
+                                .onChange(of: viewModel.text) {
+                                    viewModel.checkTextCount()
+                                }
+                            
+                            Text(viewModel.textCountString)
+                                .font(.caption)
+                                .foregroundColor(viewModel.isTextValid ? .secondary : .red)
+                                .padding(8)
+                                .background(Color(UIColor.systemBackground).opacity(0.8))
+                                .cornerRadius(4)
+                                .offset(x: -10, y: -10)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     }
-                VStack {
-                    Text(viewModel.textCountString).frame(width: 50)
-                }
-            }
+                    .frame(height: 300)
             
             // 画像選択と表示エリア
             VStack(alignment: .leading) {
@@ -98,50 +113,63 @@ struct PostCardView: View {
                 .cornerRadius(8)
             }
             
-            HStack {
-                Button("Close", systemImage: "xmark.circle.fill") {
-                    isShowPostCard.toggle()
                 }
-                Spacer()
-                Button("ポスト", systemImage: "text.bubble.fill") {
-                    Task {
-                        do {
-                            try await viewModel.postText()
-                            // Update UI on the main thread
-                            await MainActor.run {
-                                viewModel.isPostCompleted = true
-                                viewModel.text = ""
-                                viewModel.selectedImages = []
-                                viewModel.selectedPhotoItems = []
-                                withAnimation {
-                                    isShowPostCard.toggle()
-                                }
-                            }
-                        } catch {
-                            // Update UI on the main thread
-                            await MainActor.run {
-                                viewModel.isPostFailed = true
-                            }
-                        }
+                .padding()
+            }
+            .navigationTitle("新しいポスト")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        isShowPostCard.toggle()
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.title2)
                     }
                 }
-                .disabled(!viewModel.isTextValid || viewModel.isUploading)
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        Task {
+                            do {
+                                try await viewModel.postText()
+                                // Update UI on the main thread
+                                await MainActor.run {
+                                    viewModel.isPostCompleted = true
+                                    viewModel.text = ""
+                                    viewModel.selectedImages = []
+                                    viewModel.selectedPhotoItems = []
+                                    withAnimation {
+                                        isShowPostCard.toggle()
+                                    }
+                                }
+                            } catch {
+                                // Update UI on the main thread
+                                await MainActor.run {
+                                    viewModel.isPostFailed = true
+                                }
+                            }
+                        }
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                            .font(.title2)
+                    }
+                    .disabled(!viewModel.isTextValid || viewModel.isUploading)
+                }
             }
-        }
-        .padding()
-        .alert(isPresented: $viewModel.isPostCompleted) {
-            Alert(title: Text("送信完了"), message: nil)
-        }
-        .alert(isPresented: $viewModel.isPostFailed) {
-            Alert(title: Text("送信エラー"), message: Text(viewModel.errorMessage))
-        }
-        .onChange(of: viewModel.selectedPhotoItems) { newItems in
-            print("selectedPhotoItemsが変更されました: \(newItems.count)個")
-            
-            // 最新の選択アイテムのみを処理
-            if let latestItem = newItems.last {
-                print("最新のPhotoPickerItemを処理: \(latestItem.itemIdentifier ?? "unknown")")
-                viewModel.loadImage(from: latestItem)
+            .alert(isPresented: $viewModel.isPostCompleted) {
+                Alert(title: Text("送信完了"), message: nil)
+            }
+            .alert(isPresented: $viewModel.isPostFailed) {
+                Alert(title: Text("送信エラー"), message: Text(viewModel.errorMessage))
+            }
+            .onChange(of: viewModel.selectedPhotoItems) { newItems in
+                print("selectedPhotoItemsが変更されました: \(newItems.count)個")
+                
+                // 最新の選択アイテムのみを処理
+                if let latestItem = newItems.last {
+                    print("最新のPhotoPickerItemを処理: \(latestItem.itemIdentifier ?? "unknown")")
+                    viewModel.loadImage(from: latestItem)
+                }
             }
         }
     }
