@@ -16,7 +16,6 @@
 		980FD1FA2E7AF6F800AE29EF /* CreateLikeApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1F92E7AF6F800AE29EF /* CreateLikeApi.swift */; };
 		980FD1FC2E7AF71F00AE29EF /* PostStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */; };
 		980FD2032E7AFACD00AE29EF /* NotificationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2012E7AFACD00AE29EF /* NotificationResponse.swift */; };
-		980FD2052E7AFAE600AE29EF /* GetRepliesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2042E7AFAE600AE29EF /* GetRepliesApi.swift */; };
 		980FD2072E7AFAF700AE29EF /* RepliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2062E7AFAF700AE29EF /* RepliesView.swift */; };
 		980FD2092E7AFB0400AE29EF /* RepliesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */; };
 		980FD20B2E7B005500AE29EF /* ReplyPostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */; };
@@ -71,9 +70,6 @@
 		9874EC712E7C5DE500F116D0 /* GetFollowsApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC6F2E7C5DE500F116D0 /* GetFollowsApi.swift */; };
 		9874EC742E7C5DEF00F116D0 /* GetFollowsApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC732E7C5DEF00F116D0 /* GetFollowsApiModel.swift */; };
 		9874EC752E7C5DEF00F116D0 /* GetFollowersApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC722E7C5DEF00F116D0 /* GetFollowersApiModel.swift */; };
-		9874EC7D2E7C626C00F116D0 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC7B2E7C626C00F116D0 /* CacheManager.swift */; };
-		9874EC7E2E7C626C00F116D0 /* RateLimitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC7C2E7C626C00F116D0 /* RateLimitManager.swift */; };
-		9874EC7F2E7C626C00F116D0 /* BatchProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC7A2E7C626C00F116D0 /* BatchProcessor.swift */; };
 		98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */; };
 		98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */; };
@@ -107,7 +103,6 @@
 		980FD1F92E7AF6F800AE29EF /* CreateLikeApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateLikeApi.swift; sourceTree = "<group>"; };
 		980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStateManager.swift; sourceTree = "<group>"; };
 		980FD2012E7AFACD00AE29EF /* NotificationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationResponse.swift; sourceTree = "<group>"; };
-		980FD2042E7AFAE600AE29EF /* GetRepliesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRepliesApi.swift; sourceTree = "<group>"; };
 		980FD2062E7AFAF700AE29EF /* RepliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesView.swift; sourceTree = "<group>"; };
 		980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesViewModel.swift; sourceTree = "<group>"; };
 		980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyPostCardViewModel.swift; sourceTree = "<group>"; };
@@ -163,9 +158,6 @@
 		9874EC6F2E7C5DE500F116D0 /* GetFollowsApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFollowsApi.swift; sourceTree = "<group>"; };
 		9874EC722E7C5DEF00F116D0 /* GetFollowersApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFollowersApiModel.swift; sourceTree = "<group>"; };
 		9874EC732E7C5DEF00F116D0 /* GetFollowsApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFollowsApiModel.swift; sourceTree = "<group>"; };
-		9874EC7A2E7C626C00F116D0 /* BatchProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchProcessor.swift; sourceTree = "<group>"; };
-		9874EC7B2E7C626C00F116D0 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
-		9874EC7C2E7C626C00F116D0 /* RateLimitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimitManager.swift; sourceTree = "<group>"; };
 		98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApiModel.swift; sourceTree = "<group>"; };
 		98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApiModel.swift; sourceTree = "<group>"; };
 		98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -303,7 +295,6 @@
 				980FD1F12E7AEE4A00AE29EF /* CreateRepostApi.swift */,
 				980FD1F92E7AF6F800AE29EF /* CreateLikeApi.swift */,
 				980FD20E2E7B041900AE29EF /* GetPostThreadApi.swift */,
-				980FD2042E7AFAE600AE29EF /* GetRepliesApi.swift */,
 				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
 				B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */,
 				B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */,
@@ -349,9 +340,6 @@
 				98289CC92BF772C3007EA3C5 /* Extension */,
 				98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */,
 				980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */,
-				9874EC7A2E7C626C00F116D0 /* BatchProcessor.swift */,
-				9874EC7B2E7C626C00F116D0 /* CacheManager.swift */,
-				9874EC7C2E7C626C00F116D0 /* RateLimitManager.swift */,
 				980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */,
 			);
 			path = Utils;
@@ -582,7 +570,6 @@
 				9871532F2C08AA8E00E08633 /* EmbeddedExternalViewItem.swift in Sources */,
 				9871531A2C07754800E08633 /* Label.swift in Sources */,
 				B0C057722B8712D80066AD91 /* ContentView.swift in Sources */,
-				980FD2052E7AFAE600AE29EF /* GetRepliesApi.swift in Sources */,
 				980FD2142E7B044900AE29EF /* ReplyItemView.swift in Sources */,
 				9874EC6B2E7C5DCF00F116D0 /* FollowListView.swift in Sources */,
 				9871531C2C07755D00E08633 /* BlockingByList.swift in Sources */,
@@ -623,9 +610,6 @@
 				9874EC642E7C59CD00F116D0 /* DeleteRecordApiModel.swift in Sources */,
 				9874EC652E7C59CD00F116D0 /* CreateFollowApiModel.swift in Sources */,
 				980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */,
-				9874EC7D2E7C626C00F116D0 /* CacheManager.swift in Sources */,
-				9874EC7E2E7C626C00F116D0 /* RateLimitManager.swift in Sources */,
-				9874EC7F2E7C626C00F116D0 /* BatchProcessor.swift in Sources */,
 				980FD1D62E77149600AE29EF /* LoginView.swift in Sources */,
 				B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */,
 				98D959602CADA2AA00E6A6B7 /* GetProfileApiModel.swift in Sources */,
