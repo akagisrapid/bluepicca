@@ -19,26 +19,16 @@ class PostDetailViewModel: ObservableObject{
         Task{
             // uriやcidがnilの場合でも問題なく動作するようにする
             if let uri = post.uri {
-                // いいね情報をキャッシュから取得または API呼び出し
-                if let cachedLikes = RepliesCacheManager.shared.getCachedLikes(for: uri) {
-                    await MainActor.run {
-                        self.likesResponse = cachedLikes
-                    }
-                    print("Using cached likes data for post: \(uri)")
-                } else {
                     do {
-                        let response = try await SafeAPIExecutor.shared.execute(endpoint: "likes") {
-                            try await GetLikesApi().getLikes(param: .init(uri: uri, cid: post.cid))
-                        }
+                        let response = try await GetLikesApi().getLikes(param: .init(uri: uri, cid: post.cid))
+                        
                         await MainActor.run {
                             self.likesResponse = response
                         }
-                        // キャッシュに保存
-                        RepliesCacheManager.shared.cacheLikes(response, for: uri)
                     } catch {
                         print("Failed to fetch likes: \(error)")
                     }
-                }
+                
                 
                 // リプライを取得
                 await fetchReplies()
@@ -369,23 +359,14 @@ class PostDetailViewModel: ObservableObject{
             return
         }
         
-        // キャッシュをチェック
-        if let cachedThread = RepliesCacheManager.shared.getCachedPostThread(for: postUri) {
-            replies = cachedThread.thread.replies ?? []
-            print("Using cached thread data: \(replies.count)件")
-            return
-        }
-        
         isFetchingReplies = true
         
         do {
-            let response = try await SafeAPIExecutor.shared.execute(endpoint: "thread") {
+            let response =
                 try await GetPostThreadApi().getPostThread(uri: postUri)
-            }
+            
             replies = response.thread.replies ?? []
             
-            // キャッシュに保存
-            RepliesCacheManager.shared.cachePostThread(response, for: postUri)
             
             print("リプライ取得成功: \(replies.count)件")
         } catch {

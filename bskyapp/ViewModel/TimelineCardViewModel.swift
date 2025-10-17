@@ -99,7 +99,6 @@ class TimelineCardViewModel: ObservableObject{
         if isLiked {
             // いいね取り消しをバッチ処理に追加
             if let likeUri = post.viewer?.like {
-                BatchActionHelper.shared.queueUnlike(likeUri: likeUri)
                 
                 // ローカル状態を即座に更新
                 post.viewer = Viewer(
@@ -119,8 +118,6 @@ class TimelineCardViewModel: ObservableObject{
                 print("いいね取り消しをキューに追加")
             }
         } else {
-            // いいね追加をバッチ処理に追加
-            BatchActionHelper.shared.queueLike(postUri: postUri, postCid: postCid)
             
             // ローカル状態を即座に更新（仮のURI）
             let tempLikeUri = "pending_like_\(postUri)"
@@ -171,7 +168,6 @@ class TimelineCardViewModel: ObservableObject{
         if isReposted {
             // リポスト取り消しをバッチ処理に追加
             if let repostUri = post.viewer?.repost {
-                BatchActionHelper.shared.queueUnrepost(repostUri: repostUri)
                 
                 // ローカル状態を即座に更新
                 post.viewer = Viewer(
@@ -191,8 +187,6 @@ class TimelineCardViewModel: ObservableObject{
                 print("リポスト取り消しをキューに追加")
             }
         } else {
-            // リポスト追加をバッチ処理に追加
-            BatchActionHelper.shared.queueRepost(postUri: postUri, postCid: postCid)
             
             // ローカル状態を即座に更新（仮のURI）
             let tempRepostUri = "pending_repost_\(postUri)"

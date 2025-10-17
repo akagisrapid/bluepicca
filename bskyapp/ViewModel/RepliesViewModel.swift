@@ -23,10 +23,7 @@ class RepliesViewModel: ObservableObject {
     @MainActor
     func fetchReplies() async {
         do {
-            self.isFetchingReplies = true
-            let repliesResponse = try await GetRepliesApi().getReplies()
-            self.notifications = repliesResponse.notifications
-            self.isFetchingReplies = false
+            
         } catch {
             self.isFetchingReplies = false
             print("Error fetching replies: \(error)")
