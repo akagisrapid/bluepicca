@@ -28,10 +28,6 @@ class PostDetailViewModel: ObservableObject{
                     } catch {
                         print("Failed to fetch likes: \(error)")
                     }
-                
-                
-                // リプライを取得
-                await fetchReplies()
             }
         }
     }

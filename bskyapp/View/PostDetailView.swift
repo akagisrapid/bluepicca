@@ -85,42 +85,52 @@ struct PostDetailView: View {
             }
             
             // リプライ一覧セクション
-            if !viewModel.replies.isEmpty || viewModel.isFetchingReplies {
-                VStack(alignment: .leading, spacing: 8) {
-                    Divider()
-                    
-                    HStack {
-                        Text("リプライ (\(viewModel.replies.count))")
-                            .font(.headline)
-                            .padding(.horizontal)
-                        
-                        Spacer()
-                        
-                        Button("更新", systemImage: "arrow.clockwise") {
-                            Task {
-                                await viewModel.fetchReplies()
-                            }
-                        }
+            VStack(alignment: .leading, spacing: 8) {
+                Divider()
+                
+                HStack {
+                    Text("リプライ (\(viewModel.replies.count))")
+                        .font(.headline)
                         .padding(.horizontal)
-                    }
                     
-                    if viewModel.isFetchingReplies {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                                .scaleEffect(1.5)
-                                .padding()
-                            Spacer()
+                    Spacer()
+                    
+                    Button("更新", systemImage: "arrow.clockwise") {
+                        Task {
+                            await viewModel.fetchReplies()
                         }
-                    } else {
-                        ForEach(viewModel.replies) { reply in
-                            ReplyItemView(threadViewPost: reply)
-                                .padding(.horizontal)
-                        }
+                    }
+                    .padding(.horizontal)
+                }
+                
+                if viewModel.isFetchingReplies {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .scaleEffect(1.5)
+                            .padding()
+                        Spacer()
+                    }
+                } else if viewModel.replies.isEmpty {
+                    Text("リプライを読み込むには更新ボタンを押してください")
+                        .foregroundColor(.gray)
+                        .padding(.horizontal)
+                } else {
+                    ForEach(viewModel.replies) { reply in
+                        ReplyItemView(threadViewPost: reply)
+                            .padding(.horizontal)
                     }
                 }
             }
         }.padding()
+        .onAppear {
+            // PostDetailViewが表示された時に初回のリプライを取得
+            if viewModel.replies.isEmpty && !viewModel.isFetchingReplies {
+                Task {
+                    await viewModel.fetchReplies()
+                }
+            }
+        }
     }
 }
