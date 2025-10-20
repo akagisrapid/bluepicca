@@ -85,17 +85,28 @@ struct PostDetailView: View {
             }
             
             // リプライ一覧セクション
-            if !viewModel.replies.isEmpty || viewModel.isFetchingReplies {
-                VStack(alignment: .leading, spacing: 8) {
-                    Divider()
+            VStack(alignment: .leading, spacing: 8) {
+                Divider()
+                
+                HStack {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            viewModel.toggleRepliesExpansion()
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: viewModel.isRepliesExpanded ? "chevron.down" : "chevron.right")
+                                .foregroundColor(.primary)
+                            Text("リプライ (\(viewModel.replies.count))")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                        }
+                    }
+                    .padding(.horizontal)
                     
-                    HStack {
-                        Text("リプライ (\(viewModel.replies.count))")
-                            .font(.headline)
-                            .padding(.horizontal)
-                        
-                        Spacer()
-                        
+                    Spacer()
+                    
+                    if viewModel.isRepliesExpanded {
                         Button("更新", systemImage: "arrow.clockwise") {
                             Task {
                                 await viewModel.fetchReplies()
@@ -103,7 +114,9 @@ struct PostDetailView: View {
                         }
                         .padding(.horizontal)
                     }
-                    
+                }
+                
+                if viewModel.isRepliesExpanded {
                     if viewModel.isFetchingReplies {
                         HStack {
                             Spacer()
@@ -113,6 +126,10 @@ struct PostDetailView: View {
                                 .padding()
                             Spacer()
                         }
+                    } else if viewModel.replies.isEmpty {
+                        Text("リプライはありません")
+                            .foregroundColor(.gray)
+                            .padding(.horizontal)
                     } else {
                         ForEach(viewModel.replies) { reply in
                             ReplyItemView(threadViewPost: reply)
