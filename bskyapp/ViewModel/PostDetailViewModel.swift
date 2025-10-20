@@ -8,6 +8,7 @@ class PostDetailViewModel: ObservableObject{
     @Published var isLiking: Bool = false
     @Published var replies: [ThreadViewPost] = []
     @Published var isFetchingReplies: Bool = false
+    @Published var isRepliesExpanded: Bool = false
     var likesResponse: GetLikesApiResponse = .init(uri: "", likes: [])
     
     init(post: Post, reason: Reason? = nil) {
@@ -346,6 +347,19 @@ class PostDetailViewModel: ObservableObject{
     }
     
     // MARK: - リプライ機能
+    
+    /// リプライセクションの展開状態を切り替え
+    @MainActor
+    func toggleRepliesExpansion() {
+        isRepliesExpanded.toggle()
+        
+        // 初回展開時にリプライを取得
+        if isRepliesExpanded && replies.isEmpty && !isFetchingReplies {
+            Task {
+                await fetchReplies()
+            }
+        }
+    }
     
     /// リプライを取得（キャッシュ対応）
     @MainActor
