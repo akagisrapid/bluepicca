@@ -14,7 +14,7 @@ struct RepliesView: View {
     @State private var isShowReplyCard = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 if viewModel.isFetchingReplies {
                     ProgressView()

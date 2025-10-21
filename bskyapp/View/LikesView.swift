@@ -6,7 +6,7 @@ struct LikesView: View {
     let postCid: String?
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 if viewModel.isLoading {
                     ProgressView("いいね一覧を読み込み中...")

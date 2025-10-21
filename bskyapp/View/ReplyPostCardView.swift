@@ -31,7 +31,7 @@ struct ReplyPostCardView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 16) {
                 // リプライ先の投稿を表示
                 VStack(alignment: .leading, spacing: 8) {

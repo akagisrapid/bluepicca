@@ -10,7 +10,7 @@ struct FollowListView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 if viewModel.listType == .follows {
                     ForEach(viewModel.followItems, id: \.did) { item in
