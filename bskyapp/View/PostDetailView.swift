@@ -2,8 +2,62 @@ import SwiftUI
 
 struct PostDetailView: View {
     @StateObject var viewModel: PostDetailViewModel
+    @State private var isShowingReplySheet = false
+    
     var body: some View {
         VStack(alignment: .leading){
+            // リプライ元情報を表示
+            if viewModel.isReply {
+                NavigationLink(
+                    destination: PostDetailView(
+                        viewModel: PostDetailViewModel(post: viewModel.parentPost!)
+                    )
+                ) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Image(systemName: "arrowshape.turn.up.left")
+                                .foregroundColor(.gray)
+                                .font(.caption)
+                            Text("返信先:")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Spacer()
+                        }
+                        
+                        // リプライ元の投稿プレビュー
+                        HStack(alignment: .top, spacing: 12) {
+                            ProfileImageView(
+                                viewModel: AsyncImageViewModel(
+                                    url: viewModel.parentAvatarUrl,
+                                    imageSize: .timeline,
+                                    alt: viewModel.parentAuthorName
+                                ),
+                                actor: viewModel.parentAuthorDid
+                            )
+                            .frame(width: 30, height: 30)
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(viewModel.parentAuthorName)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                
+                                Text(viewModel.parentText)
+                                    .font(.body)
+                                    .lineLimit(3)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                }
+                .buttonStyle(PlainButtonStyle())
+                .padding(.bottom, 8)
+            }
+            
             // リポスト情報を表示
             if viewModel.isRepost {
                 HStack {
@@ -47,6 +101,19 @@ struct PostDetailView: View {
             }
             HStack{
                 Spacer()
+                
+                Button(action: {
+                    isShowingReplySheet = true
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "arrowshape.turn.up.left")
+                            .foregroundColor(.gray)
+                        Text("リプライ")
+                            .foregroundColor(.gray)
+                    }
+                }
+                .padding()
+                
                 Button(action: {
                     Task {
                         await viewModel.toggleLike()
@@ -132,12 +199,30 @@ struct PostDetailView: View {
                             .padding(.horizontal)
                     } else {
                         ForEach(viewModel.replies) { reply in
-                            ReplyItemView(threadViewPost: reply)
-                                .padding(.horizontal)
+                            NavigationLink(
+                                destination: PostDetailView(
+                                    viewModel: PostDetailViewModel(post: reply.post)
+                                )
+                            ) {
+                                ReplyItemView(threadViewPost: reply)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.horizontal)
                         }
                     }
                 }
             }
         }.padding()
+        .sheet(isPresented: $isShowingReplySheet) {
+            ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
+        }
+        .onChange(of: isShowingReplySheet) { isShowing in
+            // リプライシートが閉じられた時にリプライ一覧を更新
+            if !isShowing {
+                Task {
+                    await viewModel.refreshRepliesAfterPost()
+                }
+            }
+        }
     }
 }

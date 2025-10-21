@@ -4,6 +4,7 @@ import SwiftUI
 class PostDetailViewModel: ObservableObject{
     @Published var post: Post
     @Published var reason: Reason?
+    @Published var parentPost: Post?
     @Published var isReposting: Bool = false
     @Published var isLiking: Bool = false
     @Published var replies: [ThreadViewPost] = []
@@ -28,6 +29,20 @@ class PostDetailViewModel: ObservableObject{
                         }
                     } catch {
                         print("Failed to fetch likes: \(error)")
+                    }
+                    
+                    // リプライ元情報を取得
+                    do {
+                        let threadResponse = try await GetPostThreadApi().getPostThread(uri: uri)
+                        
+                        await MainActor.run {
+                            // リプライ元の情報を取得
+                            if let parent = threadResponse.thread.parent {
+                                self.parentPost = parent.value.post
+                            }
+                        }
+                    } catch {
+                        print("Failed to fetch thread info: \(error)")
                     }
             }
         }
@@ -377,6 +392,10 @@ class PostDetailViewModel: ObservableObject{
             
             replies = response.thread.replies ?? []
             
+            // リプライ元の情報を取得
+            if let parent = response.thread.parent {
+                parentPost = parent.value.post
+            }
             
             print("リプライ取得成功: \(replies.count)件")
         } catch {
@@ -384,5 +403,41 @@ class PostDetailViewModel: ObservableObject{
         }
         
         isFetchingReplies = false
+    }
+    
+    /// リプライ送信後にリプライ一覧を更新
+    @MainActor
+    func refreshRepliesAfterPost() async {
+        // リプライセクションが展開されている場合のみ更新
+        if isRepliesExpanded {
+            await fetchReplies()
+        }
+    }
+    
+    // MARK: - リプライ元情報関連のプロパティ
+    
+    /// リプライかどうかを判定
+    var isReply: Bool {
+        return parentPost != nil
+    }
+    
+    /// リプライ元の作者名
+    var parentAuthorName: String {
+        return parentPost?.author?.displayName ?? parentPost?.author?.handle ?? ""
+    }
+    
+    /// リプライ元のテキスト
+    var parentText: String {
+        return parentPost?.record?.text ?? ""
+    }
+    
+    /// リプライ元のアバターURL
+    var parentAvatarUrl: URL? {
+        return parentPost?.author?.avatarUrl
+    }
+    
+    /// リプライ元の作者DID
+    var parentAuthorDid: String {
+        return parentPost?.author?.did ?? ""
     }
 }

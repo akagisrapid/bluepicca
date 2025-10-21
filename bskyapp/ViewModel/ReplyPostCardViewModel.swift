@@ -21,12 +21,21 @@ class ReplyPostCardViewModel: ObservableObject {
     @Published var isUploading: Bool = false
     @Published var uploadProgress: Double = 0.0
     
-    private let notification: NotificationItem
+    private let notification: NotificationItem?
+    private let post: Post?
     var maxTextCount: Int = 300
     var maxImageCount: Int = 4
     
+    // NotificationItem用のイニシャライザー
     init(notification: NotificationItem) {
         self.notification = notification
+        self.post = nil
+    }
+    
+    // Post用のイニシャライザー
+    init(post: Post) {
+        self.notification = nil
+        self.post = post
     }
     
     func postReply() async throws {
@@ -109,16 +118,37 @@ class ReplyPostCardViewModel: ObservableObject {
             let session = try await SessionManager.shared.getSession()
             
             // リプライ情報を作成
-            let replyRef: [String: Any] = [
-                "root": [
-                    "uri": notification.uri,
-                    "cid": notification.cid
-                ],
-                "parent": [
-                    "uri": notification.uri,
-                    "cid": notification.cid
+            let replyRef: [String: Any]
+            
+            if let notification = notification {
+                replyRef = [
+                    "root": [
+                        "uri": notification.uri,
+                        "cid": notification.cid
+                    ],
+                    "parent": [
+                        "uri": notification.uri,
+                        "cid": notification.cid
+                    ]
                 ]
-            ]
+            } else if let post = post, let uri = post.uri, let cid = post.cid {
+                replyRef = [
+                    "root": [
+                        "uri": uri,
+                        "cid": cid
+                    ],
+                    "parent": [
+                        "uri": uri,
+                        "cid": cid
+                    ]
+                ]
+            } else {
+                await MainActor.run {
+                    errorMessage = "リプライに必要な情報が不足しています"
+                    isPostFailed = true
+                }
+                throw NSError(domain: "ReplyError", code: -1, userInfo: [NSLocalizedDescriptionKey: "リプライに必要な情報が不足しています"])
+            }
             
             var recordDict: [String: Any] = [
                 "$type": "app.bsky.feed.post",
