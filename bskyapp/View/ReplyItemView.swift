@@ -111,7 +111,14 @@ struct ReplyItemView: View {
                                 .frame(width: 2)
                                 .padding(.leading, 20)
                             
-                            ReplyItemView(threadViewPost: nestedReply)
+                            NavigationLink(
+                                destination: PostDetailView(
+                                    viewModel: PostDetailViewModel(post: nestedReply.post)
+                                )
+                            ) {
+                                ReplyItemView(threadViewPost: nestedReply)
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
                     }
                     

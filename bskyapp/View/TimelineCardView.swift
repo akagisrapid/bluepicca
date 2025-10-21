@@ -18,6 +18,20 @@ struct TimelineCardView: View {
                 .padding(.bottom, 4)
             }
             
+            // リプライ情報を表示
+            if viewModel.isReply {
+                HStack {
+                    Image(systemName: "arrowshape.turn.up.left")
+                        .foregroundColor(.gray)
+                        .font(.caption)
+                    Text("\(viewModel.replyTargetAuthorName)への返信")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                    Spacer()
+                }
+                .padding(.bottom, 4)
+            }
+            
             HStack{
                 ProfileImageView(viewModel: AsyncImageViewModel(url: viewModel.post.author?.avatarUrl, imageSize: .timeline, alt: ""), actor: viewModel.post.author?.did ?? "")
                 Text(viewModel.authorName).font(.headline)

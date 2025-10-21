@@ -20,7 +20,7 @@ struct ContentView: View {
                 } else {
                     List(viewModel.validFeeds) { feedItem in
                         if let post = feedItem.post {
-                            var timelineCardViewModel = TimelineCardViewModel(post: post, reason: feedItem.reason)
+                            var timelineCardViewModel = TimelineCardViewModel(post: post, reason: feedItem.reason, reply: feedItem.reply)
                             var postDetailViewModel = PostDetailViewModel(post: post)
                             NavigationLink(
                                 destination: PostDetailView(viewModel: postDetailViewModel)

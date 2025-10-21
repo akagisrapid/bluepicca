@@ -3,12 +3,14 @@ import Foundation
 class TimelineCardViewModel: ObservableObject{
     @Published var post: Post
     @Published var reason: Reason?
+    @Published var reply: Reply?
     @Published var isLiking: Bool = false
     @Published var isReposting: Bool = false
     
-    init(post: Post, reason: Reason? = nil) {
+    init(post: Post, reason: Reason? = nil, reply: Reply? = nil) {
         self.post = post
         self.reason = reason
+        self.reply = reply
         
         // 永続化された状態を復元
         restorePersistedStates()
@@ -38,6 +40,33 @@ class TimelineCardViewModel: ObservableObject{
     
     var repostAuthorHandle: String {
         return reason?.by.handle ?? ""
+    }
+    
+    // MARK: - リプライ情報関連のプロパティ
+    
+    /// リプライかどうかを判定
+    var isReply: Bool {
+        return reply != nil
+    }
+    
+    /// リプライ先の作者名
+    var replyTargetAuthorName: String {
+        return reply?.parent?.author?.displayName ?? reply?.parent?.author?.handle ?? ""
+    }
+    
+    /// リプライ先の作者ハンドル
+    var replyTargetAuthorHandle: String {
+        return reply?.parent?.author?.handle ?? ""
+    }
+    
+    /// リプライ先のテキスト（プレビュー用）
+    var replyTargetText: String {
+        let text = reply?.parent?.record?.text ?? ""
+        // 長すぎる場合は省略
+        if text.count > 50 {
+            return String(text.prefix(50)) + "..."
+        }
+        return text
     }
     
     // MARK: - 永続化された状態の管理

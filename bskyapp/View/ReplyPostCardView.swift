@@ -9,14 +9,25 @@ import SwiftUI
 import PhotosUI
 
 struct ReplyPostCardView: View {
-    let notification: NotificationItem
+    let notification: NotificationItem?
+    let post: Post?
     @Binding var isShowReplyCard: Bool
     @StateObject private var viewModel: ReplyPostCardViewModel
     
+    // NotificationItem用のイニシャライザー
     init(notification: NotificationItem, isShowReplyCard: Binding<Bool>) {
         self.notification = notification
+        self.post = nil
         self._isShowReplyCard = isShowReplyCard
         self._viewModel = StateObject(wrappedValue: ReplyPostCardViewModel(notification: notification))
+    }
+    
+    // Post用のイニシャライザー
+    init(post: Post, isShowReplyCard: Binding<Bool>) {
+        self.notification = nil
+        self.post = post
+        self._isShowReplyCard = isShowReplyCard
+        self._viewModel = StateObject(wrappedValue: ReplyPostCardViewModel(post: post))
     }
     
     var body: some View {
@@ -31,24 +42,22 @@ struct ReplyPostCardView: View {
                     HStack {
                         ProfileImageView(
                             viewModel: AsyncImageViewModel(
-                                url: URL(string: notification.author.avatar ?? ""),
+                                url: replyTargetAvatarUrl,
                                 imageSize: .timeline,
-                                alt: notification.author.displayName ?? notification.author.handle
+                                alt: replyTargetDisplayName
                             ),
-                            actor: notification.author.did
+                            actor: replyTargetDid
                         )
                         .frame(width: 30, height: 30)
                         
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(notification.author.displayName ?? notification.author.handle)
+                            Text(replyTargetDisplayName)
                                 .font(.subheadline)
                                 .fontWeight(.medium)
                             
-                            if let record = notification.record, let text = record.text {
-                                Text(text)
-                                    .font(.body)
-                                    .lineLimit(3)
-                            }
+                            Text(replyTargetText)
+                                .font(.body)
+                                .lineLimit(3)
                         }
                         
                         Spacer()
@@ -191,5 +200,42 @@ struct ReplyPostCardView: View {
                 viewModel.loadImage(from: latestItem)
             }
         }
+    }
+    
+    // リプライ先の情報を取得するためのcomputed properties
+    private var replyTargetAvatarUrl: URL? {
+        if let notification = notification {
+            return URL(string: notification.author.avatar ?? "")
+        } else if let post = post {
+            return post.author?.avatarUrl
+        }
+        return nil
+    }
+    
+    private var replyTargetDisplayName: String {
+        if let notification = notification {
+            return notification.author.displayName ?? notification.author.handle
+        } else if let post = post {
+            return post.author?.displayName ?? post.author?.handle ?? ""
+        }
+        return ""
+    }
+    
+    private var replyTargetDid: String {
+        if let notification = notification {
+            return notification.author.did
+        } else if let post = post {
+            return post.author?.did ?? ""
+        }
+        return ""
+    }
+    
+    private var replyTargetText: String {
+        if let notification = notification, let record = notification.record, let text = record.text {
+            return text
+        } else if let post = post, let text = post.record?.text {
+            return text
+        }
+        return ""
     }
 }
