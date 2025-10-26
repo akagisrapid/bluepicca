@@ -3,9 +3,11 @@ import SwiftUI
 struct PostDetailView: View {
     @StateObject var viewModel: PostDetailViewModel
     @State private var isShowingReplySheet = false
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack(alignment: .leading){
+        ZStack {
+            VStack(alignment: .leading){
             // リプライ元情報を表示
             if viewModel.isReply {
                 NavigationLink(
@@ -212,7 +214,29 @@ struct PostDetailView: View {
                     }
                 }
             }
-        }.padding()
+            }.padding()
+            
+            // 右下の戻るボタン
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                            .background(Color.black.opacity(0.7))
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                    }
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 20)
+                    .scaleEffect(1.2)
+                }
+            }
+        }
         .sheet(isPresented: $isShowingReplySheet) {
             ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
         }
