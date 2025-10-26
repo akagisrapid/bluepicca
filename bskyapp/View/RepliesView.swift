@@ -14,45 +14,68 @@ struct RepliesView: View {
     @State private var isShowReplyCard = false
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                // カスタムヘッダー
-                HStack {
-                    Text("リプライ")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    Spacer()
-                    
-                    Button("更新", systemImage: "arrow.clockwise") {
-                        Task {
-                            await viewModel.fetchReplies()
+        ZStack {
+            NavigationStack {
+                VStack(spacing: 0) {
+                    // カスタムヘッダー
+                    HStack {
+                        Text("リプライ")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Spacer()
+                        
+                        Button("更新", systemImage: "arrow.clockwise") {
+                            Task {
+                                await viewModel.fetchReplies()
+                            }
                         }
                     }
-                }
-                .padding(.horizontal)
-                .padding(.vertical, 12)
-                .background(Color(UIColor.systemBackground))
-                
-                // リプライリスト
-                if viewModel.isFetchingReplies {
-                    Spacer()
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .scaleEffect(2.0)
-                    Spacer()
-                } else {
-                    List(viewModel.replyNotifications) { notification in
-                        ReplyCardView(notification: notification)
-                            .onTapGesture {
-                                selectedNotification = notification
-                                isShowReplyCard = true
-                            }
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
+                    .background(Color(UIColor.systemBackground))
+                    
+                    // リプライリスト
+                    if viewModel.isFetchingReplies {
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .scaleEffect(2.0)
+                        Spacer()
+                    } else {
+                        List(viewModel.replyNotifications) { notification in
+                            ReplyCardView(notification: notification)
+                                .onTapGesture {
+                                    selectedNotification = notification
+                                    isShowReplyCard = true
+                                }
+                        }
+                        .listStyle(.plain)
                     }
-                    .listStyle(.plain)
+                }
+                .navigationBarHidden(true)
+            }
+            
+            // 右下の戻るボタン
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                            .background(Color.black.opacity(0.7))
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                    }
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 20)
+                    .scaleEffect(1.2)
                 }
             }
-            .navigationBarHidden(true)
         }
         .onAppear {
             Task {
