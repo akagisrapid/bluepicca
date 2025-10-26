@@ -6,7 +6,7 @@ class SessionManager {
     
     private var currentSession: CreateSessionResponse?
     private var lastSessionTime: Date?
-    private let sessionExpiryTime: TimeInterval = 10
+    private let sessionExpiryTime: TimeInterval = 12 * 60 * 60 * 1000 // 12 hours in milliseconds
     
     private let userDefaults = UserDefaults.standard
     private let identifierKey = "bsky_identifier"
