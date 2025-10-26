@@ -59,6 +59,7 @@
 		987153582C29BC4E00E08633 /* AsyncImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153572C29BC4E00E08633 /* AsyncImageView.swift */; };
 		9871535A2C29BC8200E08633 /* AsyncImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153592C29BC8200E08633 /* AsyncImageViewModel.swift */; };
 		98733E042EA7A31A00177E2C /* GetNotificationsApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98733E032EA7A31A00177E2C /* GetNotificationsApi.swift */; };
+		98733E142EAE534500177E2C /* GetAuthorFeedApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98733E132EAE534500177E2C /* GetAuthorFeedApi.swift */; };
 		9874EC5B2E7C335800F116D0 /* LikesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC5A2E7C335800F116D0 /* LikesView.swift */; };
 		9874EC5D2E7C335F00F116D0 /* LikesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */; };
 		9874EC602E7C59B800F116D0 /* DeleteRecordApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC5F2E7C59B800F116D0 /* DeleteRecordApi.swift */; };
@@ -147,6 +148,7 @@
 		987153572C29BC4E00E08633 /* AsyncImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageView.swift; sourceTree = "<group>"; };
 		987153592C29BC8200E08633 /* AsyncImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncImageViewModel.swift; sourceTree = "<group>"; };
 		98733E032EA7A31A00177E2C /* GetNotificationsApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetNotificationsApi.swift; sourceTree = "<group>"; };
+		98733E132EAE534500177E2C /* GetAuthorFeedApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAuthorFeedApi.swift; sourceTree = "<group>"; };
 		9874EC5A2E7C335800F116D0 /* LikesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesView.swift; sourceTree = "<group>"; };
 		9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewModel.swift; sourceTree = "<group>"; };
 		9874EC5E2E7C59B800F116D0 /* CreateFollowApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFollowApi.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 				98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */,
 				9874EC6E2E7C5DE500F116D0 /* GetFollowersApi.swift */,
 				98733E032EA7A31A00177E2C /* GetNotificationsApi.swift */,
+				98733E132EAE534500177E2C /* GetAuthorFeedApi.swift */,
 				9874EC6F2E7C5DE500F116D0 /* GetFollowsApi.swift */,
 				9874EC5E2E7C59B800F116D0 /* CreateFollowApi.swift */,
 				9874EC5F2E7C59B800F116D0 /* DeleteRecordApi.swift */,
@@ -569,6 +572,7 @@
 				B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */,
 				987153312C08AAAD00E08633 /* EmbeddedRecordViewItem.swift in Sources */,
 				987153522C29ADBD00E08633 /* PostDetailViewModel.swift in Sources */,
+				98733E142EAE534500177E2C /* GetAuthorFeedApi.swift in Sources */,
 				98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */,
 				987153472C08AF6300E08633 /* DateExtension.swift in Sources */,
 				9871532F2C08AA8E00E08633 /* EmbeddedExternalViewItem.swift in Sources */,
