@@ -16,12 +16,32 @@ struct RepliesView: View {
     var body: some View {
         ZStack {
             NavigationStack {
-                VStack {
+                VStack(spacing: 0) {
+                    // カスタムヘッダー
+                    HStack {
+                        Text("リプライ")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Spacer()
+                        
+                        Button("更新", systemImage: "arrow.clockwise") {
+                            Task {
+                                await viewModel.fetchReplies()
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
+                    .background(Color(UIColor.systemBackground))
+                    
+                    // リプライリスト
                     if viewModel.isFetchingReplies {
+                        Spacer()
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
                             .scaleEffect(2.0)
-                            .padding()
+                        Spacer()
                     } else {
                         List(viewModel.replyNotifications) { notification in
                             ReplyCardView(notification: notification)
@@ -33,28 +53,14 @@ struct RepliesView: View {
                         .listStyle(.plain)
                     }
                 }
-                .navigationTitle("リプライ")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("閉じる") {
-                            dismiss()
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("更新", systemImage: "arrow.clockwise") {
-                            Task {
-                                await viewModel.fetchReplies()
-                            }
-                        }
-                    }
-                }
-                
-                // 右下の戻るボタン
-                VStack {
+                .navigationBarHidden(true)
+            }
+            
+            // 右下の戻るボタン
+            VStack {
+                Spacer()
+                HStack {
                     Spacer()
-                    HStack {
-                        Spacer()
                     Button(action: {
                         dismiss()
                     }) {
@@ -68,21 +74,20 @@ struct RepliesView: View {
                     .padding(.trailing, 20)
                     .padding(.bottom, 20)
                     .scaleEffect(1.2)
-                    }
                 }
             }
-            .onAppear {
-                Task {
-                    await viewModel.fetchReplies()
-                }
+        }
+        .onAppear {
+            Task {
+                await viewModel.fetchReplies()
             }
-            .sheet(isPresented: $isShowReplyCard) {
-                if let notification = selectedNotification {
-                    ReplyPostCardView(
-                        notification: notification,
-                        isShowReplyCard: $isShowReplyCard
-                    )
-                }
+        }
+        .sheet(isPresented: $isShowReplyCard) {
+            if let notification = selectedNotification {
+                ReplyPostCardView(
+                    notification: notification,
+                    isShowReplyCard: $isShowReplyCard
+                )
             }
         }
     }

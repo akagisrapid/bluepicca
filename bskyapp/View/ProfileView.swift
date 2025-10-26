@@ -205,7 +205,7 @@ struct ProfileView: View {
                 }
             }
         }
- migi   }
+    }
 }
 #Preview {
     ProfileView()

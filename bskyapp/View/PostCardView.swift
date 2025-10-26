@@ -1,10 +1,13 @@
 import SwiftUI
 import PhotosUI
+import Combine
 
 struct PostCardView: View {
     @StateObject var viewModel: PostCardViewModel
     @Binding var isShowPostCard: Bool
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var isTextEditorFocused: Bool
+    @State private var keyboardHeight: CGFloat = 0
     
     var body: some View {
         ZStack {
@@ -12,13 +15,17 @@ struct PostCardView: View {
                 ScrollView {
                     VStack(spacing: 10) {
                         GeometryReader { geometry in
+                            let availableHeight = geometry.size.height
+                            let textEditorHeight = max(200, availableHeight * 0.85)
+                            
                             ZStack(alignment: .bottomTrailing) {
                                 TextEditor(text: $viewModel.text)
                                     .frame(
-                                        width: geometry.size.width * 0.8,
-                                        height: geometry.size.height * 0.7
+                                        width: geometry.size.width * 0.95,
+                                        height: textEditorHeight
                                     )
                                     .border(viewModel.isTextValid ? Color.green : Color.red)
+                                    .focused($isTextEditorFocused)
                                     .onChange(of: viewModel.text) {
                                         viewModel.checkTextCount()
                                     }
@@ -33,7 +40,7 @@ struct PostCardView: View {
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                         }
-                        .frame(height: 300)
+                        .frame(height: max(300, UIScreen.main.bounds.height * 0.6 - keyboardHeight - 100))
                         
                         // 画像選択と表示エリア
                         VStack(alignment: .leading) {
@@ -120,14 +127,6 @@ struct PostCardView: View {
                 .navigationTitle("新しいポスト")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            isShowPostCard.toggle()
-                        }) {
-                            Image(systemName: "xmark")
-                                .font(.title2)
-                        }
-                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
                             Task {
@@ -172,25 +171,36 @@ struct PostCardView: View {
                         viewModel.loadImage(from: latestItem)
                     }
                 }
+                .onReceive(Publishers.keyboardHeight) { height in
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        keyboardHeight = height
+                    }
+                }
+                .onChange(of: isTextEditorFocused) { focused in
+                    if focused {
+                        // TextEditorがフォーカスされた時の処理
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            // 必要に応じて追加の調整
+                        }
+                    }
+                }
                 
                 // 右下の戻るボタン
                 VStack {
-                    Spacer()
                     HStack {
                         Spacer()
-                    Button(action: {
-                        isShowPostCard.toggle()
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .background(Color.black.opacity(0.7))
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
-                    }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
-                    .scaleEffect(1.2)
+                        Button(action: {
+                            isShowPostCard.toggle()
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .background(Color.black.opacity(0.7))
+                                .clipShape(Circle())
+                                .shadow(radius: 3)
+                        }
+                        .padding(.trailing, 16)
+                        .padding(.bottom, 16)
                     }
                 }
             }
