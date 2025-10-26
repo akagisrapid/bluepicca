@@ -6,12 +6,18 @@ class ProfileViewModel: ObservableObject {
     @Published var isFollowing: Bool = false
     @Published var followUri: String?
     @Published var isProcessingFollow: Bool = false
+    
+    // ポスト関連のプロパティ
+    @Published var posts: [FeedItem] = []
+    @Published var isFetchingPosts: Bool = false
+    @Published var postsCursor: String?
 
     init(actor: String, profile: GetProfileApiResponse) {
         self.actor = actor
         self.profile = profile
         Task {
             await fetchProfile()
+            await fetchPosts()
         }
     }
 
@@ -74,5 +80,44 @@ class ProfileViewModel: ObservableObject {
     @MainActor
     func forceRefreshProfile() async {
         await fetchProfile()
+    }
+    
+    /// ユーザーのポストを取得
+    @MainActor
+    func fetchPosts() async {
+        guard !isFetchingPosts else { return }
+        
+        do {
+            self.isFetchingPosts = true
+            
+            let feedResponse = try await GetAuthorFeedApi().getAuthorFeed(
+                actor: self.actor,
+                limit: 50,
+                cursor: self.postsCursor
+            )
+            
+            if self.postsCursor == nil {
+                // 初回取得の場合は置き換え
+                self.posts = feedResponse.feed
+            } else {
+                // 追加読み込みの場合は追加
+                self.posts.append(contentsOf: feedResponse.feed)
+            }
+            
+            self.postsCursor = feedResponse.cursor
+            self.isFetchingPosts = false
+            
+        } catch {
+            self.isFetchingPosts = false
+            print("Error fetching posts: \(error)")
+        }
+    }
+    
+    /// ポストを更新（リフレッシュ）
+    @MainActor
+    func refreshPosts() async {
+        self.posts = []
+        self.postsCursor = nil
+        await fetchPosts()
     }
 }
