@@ -20,6 +20,10 @@ class SessionManager {
         }
     }
     
+    var currentUser: CreateSessionResponse? {
+        return currentSession
+    }
+    
     func getSession() async throws -> CreateSessionResponse {
         // If we have a valid session that's not expired, return it
         if let session = currentSession, let lastTime = lastSessionTime,

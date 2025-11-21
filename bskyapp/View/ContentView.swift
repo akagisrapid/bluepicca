@@ -7,6 +7,7 @@ struct ContentView: View {
     @State private var isShowReplies = false
     @State private var isShowLikes = false
     @State private var selectedPostForLikes: Post?
+    @State private var isShowProfile = false
     
     var body: some View {
         NavigationStack {
@@ -67,6 +68,9 @@ struct ContentView: View {
                         }
                     }
                     Spacer()
+                    Button("Profile", systemImage: "person.crop.circle"){
+                        isShowProfile = true
+                    }
                     Button("Refresh", systemImage: "arrow.clockwise"){
                         Task {
                             do {
@@ -89,6 +93,18 @@ struct ContentView: View {
                     postUri: post.uri ?? "" ,
                     postCid: post.cid
                 )
+            }
+        }
+        .sheet(isPresented: $isShowProfile) {
+            if let currentUser = SessionManager.shared.currentUser {
+                ProfileView(viewModel: ProfileViewModel(
+                    actor: currentUser.handle,
+                    profile: GetProfileApiResponse(
+                        did: currentUser.did,
+                        handle: currentUser.handle,
+                        labels: []
+                    )
+                ))
             }
         }
     }
