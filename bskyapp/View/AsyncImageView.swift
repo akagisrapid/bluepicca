@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AsyncImageView: View {
-  @StateObject var viewModel: AsyncImageViewModel
+  let viewModel: AsyncImageViewModel
   @State var isFullsizeView = false
 
   var body: some View {

@@ -17,17 +17,13 @@
 > 現在のアーキテクチャは関心事が混在しており、テストが困難でバグが発生しやすい状態です。
 
 ### 1. Viewのボディ内でのViewModelのインスタンス化
-- **ファイル**: `ContentView.swift`
-- **問題点**: `List` のループ内で `TimelineCardViewModel` をインスタンス化しています。
-  ```swift
-  List(viewModel.validFeeds) { feedItem in
-      // ...
-      var timelineCardViewModel = TimelineCardViewModel(post: post, ...) // 毎回生成される
-      TimelineCardView(viewModel: timelineCardViewModel)
-  }
-  ```
-- **影響**: `TimelineCardViewModel` は `class`（参照型）です。Viewの描画更新のたびに新しいインスタンスが生成されるため、ViewModel内の `@Published` な状態（いいねの楽観的UI更新など）が失われたり、意図しない挙動になります。また、パフォーマンスにも悪影響を与えます。
-- **修正案**: 行ごとのViewModelは `struct`（値型）にするか、親のViewModelで管理する、あるいは `View` 側で直接モデルを表示するように変更すべきです。
+- **状態**: ✅ **修正済み** (TimelineCardViewModel)
+- **以前の問題点**: `ContentView.swift` の `List` ループ内で `TimelineCardViewModel` (Class) を毎回インスタンス化していたため、状態消失のリスクがありました。
+- **対応策**: `TimelineCardViewModel` を `struct` (値型) に変更し、状態を持たない純粋な Presenter としました。
+  - `Post` (Class) を直接 Observation する形に変更 (`@ObservedObject var post: Post`)。
+  - `isLiking` などの一時的なUI状態は View (`TimelineCardView`) の `@State` に移動。
+  - `TimelineCardViewModel` はデータの整形とAPIコールのトリガーのみを担当。
+- **備考**: `PostDetailViewModel` など画面単位の ViewModel は引き続き `class` (`StateObject`) として利用しますが、リスト内アイテムに関しては `struct` を推奨します。詳細は `Architecture_Guide.md` を参照してください。
 
 ### 2. ViewModelが「神クラス」化しており、Service層が欠如している
 - **ファイル**: `PostCardViewModel.swift`

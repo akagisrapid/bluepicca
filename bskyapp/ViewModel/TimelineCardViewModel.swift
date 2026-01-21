@@ -1,11 +1,9 @@
 import Foundation
 
-class TimelineCardViewModel: ObservableObject {
-  @Published var post: Post
-  @Published var reason: Reason?
-  @Published var reply: Reply?
-  @Published var isLiking: Bool = false
-  @Published var isReposting: Bool = false
+struct TimelineCardViewModel {
+  let post: Post
+  let reason: Reason?
+  let reply: Reply?
 
   init(post: Post, reason: Reason? = nil, reply: Reply? = nil) {
     self.post = post
@@ -116,7 +114,6 @@ class TimelineCardViewModel: ObservableObject {
   }
 
   /// いいね処理（バッチ処理対応）
-  /// いいね処理（バッチ処理対応）
   @MainActor
   func toggleLike() async {
     guard let postUri = post.uri else {
@@ -124,7 +121,8 @@ class TimelineCardViewModel: ObservableObject {
       return
     }
 
-    isLiking = true
+    // View側に変更を通知
+    post.objectWillChange.send()
 
     if isLiked {
       // いいね取り消し
@@ -155,6 +153,7 @@ class TimelineCardViewModel: ObservableObject {
             print("いいね取り消し失敗: \(error)")
             // ロールバック
             await MainActor.run {
+              post.objectWillChange.send()
               post.viewer = originalViewer
               post.likeCount = originalLikeCount
               PostStateManager.shared.setLiked(postUri: postUri, likeUri: likeUri)
@@ -196,6 +195,7 @@ class TimelineCardViewModel: ObservableObject {
           await MainActor.run {
             // ユーザーが連打していないか確認（現在のstateがまだLike状態か）
             if post.viewer?.like != nil {
+              post.objectWillChange.send()
               post.viewer = Viewer(
                 repost: post.viewer?.repost,
                 like: newLikeUri,
@@ -208,6 +208,7 @@ class TimelineCardViewModel: ObservableObject {
           print("いいね失敗: \(error)")
           // ロールバック
           await MainActor.run {
+            post.objectWillChange.send()
             post.viewer = originalViewer
             post.likeCount = originalLikeCount
             PostStateManager.shared.removeLiked(postUri: postUri)
@@ -215,8 +216,6 @@ class TimelineCardViewModel: ObservableObject {
         }
       }
     }
-
-    isLiking = false
   }
 
   // MARK: - リポスト機能
@@ -239,7 +238,8 @@ class TimelineCardViewModel: ObservableObject {
       return
     }
 
-    isReposting = true
+    // View側に変更を通知
+    post.objectWillChange.send()
 
     if isReposted {
       // リポスト取り消し
@@ -270,6 +270,7 @@ class TimelineCardViewModel: ObservableObject {
             print("リポスト取り消し失敗: \(error)")
             // ロールバック
             await MainActor.run {
+              post.objectWillChange.send()
               post.viewer = originalViewer
               post.repostCount = originalRepostCount
               PostStateManager.shared.setReposted(postUri: postUri, repostUri: repostUri)
@@ -311,6 +312,7 @@ class TimelineCardViewModel: ObservableObject {
           await MainActor.run {
             // ユーザーが連打していないか確認
             if post.viewer?.repost != nil {
+              post.objectWillChange.send()
               post.viewer = Viewer(
                 repost: newRepostUri,
                 like: post.viewer?.like,
@@ -323,6 +325,7 @@ class TimelineCardViewModel: ObservableObject {
           print("リポスト失敗: \(error)")
           // ロールバック
           await MainActor.run {
+            post.objectWillChange.send()
             post.viewer = originalViewer
             post.repostCount = originalRepostCount
             PostStateManager.shared.removeReposted(postUri: postUri)
@@ -330,7 +333,5 @@ class TimelineCardViewModel: ObservableObject {
         }
       }
     }
-
-    isReposting = false
   }
 }
