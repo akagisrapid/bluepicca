@@ -81,7 +81,6 @@
 		98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */; };
 		98D959602CADA2AA00E6A6B7 /* GetProfileApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */; };
 		98D959622CADA8CF00E6A6B7 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */; };
-		98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */; };
 		98F8CD522CFF2C11005D201B /* GetLikesApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */; };
 		98F8CD542CFF48A5005D201B /* GetLikesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F8CD532CFF489D005D201B /* GetLikesApi.swift */; };
 		B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostCardView.swift */; };
@@ -173,7 +172,6 @@
 		98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProfileApi.swift; sourceTree = "<group>"; };
 		98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProfileApiModel.swift; sourceTree = "<group>"; };
 		98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
-		98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetKeysFromKeychain.swift; sourceTree = "<group>"; };
 		98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLikesApiModel.swift; sourceTree = "<group>"; };
 		98F8CD532CFF489D005D201B /* GetLikesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLikesApi.swift; sourceTree = "<group>"; };
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -350,7 +348,6 @@
 			isa = PBXGroup;
 			children = (
 				98289CC92BF772C3007EA3C5 /* Extension */,
-				98E37E542BD95983009D33CD /* GetKeysFromKeychain.swift */,
 				980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */,
 				980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */,
 			);
@@ -566,7 +563,6 @@
 				987153492C08B06B00E08633 /* StringExtension.swift in Sources */,
 				987153232C08A90E00E08633 /* Viewer.swift in Sources */,
 				98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */,
-				98E37E552BD95983009D33CD /* GetKeysFromKeychain.swift in Sources */,
 				980FD1FA2E7AF6F800AE29EF /* CreateLikeApi.swift in Sources */,
 				980FD2092E7AFB0400AE29EF /* RepliesViewModel.swift in Sources */,
 				98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */,

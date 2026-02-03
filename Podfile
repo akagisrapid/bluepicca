@@ -5,13 +5,7 @@ target 'bskyapp' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   pod 'Alamofire'
-  
-  plugin 'cocoapods-keys', {
-  :project => "bskyapp",
-  :keys => [
-    "bskyPassword",
-  ]
-  }
+
   # Pods for bskyapp
 
 end

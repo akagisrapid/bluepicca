@@ -1,14 +1,5 @@
 import Foundation
 import Alamofire
-import Keys
-
-func createSession() async throws -> CreateSessionResponse {
-    // For backward compatibility, use the hardcoded values
-    let identifier = "akagisrapid.bsky.social"
-    let password = getBskyPasswordFromKeychain()
-    
-    return try await createSession(identifier: identifier, password: password)
-}
 
 func createSession(identifier: String, password: String) async throws -> CreateSessionResponse {
     let endPoint = "https://bsky.social/xrpc/"
