@@ -34,6 +34,10 @@ class ContentViewModel: ObservableObject{
             
             self.feeds = timelineResponse.feed
             self.posts = self.feeds.compactMap { $0.post }
+
+            // サーバーの状態でローカルのいいね/リポスト状態を同期
+            PostStateManager.shared.syncWithServerState(posts: self.posts)
+
             print("ContentViewModel: Updated posts count: \(self.posts.count)")
             
             self.isFetchingTimeline = false

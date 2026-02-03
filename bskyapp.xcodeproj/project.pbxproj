@@ -12,8 +12,6 @@
 		980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E12E77B95300AE29EF /* LinkCardView.swift */; };
 		980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */; };
 		980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */; };
-		980FD1F22E7AEE4A00AE29EF /* CreateRepostApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1F12E7AEE4A00AE29EF /* CreateRepostApi.swift */; };
-		980FD1FA2E7AF6F800AE29EF /* CreateLikeApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1F92E7AF6F800AE29EF /* CreateLikeApi.swift */; };
 		980FD1FC2E7AF71F00AE29EF /* PostStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */; };
 		980FD2032E7AFACD00AE29EF /* NotificationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2012E7AFACD00AE29EF /* NotificationResponse.swift */; };
 		980FD2072E7AFAF700AE29EF /* RepliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2062E7AFAF700AE29EF /* RepliesView.swift */; };
@@ -86,7 +84,8 @@
 		B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostCardView.swift */; };
 		B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */; };
 		B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */; };
-		B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */; };
+		AAAA00012F000001007AAAAA /* PostCreationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA00002F000001007AAAAA /* PostCreationService.swift */; };
+		AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */; };
 		B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C0576F2B8712D80066AD91 /* bskyappApp.swift */; };
 		B0C057722B8712D80066AD91 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C057712B8712D80066AD91 /* ContentView.swift */; };
 		B0C057762B8712D90066AD91 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0C057752B8712D90066AD91 /* Assets.xcassets */; };
@@ -102,8 +101,6 @@
 		980FD1E12E77B95300AE29EF /* LinkCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCardView.swift; sourceTree = "<group>"; };
 		980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadBlobApi.swift; sourceTree = "<group>"; };
 		980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressionHelper.swift; sourceTree = "<group>"; };
-		980FD1F12E7AEE4A00AE29EF /* CreateRepostApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRepostApi.swift; sourceTree = "<group>"; };
-		980FD1F92E7AF6F800AE29EF /* CreateLikeApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateLikeApi.swift; sourceTree = "<group>"; };
 		980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStateManager.swift; sourceTree = "<group>"; };
 		980FD2012E7AFACD00AE29EF /* NotificationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationResponse.swift; sourceTree = "<group>"; };
 		980FD2062E7AFAF700AE29EF /* RepliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesView.swift; sourceTree = "<group>"; };
@@ -172,13 +169,14 @@
 		98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProfileApi.swift; sourceTree = "<group>"; };
 		98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProfileApiModel.swift; sourceTree = "<group>"; };
 		98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
+		AAAA00002F000001007AAAAA /* PostCreationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreationService.swift; sourceTree = "<group>"; };
+		AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInteractionHelper.swift; sourceTree = "<group>"; };
 		98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLikesApiModel.swift; sourceTree = "<group>"; };
 		98F8CD532CFF489D005D201B /* GetLikesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLikesApi.swift; sourceTree = "<group>"; };
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
 		B01C96C42BA4210F0077D572 /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardViewModel.swift; sourceTree = "<group>"; };
 		B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApi.swift; sourceTree = "<group>"; };
-		B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApi.swift; sourceTree = "<group>"; };
 		B0C0576C2B8712D80066AD91 /* bskyapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bskyapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0C0576F2B8712D80066AD91 /* bskyappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bskyappApp.swift; sourceTree = "<group>"; };
 		B0C057712B8712D80066AD91 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -302,11 +300,9 @@
 				9874EC5E2E7C59B800F116D0 /* CreateFollowApi.swift */,
 				9874EC5F2E7C59B800F116D0 /* DeleteRecordApi.swift */,
 				98697E9C2F1E4C9B007EFC2F /* InteractionService.swift */,
-				980FD1F12E7AEE4A00AE29EF /* CreateRepostApi.swift */,
-				980FD1F92E7AF6F800AE29EF /* CreateLikeApi.swift */,
+				AAAA00002F000001007AAAAA /* PostCreationService.swift */,
 				980FD20E2E7B041900AE29EF /* GetPostThreadApi.swift */,
 				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
-				B01C96CB2BAC132C0077D572 /* CreateRecordApi.swift */,
 				B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */,
 				983B2C132BB27216004E20F3 /* GetTimelineApi.swift */,
 			);
@@ -350,6 +346,7 @@
 				98289CC92BF772C3007EA3C5 /* Extension */,
 				980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */,
 				980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */,
+				AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -548,13 +545,13 @@
 				9871532B2C08A9A300E08633 /* PostRecord.swift in Sources */,
 				987153372C08ABD900E08633 /* FeedRequest.swift in Sources */,
 				9871533D2C08ACC700E08633 /* Reason.swift in Sources */,
-				980FD1F22E7AEE4A00AE29EF /* CreateRepostApi.swift in Sources */,
+				AAAA00012F000001007AAAAA /* PostCreationService.swift in Sources */,
+				AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */,
 				9874EC6D2E7C5DD700F116D0 /* FollowListViewModel.swift in Sources */,
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				980FD2122E7B042900AE29EF /* PostThreadResponse.swift in Sources */,
 				9874EC5B2E7C335800F116D0 /* LikesView.swift in Sources */,
-				B01C96CC2BAC132C0077D572 /* CreateRecordApi.swift in Sources */,
 				98697E9D2F1E4C9B007EFC2F /* InteractionService.swift in Sources */,
 				987153352C08ABB400E08633 /* ThreadgateList.swift in Sources */,
 				980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */,
