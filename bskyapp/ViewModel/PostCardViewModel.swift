@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import PhotosUI
+import Alamofire
 
 class PostCardViewModel: ObservableObject {
     @Published var text: String = ""
