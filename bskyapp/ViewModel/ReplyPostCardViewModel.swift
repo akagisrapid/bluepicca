@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Alamofire
 import SwiftUI
 import PhotosUI
 
@@ -20,128 +19,36 @@ class ReplyPostCardViewModel: ObservableObject {
     @Published var selectedPhotoItems: [PhotosPickerItem] = []
     @Published var isUploading: Bool = false
     @Published var uploadProgress: Double = 0.0
-    
+
     private let notification: NotificationItem?
     private let post: Post?
     var maxTextCount: Int = 300
     var maxImageCount: Int = 4
-    
+
     // NotificationItem用のイニシャライザー
     init(notification: NotificationItem) {
         self.notification = notification
         self.post = nil
     }
-    
+
     // Post用のイニシャライザー
     init(post: Post) {
         self.notification = nil
         self.post = post
     }
-    
+
     func postReply() async throws {
         do {
-            var uploadedImages: [UploadedImage]? = nil
-            
-            // 画像がある場合はアップロード
-            if !selectedImages.isEmpty {
-                await MainActor.run {
-                    isUploading = true
-                    uploadProgress = 0.0
-                }
-                
-                uploadedImages = []
-                let totalImages = selectedImages.count
-                
-                for (index, image) in selectedImages.enumerated() {
-                    guard let imageData = ImageCompressionHelper.compressImage(image) else {
-                        await MainActor.run {
-                            errorMessage = "画像[\(index + 1)]の圧縮に失敗しました"
-                        }
-                        continue
-                    }
-                    
-                    if ImageCompressionHelper.isFileSizeExceeded(imageData) {
-                        let fileSizeString = ImageCompressionHelper.formatFileSize(imageData.count)
-                        await MainActor.run {
-                            errorMessage = "画像[\(index + 1)]のファイルサイズが大きすぎます (\(fileSizeString))"
-                        }
-                        continue
-                    }
-                    
-                    do {
-                        await MainActor.run {
-                            uploadProgress = Double(index) / Double(totalImages)
-                        }
-                        
-                        let endPoint = "https://bsky.social/xrpc/"
-                        let uploadBlobEndpoint = "com.atproto.repo.uploadBlob"
-                        let urlString = endPoint + uploadBlobEndpoint
-                        
-                        let session = try await SessionManager.shared.getSession()
-                        let headers: HTTPHeaders = [
-                            "Content-Type": "image/jpeg",
-                            "Authorization": "Bearer \(session.accessJwt)"
-                        ]
-                        
-                        let response = await AF.upload(imageData, to: urlString, method: .post, headers: headers)
-                            .validate()
-                            .serializingDecodable(UploadBlobResponse.self)
-                            .response
-                        
-                        switch response.result {
-                        case .success(let value):
-                            let uploadedImage = UploadedImage(
-                                blobReference: value.blob,
-                                alt: "画像の説明",
-                                imageData: imageData
-                            )
-                            uploadedImages?.append(uploadedImage)
-                            
-                            await MainActor.run {
-                                uploadProgress = Double(index + 1) / Double(totalImages)
-                            }
-                        case .failure(let error):
-                            print("画像[\(index)]のアップロード失敗: \(error)")
-                        }
-                    } catch {
-                        print("画像[\(index)]のアップロード例外: \(error.localizedDescription)")
-                    }
-                }
-                
-                await MainActor.run {
-                    isUploading = false
-                    uploadProgress = 1.0
-                }
-            }
-            
-            // リプライレコードを作成
-            let session = try await SessionManager.shared.getSession()
-            
-            // リプライ情報を作成
-            let replyRef: [String: Any]
-            
+            // Resolve parent URI and CID
+            let parentUri: String
+            let parentCid: String
+
             if let notification = notification {
-                replyRef = [
-                    "root": [
-                        "uri": notification.uri,
-                        "cid": notification.cid
-                    ],
-                    "parent": [
-                        "uri": notification.uri,
-                        "cid": notification.cid
-                    ]
-                ]
+                parentUri = notification.uri
+                parentCid = notification.cid
             } else if let post = post, let uri = post.uri, let cid = post.cid {
-                replyRef = [
-                    "root": [
-                        "uri": uri,
-                        "cid": cid
-                    ],
-                    "parent": [
-                        "uri": uri,
-                        "cid": cid
-                    ]
-                ]
+                parentUri = uri
+                parentCid = cid
             } else {
                 await MainActor.run {
                     errorMessage = "リプライに必要な情報が不足しています"
@@ -149,88 +56,48 @@ class ReplyPostCardViewModel: ObservableObject {
                 }
                 throw NSError(domain: "ReplyError", code: -1, userInfo: [NSLocalizedDescriptionKey: "リプライに必要な情報が不足しています"])
             }
-            
-            var recordDict: [String: Any] = [
-                "$type": "app.bsky.feed.post",
-                "text": text,
-                "createdAt": Date().ISO8601Format(),
-                "reply": replyRef
-            ]
-            
-            // 画像がある場合は埋め込み情報を追加
-            if let uploadedImages = uploadedImages, !uploadedImages.isEmpty {
-                var imagesArray: [[String: Any]] = []
-                
-                for uploadedImage in uploadedImages {
-                    let imageDict: [String: Any] = [
-                        "alt": uploadedImage.alt,
-                        "image": [
-                            "$type": "blob",
-                            "ref": [
-                                "$link": uploadedImage.blobReference.cid
-                            ],
-                            "mimeType": uploadedImage.blobReference.mimeType,
-                            "size": uploadedImage.imageData.count
-                        ]
-                    ]
-                    imagesArray.append(imageDict)
-                }
-                
-                let embedDict: [String: Any] = [
-                    "$type": "app.bsky.embed.images",
-                    "images": imagesArray
-                ]
-                
-                recordDict["embed"] = embedDict
-            }
-            
-            let paramDict: [String: Any] = [
-                "repo": session.did,
-                "collection": "app.bsky.feed.post",
-                "record": recordDict
-            ]
-            
-            // APIリクエストを送信
-            let endPoint = "https://bsky.social/xrpc/"
-            let createRecord = "com.atproto.repo.createRecord"
-            let urlString = endPoint + createRecord
-            
-            let headers: HTTPHeaders = [
-                "Content-Type": "application/json",
-                "Authorization": "Bearer \(session.accessJwt)"
-            ]
-            
-            let jsonData = try JSONSerialization.data(withJSONObject: paramDict, options: [])
-            
-            var request = URLRequest(url: URL(string: urlString)!)
-            request.httpMethod = "POST"
-            request.httpBody = jsonData
-            
-            headers.forEach { header in
-                request.setValue(header.value, forHTTPHeaderField: header.name)
-            }
-            
-            let response = await AF.request(request)
-                .validate()
-                .serializingDecodable(CreateRecordResponse.self)
-                .response
-            
-            switch response.result {
-            case .success(_):
+
+            // Upload images if any
+            var uploadedImages: [UploadedImage]? = nil
+
+            if !selectedImages.isEmpty {
                 await MainActor.run {
-                    isPostCompleted = true
-                    text = ""
-                    selectedImages = []
-                    selectedPhotoItems = []
+                    isUploading = true
+                    uploadProgress = 0.0
                 }
-            case .failure(let error):
-                print("リプライ送信失敗: \(error)")
-                if let data = response.data, let responseString = String(data: data, encoding: .utf8) {
-                    print("レスポンスボディ: \(responseString)")
+
+                let imagesToUpload = selectedImages.map { ImageToUpload(image: $0, alt: "画像の説明") }
+
+                uploadedImages = try await PostCreationService.shared.uploadImages(imagesToUpload) { [weak self] progress in
+                    Task { @MainActor in
+                        self?.uploadProgress = progress
+                    }
                 }
-                throw error
+
+                await MainActor.run {
+                    isUploading = false
+                    uploadProgress = 1.0
+                }
+
+                if uploadedImages?.isEmpty ?? true {
+                    uploadedImages = nil
+                }
             }
-            
+
+            // Create reply
+            try await PostCreationService.shared.createReply(
+                text: text,
+                images: uploadedImages,
+                parentUri: parentUri,
+                parentCid: parentCid
+            )
+
+            await MainActor.run {
+                isPostCompleted = true
+                text = ""
+                selectedImages = []
+                selectedPhotoItems = []
+            }
         } catch {
             await MainActor.run {
                 isUploading = false
@@ -240,30 +107,25 @@ class ReplyPostCardViewModel: ObservableObject {
             throw error
         }
     }
-    
+
     func checkTextCount() {
         DispatchQueue.main.async {
             self.isTextValid = 0 < self.text.count && self.text.count <= self.maxTextCount
         }
     }
-    
+
     var textCountString: String {
         "\(text.count) / \(maxTextCount)"
     }
-    
+
     func loadImage(from item: PhotosPickerItem) {
         Task {
             do {
                 let data = try await item.loadTransferable(type: Data.self)
-                
-                guard let imageData = data else {
-                    return
-                }
-                
-                guard let image = UIImage(data: imageData) else {
-                    return
-                }
-                
+
+                guard let imageData = data else { return }
+                guard let image = UIImage(data: imageData) else { return }
+
                 await MainActor.run {
                     if selectedImages.count < maxImageCount {
                         selectedImages.append(image)
@@ -277,7 +139,7 @@ class ReplyPostCardViewModel: ObservableObject {
             }
         }
     }
-    
+
     func removeImage(at index: Int) {
         if index < selectedImages.count {
             selectedImages.remove(at: index)
@@ -286,7 +148,7 @@ class ReplyPostCardViewModel: ObservableObject {
             }
         }
     }
-    
+
     func canAddMoreImages() -> Bool {
         return selectedImages.count < maxImageCount
     }
