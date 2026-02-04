@@ -4,9 +4,6 @@ struct TimelineCardView: View {
   let viewModel: TimelineCardViewModel
   @ObservedObject var post: Post
 
-  @State private var isLiking = false
-  @State private var isReposting = false
-
   init(viewModel: TimelineCardViewModel) {
     self.viewModel = viewModel
     self._post = ObservedObject(wrappedValue: viewModel.post)
@@ -49,57 +46,55 @@ struct TimelineCardView: View {
           actor: viewModel.post.author?.did ?? "")
         Text(viewModel.authorName).font(.headline)
         Spacer()
-        Text(viewModel.postedTimeRelative)
-          .dynamicTypeSize(.xSmall)
-          .foregroundColor(.gray)
+        VStack(alignment: .trailing, spacing: 2) {
+          Text(viewModel.postedTimeRelative)
+            .dynamicTypeSize(.xSmall)
+            .foregroundColor(.gray)
+
+          // いいね・リポスト数表示
+          HStack(spacing: 8) {
+            HStack(spacing: 2) {
+              Image(systemName: viewModel.isLiked ? "star.fill" : "star")
+                .foregroundColor(viewModel.isLiked ? .yellow : .gray)
+                .font(.caption2)
+              Text("\(viewModel.likeCount)")
+                .font(.caption2)
+                .foregroundColor(.gray)
+            }
+
+            HStack(spacing: 2) {
+              Image(systemName: "arrow.rectanglepath")
+                .foregroundColor(viewModel.isReposted ? .red : .gray)
+                .font(.caption2)
+              Text("\(viewModel.repostCount)")
+                .font(.caption2)
+                .foregroundColor(.gray)
+            }
+          }
+        }
       }
+
       VStack(alignment: .leading) {
         Text(viewModel.text)
       }
 
-      // いいね・リポストボタン
-      HStack(spacing: 20) {
-        // いいねボタン
-        Button(action: {
-          Task {
-            isLiking = true
-            await viewModel.toggleLike()
-            isLiking = false
-          }
-        }) {
-          HStack(spacing: 4) {
-            Image(systemName: viewModel.isLiked ? "star.fill" : "star")
-              .foregroundColor(viewModel.isLiked ? .yellow : .gray)
-            Text("\(viewModel.likeCount)")
+      // 添付情報（画像枚数・リンクURL）
+      if viewModel.imageCount > 0 || viewModel.externalUrl != nil {
+        HStack(spacing: 8) {
+          if viewModel.imageCount > 0 {
+            Text("🖼️x\(viewModel.imageCount)")
               .font(.caption)
               .foregroundColor(.gray)
           }
-        }
-        .disabled(isLiking)
-        .opacity(isLiking ? 0.6 : 1.0)
-
-        // リポストボタン
-        Button(action: {
-          Task {
-            isReposting = true
-            await viewModel.toggleRepost()
-            isReposting = false
-          }
-        }) {
-          HStack(spacing: 4) {
-            Image(systemName: "arrow.rectanglepath")
-              .foregroundColor(viewModel.isReposted ? .red : .gray)
-            Text("\(viewModel.repostCount)")
+          if let url = viewModel.externalUrl {
+            Text("🔗 \(url)")
               .font(.caption)
-              .foregroundColor(.gray)
+              .foregroundColor(.blue)
+              .lineLimit(1)
+              .truncationMode(.middle)
           }
         }
-        .disabled(isReposting)
-        .opacity(isReposting ? 0.6 : 1.0)
-
-        Spacer()
       }
-      .padding(.top, 8)
-    }.padding()
+    }.padding(.horizontal).padding(.vertical, 6)
   }
 }
