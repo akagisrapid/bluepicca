@@ -76,6 +76,10 @@ struct TimelineCardViewModel {
     return post.embed?.external?.uri
   }
 
+  var videoCount: Int {
+    return post.embed?.video != nil ? 1 : 0
+  }
+
   // MARK: - いいね機能
 
   var isLiked: Bool {

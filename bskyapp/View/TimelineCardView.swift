@@ -78,11 +78,16 @@ struct TimelineCardView: View {
         Text(viewModel.text)
       }
 
-      // 添付情報（画像枚数・リンクURL）
-      if viewModel.imageCount > 0 || viewModel.externalUrl != nil {
+      // 添付情報（画像枚数・動画・リンクURL）
+      if viewModel.imageCount > 0 || viewModel.videoCount > 0 || viewModel.externalUrl != nil {
         HStack(spacing: 8) {
           if viewModel.imageCount > 0 {
             Text("🖼️x\(viewModel.imageCount)")
+              .font(.caption)
+              .foregroundColor(.gray)
+          }
+          if viewModel.videoCount > 0 {
+            Text("🎬x\(viewModel.videoCount)")
               .font(.caption)
               .foregroundColor(.gray)
           }

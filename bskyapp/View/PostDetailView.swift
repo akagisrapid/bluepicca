@@ -99,6 +99,10 @@ struct PostDetailView: View {
                         )
                         AsyncImageView(viewModel: vm)
                     }
+
+                    if let video = viewModel.embeddedVideo {
+                        VideoPlayerView(video: video)
+                    }
                 }
             }
             HStack{

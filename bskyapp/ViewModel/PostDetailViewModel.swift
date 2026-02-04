@@ -120,6 +120,10 @@ class PostDetailViewModel: ObservableObject {
     return images
   }
 
+  var embeddedVideo: EmbedVideoViewItem? {
+    return post.embed?.video
+  }
+
   // リポスト情報関連のプロパティ
   var isRepost: Bool {
     return reason != nil
