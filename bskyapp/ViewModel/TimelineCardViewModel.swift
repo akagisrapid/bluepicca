@@ -66,6 +66,16 @@ struct TimelineCardViewModel {
     return text
   }
 
+  // MARK: - 添付情報
+
+  var imageCount: Int {
+    return post.embed?.images?.count ?? 0
+  }
+
+  var externalUrl: String? {
+    return post.embed?.external?.uri
+  }
+
   // MARK: - いいね機能
 
   var isLiked: Bool {
