@@ -23,7 +23,7 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("閉じる") {
+                    Button("閉じる", systemImage: "xmark") {
                         dismiss()
                     }
                 }

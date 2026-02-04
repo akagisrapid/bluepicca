@@ -13,7 +13,6 @@ struct ContentView: View {
   var body: some View {
     NavigationStack {
       VStack {
-        Text("timelines")
         if viewModel.isFetchingTimeline {
           ProgressView()
             .progressViewStyle(CircularProgressViewStyle())
@@ -56,8 +55,18 @@ struct ContentView: View {
     }
 
     .toolbar {
-      ToolbarItem(placement: .bottomBar) {
-        HStack {
+        ToolbarItem(placement: .title){
+            Text("timelines")
+        }
+        ToolbarItem(placement: .navigationBarTrailing){
+            Button(action: {
+                isShowSettings = true
+            }) {
+                Image(systemName: "gearshape")
+            }
+            .buttonStyle(.plain)
+        }
+      ToolbarItemGroup(placement: .bottomBar) {
           Button("Post", systemImage: "square.and.pencil") {
             withAnimation(.easeInOut(duration: 0.3)) {
               viewModel.isShowPostCard.toggle()
@@ -65,9 +74,6 @@ struct ContentView: View {
           }
           Button("Replies", systemImage: "bubble.left.and.bubble.right") {
             isShowReplies = true
-          }
-          Button("Likes", systemImage: "heart") {
-            isShowLikes = true
           }
           Spacer()
           Button("Refresh", systemImage: "arrow.clockwise") {
@@ -79,17 +85,10 @@ struct ContentView: View {
               }
             }
           }
-          Button("Settings", systemImage: "gearshape") {
-            isShowSettings = true
-          }
-        }
       }
     }
     .sheet(isPresented: $isShowReplies) {
       RepliesView(viewModel: RepliesViewModel())
-    }
-    .sheet(isPresented: $isShowLikes) {
-      LikedPostsView(viewModel: LikedPostsViewModel())
     }
     .sheet(isPresented: $isShowSettings) {
       SettingsView(isLoggedIn: $isLoggedIn)
