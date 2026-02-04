@@ -74,6 +74,10 @@
 		9874EC752E7C5DEF00F116D0 /* GetFollowersApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9874EC722E7C5DEF00F116D0 /* GetFollowersApiModel.swift */; };
 		98AF4B962BC55D0C007DE10F /* CreateRecordApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */; };
 		98AF4B982BC6F653007DE10F /* CreateSessionApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */; };
+		98C635D82F2CCAFE0064F497 /* LikedPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C635D72F2CCAFE0064F497 /* LikedPostsView.swift */; };
+		98C635DE2F2CCBAE0064F497 /* LikedPostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C635DD2F2CCBAE0064F497 /* LikedPostsViewModel.swift */; };
+		98C635E02F2CCBEA0064F497 /* GetActorLikesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C635DF2F2CCBEA0064F497 /* GetActorLikesApi.swift */; };
+		98C635E22F2CCC1D0064F497 /* GetActorLikesApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C635E12F2CCC1D0064F497 /* GetActorLikesApiModel.swift */; };
 		98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */; };
 		98D9595A2CAD9F0000E6A6B7 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */; };
 		98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */; };
@@ -91,6 +95,8 @@
 		B0C057762B8712D90066AD91 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0C057752B8712D90066AD91 /* Assets.xcassets */; };
 		B0C057792B8712D90066AD91 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0C057782B8712D90066AD91 /* Preview Assets.xcassets */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
+		BBBB00012F400001007BBBBB /* EmbedVideoViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00002F400001007BBBBB /* EmbedVideoViewItem.swift */; };
+		BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00022F400003007BBBBB /* VideoPlayerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -164,6 +170,10 @@
 		9874EC732E7C5DEF00F116D0 /* GetFollowsApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFollowsApiModel.swift; sourceTree = "<group>"; };
 		98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecordApiModel.swift; sourceTree = "<group>"; };
 		98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApiModel.swift; sourceTree = "<group>"; };
+		98C635D72F2CCAFE0064F497 /* LikedPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedPostsView.swift; sourceTree = "<group>"; };
+		98C635DD2F2CCBAE0064F497 /* LikedPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedPostsViewModel.swift; sourceTree = "<group>"; };
+		98C635DF2F2CCBEA0064F497 /* GetActorLikesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetActorLikesApi.swift; sourceTree = "<group>"; };
+		98C635E12F2CCC1D0064F497 /* GetActorLikesApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetActorLikesApiModel.swift; sourceTree = "<group>"; };
 		98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetProfileApi.swift; sourceTree = "<group>"; };
@@ -171,6 +181,8 @@
 		98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		AAAA00002F000001007AAAAA /* PostCreationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCreationService.swift; sourceTree = "<group>"; };
 		AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInteractionHelper.swift; sourceTree = "<group>"; };
+		BBBB00002F400001007BBBBB /* EmbedVideoViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbedVideoViewItem.swift; sourceTree = "<group>"; };
+		BBBB00022F400003007BBBBB /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLikesApiModel.swift; sourceTree = "<group>"; };
 		98F8CD532CFF489D005D201B /* GetLikesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetLikesApi.swift; sourceTree = "<group>"; };
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -260,6 +272,7 @@
 			children = (
 				987153512C29ADBD00E08633 /* PostDetailViewModel.swift */,
 				980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */,
+				98C635DD2F2CCBAE0064F497 /* LikedPostsViewModel.swift */,
 				9874EC6C2E7C5DD700F116D0 /* FollowListViewModel.swift */,
 				980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */,
 				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
@@ -280,6 +293,7 @@
 				9874EC632E7C59CD00F116D0 /* DeleteRecordApiModel.swift */,
 				9874EC722E7C5DEF00F116D0 /* GetFollowersApiModel.swift */,
 				9874EC732E7C5DEF00F116D0 /* GetFollowsApiModel.swift */,
+				98C635E12F2CCC1D0064F497 /* GetActorLikesApiModel.swift */,
 				98F8CD512CFF2C08005D201B /* GetLikesApiModel.swift */,
 				98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */,
 				98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */,
@@ -294,6 +308,7 @@
 				98F8CD532CFF489D005D201B /* GetLikesApi.swift */,
 				98D9595B2CADA21A00E6A6B7 /* GetProfileApi.swift */,
 				9874EC6E2E7C5DE500F116D0 /* GetFollowersApi.swift */,
+				98C635DF2F2CCBEA0064F497 /* GetActorLikesApi.swift */,
 				98733E032EA7A31A00177E2C /* GetNotificationsApi.swift */,
 				98733E132EAE534500177E2C /* GetAuthorFeedApi.swift */,
 				9874EC6F2E7C5DE500F116D0 /* GetFollowsApi.swift */,
@@ -322,6 +337,7 @@
 				9871532E2C08AA8E00E08633 /* EmbeddedExternalViewItem.swift */,
 				987153302C08AAAD00E08633 /* EmbeddedRecordViewItem.swift */,
 				9871533E2C08AD1E00E08633 /* EmbedImagesViewItem.swift */,
+				BBBB00002F400001007BBBBB /* EmbedVideoViewItem.swift */,
 				983B2C1A2BB29583004E20F3 /* FeedItem.swift */,
 				987153362C08ABD900E08633 /* FeedRequest.swift */,
 				987153382C08AC6F00E08633 /* FeedResponse.swift */,
@@ -357,6 +373,7 @@
 				980FD1D52E77149600AE29EF /* LoginView.swift */,
 				B0C057712B8712D80066AD91 /* ContentView.swift */,
 				B01C96C42BA4210F0077D572 /* PostCardView.swift */,
+				98C635D72F2CCAFE0064F497 /* LikedPostsView.swift */,
 				980FD2062E7AFAF700AE29EF /* RepliesView.swift */,
 				9874EC5A2E7C335800F116D0 /* LikesView.swift */,
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
@@ -365,6 +382,7 @@
 				980FD2132E7B044900AE29EF /* ReplyItemView.swift */,
 				980FD20C2E7B006200AE29EF /* ReplyPostCardView.swift */,
 				987153572C29BC4E00E08633 /* AsyncImageView.swift */,
+				BBBB00022F400003007BBBBB /* VideoPlayerView.swift */,
 				9874EC6A2E7C5DCF00F116D0 /* FollowListView.swift */,
 				98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */,
 				98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */,
@@ -450,7 +468,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					B0C0576B2B8712D80066AD91 = {
 						CreatedOnToolsVersion = 15.2;
@@ -540,10 +558,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98C635E02F2CCBEA0064F497 /* GetActorLikesApi.swift in Sources */,
 				980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */,
 				983B2C1B2BB29583004E20F3 /* FeedItem.swift in Sources */,
 				9871532B2C08A9A300E08633 /* PostRecord.swift in Sources */,
 				987153372C08ABD900E08633 /* FeedRequest.swift in Sources */,
+				98C635DE2F2CCBAE0064F497 /* LikedPostsViewModel.swift in Sources */,
 				9871533D2C08ACC700E08633 /* Reason.swift in Sources */,
 				AAAA00012F000001007AAAAA /* PostCreationService.swift in Sources */,
 				AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */,
@@ -591,6 +611,7 @@
 				980FD2032E7AFACD00AE29EF /* NotificationResponse.swift in Sources */,
 				B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */,
 				9874EC602E7C59B800F116D0 /* DeleteRecordApi.swift in Sources */,
+				98C635D82F2CCAFE0064F497 /* LikedPostsView.swift in Sources */,
 				9874EC612E7C59B800F116D0 /* CreateFollowApi.swift in Sources */,
 				9871532D2C08A9BD00E08633 /* Embed.swift in Sources */,
 				987153332C08AAD100E08633 /* Threadgate.swift in Sources */,
@@ -601,6 +622,7 @@
 				98733E1A2EAE6BDE00177E2C /* PublishersExtension.swift in Sources */,
 				B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */,
 				9871534E2C08C39200E08633 /* ContentViewModel.swift in Sources */,
+				98C635E22F2CCC1D0064F497 /* GetActorLikesApiModel.swift in Sources */,
 				987153272C08A95E00E08633 /* Associated.swift in Sources */,
 				980FD2072E7AFAF700AE29EF /* RepliesView.swift in Sources */,
 				98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */,
@@ -622,6 +644,8 @@
 				980FD1D62E77149600AE29EF /* LoginView.swift in Sources */,
 				B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */,
 				98D959602CADA2AA00E6A6B7 /* GetProfileApiModel.swift in Sources */,
+				BBBB00012F400001007BBBBB /* EmbedVideoViewItem.swift in Sources */,
+				BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,6 +687,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = TPXR4FNVUK;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -686,6 +711,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -726,6 +752,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = TPXR4FNVUK;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -742,6 +769,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -756,7 +784,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"bskyapp/Preview Content\"";
-				DEVELOPMENT_TEAM = TPXR4FNVUK;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -787,7 +814,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"bskyapp/Preview Content\"";
-				DEVELOPMENT_TEAM = TPXR4FNVUK;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
