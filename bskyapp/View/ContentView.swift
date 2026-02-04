@@ -4,8 +4,10 @@ import SwiftUI
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @StateObject var viewModel: ContentViewModel
+  @Binding var isLoggedIn: Bool
   @State private var isShowReplies = false
   @State private var isShowLikes = false
+  @State private var isShowSettings = false
   @State private var selectedPostForLikes: Post?
 
   var body: some View {
@@ -77,6 +79,9 @@ struct ContentView: View {
               }
             }
           }
+          Button("Settings", systemImage: "gearshape") {
+            isShowSettings = true
+          }
         }
       }
     }
@@ -86,9 +91,12 @@ struct ContentView: View {
     .sheet(isPresented: $isShowLikes) {
       LikedPostsView(viewModel: LikedPostsViewModel())
     }
+    .sheet(isPresented: $isShowSettings) {
+      SettingsView(isLoggedIn: $isLoggedIn)
+    }
   }
 }
 #Preview {
   var vm = ContentViewModel()
-  return ContentView(viewModel: vm)
+  return ContentView(viewModel: vm, isLoggedIn: .constant(true))
 }
