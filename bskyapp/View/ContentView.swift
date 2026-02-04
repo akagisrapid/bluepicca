@@ -4,14 +4,15 @@ import SwiftUI
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
   @StateObject var viewModel: ContentViewModel
+  @Binding var isLoggedIn: Bool
   @State private var isShowReplies = false
   @State private var isShowLikes = false
+  @State private var isShowSettings = false
   @State private var selectedPostForLikes: Post?
 
   var body: some View {
     NavigationStack {
       VStack {
-        Text("timelines")
         if viewModel.isFetchingTimeline {
           ProgressView()
             .progressViewStyle(CircularProgressViewStyle())
@@ -54,8 +55,18 @@ struct ContentView: View {
     }
 
     .toolbar {
-      ToolbarItem(placement: .bottomBar) {
-        HStack {
+        ToolbarItem(placement: .title){
+            Text("timelines")
+        }
+        ToolbarItem(placement: .navigationBarTrailing){
+            Button(action: {
+                isShowSettings = true
+            }) {
+                Image(systemName: "gearshape")
+            }
+            .buttonStyle(.plain)
+        }
+      ToolbarItemGroup(placement: .bottomBar) {
           Button("Post", systemImage: "square.and.pencil") {
             withAnimation(.easeInOut(duration: 0.3)) {
               viewModel.isShowPostCard.toggle()
@@ -63,9 +74,6 @@ struct ContentView: View {
           }
           Button("Replies", systemImage: "bubble.left.and.bubble.right") {
             isShowReplies = true
-          }
-          Button("Likes", systemImage: "heart") {
-            isShowLikes = true
           }
           Spacer()
           Button("Refresh", systemImage: "arrow.clockwise") {
@@ -77,18 +85,17 @@ struct ContentView: View {
               }
             }
           }
-        }
       }
     }
     .sheet(isPresented: $isShowReplies) {
       RepliesView(viewModel: RepliesViewModel())
     }
-    .sheet(isPresented: $isShowLikes) {
-      LikedPostsView(viewModel: LikedPostsViewModel())
+    .sheet(isPresented: $isShowSettings) {
+      SettingsView(isLoggedIn: $isLoggedIn)
     }
   }
 }
 #Preview {
   var vm = ContentViewModel()
-  return ContentView(viewModel: vm)
+  return ContentView(viewModel: vm, isLoggedIn: .constant(true))
 }

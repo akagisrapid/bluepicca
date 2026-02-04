@@ -30,7 +30,7 @@ struct bskyappApp: App {
         WindowGroup {
             if isLoggedIn {
                 NavigationStack {
-                    ContentView(viewModel: contentViewModel)
+                    ContentView(viewModel: contentViewModel, isLoggedIn: $isLoggedIn)
                         .onAppear {
                             // Refresh timeline when appearing
                             Task {
@@ -38,17 +38,6 @@ struct bskyappApp: App {
                                     try await contentViewModel.fetchTimeline()
                                 } catch {
                                     print("Error fetching timeline: \(error)")
-                                }
-                            }
-                        }
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarTrailing) {
-                                Button(action: {
-                                    // Logout action
-                                    SessionManager.shared.logout()
-                                    isLoggedIn = false
-                                }) {
-                                    Image(systemName: "rectangle.portrait.and.arrow.right")
                                 }
                             }
                         }
