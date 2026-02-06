@@ -3,6 +3,7 @@ import SwiftUI
 struct TimelineCardView: View {
   let viewModel: TimelineCardViewModel
   @ObservedObject var post: Post
+  @State private var isShowingProfile = false
 
   init(viewModel: TimelineCardViewModel) {
     self.viewModel = viewModel
@@ -40,11 +41,16 @@ struct TimelineCardView: View {
       }
 
       HStack {
-        ProfileImageView(
-          viewModel: AsyncImageViewModel(
-            url: viewModel.post.author?.avatarUrl, imageSize: .timeline, alt: ""),
-          actor: viewModel.post.author?.did ?? "")
-        Text(viewModel.authorName).font(.headline)
+        Button {
+          isShowingProfile = true
+        } label: {
+          ProfileImageView(
+            viewModel: AsyncImageViewModel(
+              url: viewModel.post.author?.avatarUrl, imageSize: .timeline, alt: ""))
+          Text(viewModel.authorName).font(.headline)
+            .foregroundColor(.primary)
+        }
+        .buttonStyle(.plain)
         Spacer()
         VStack(alignment: .trailing, spacing: 2) {
           Text(viewModel.postedTimeRelative)
@@ -101,5 +107,8 @@ struct TimelineCardView: View {
         }
       }
     }.padding(.horizontal).padding(.vertical, 6)
+    .sheet(isPresented: $isShowingProfile) {
+      ProfileView(viewModel: .init(actor: viewModel.post.author?.did ?? "", profile: .init(did: "", handle: "", labels: [])))
+    }
   }
 }

@@ -103,8 +103,7 @@ struct RepliesView: View {
                             url: URL(string: notification.author.avatar ?? ""),
                             imageSize: .avatar,
                             alt: notification.author.displayName ?? notification.author.handle
-                        ),
-                        actor: notification.author.did
+                        )
                     )
                     .frame(width: 40, height: 40)
                     

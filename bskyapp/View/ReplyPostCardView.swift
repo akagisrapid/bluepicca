@@ -45,8 +45,7 @@ struct ReplyPostCardView: View {
                                 url: replyTargetAvatarUrl,
                                 imageSize: .timeline,
                                 alt: replyTargetDisplayName
-                            ),
-                            actor: replyTargetDid
+                            )
                         )
                         .frame(width: 30, height: 30)
                         

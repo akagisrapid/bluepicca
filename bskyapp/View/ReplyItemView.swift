@@ -19,8 +19,7 @@ struct ReplyItemView: View {
                         url: threadViewPost.post.author?.avatarUrl,
                         imageSize: .timeline,
                         alt: threadViewPost.post.author?.displayName ?? threadViewPost.post.author?.handle ?? ""
-                    ),
-                    actor: threadViewPost.post.author?.did ?? ""
+                    )
                 )
                 .frame(width: 32, height: 32)
                 

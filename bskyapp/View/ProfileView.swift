@@ -2,21 +2,23 @@ import SwiftUI
 
 struct ProfileView: View {
     @StateObject var viewModel: ProfileViewModel
-    @StateObject var asyncImageViewModel: AsyncImageViewModel
     @State private var showingFollowsList = false
     @State private var showingFollowersList = false
     @State private var selectedPost: Post?
     @State private var showingPostDetail = false
     @Environment(\.dismiss) private var dismiss
-    
+
     init(viewModel: ProfileViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
-        self._asyncImageViewModel = StateObject(wrappedValue: AsyncImageViewModel(url: nil, imageSize: .avatar, alt: ""))
     }
-    
+
     init() {
         self._viewModel = StateObject(wrappedValue: ProfileViewModel(actor: "", profile: .init(did: "", handle: "", labels: [])))
-        self._asyncImageViewModel = StateObject(wrappedValue: AsyncImageViewModel(url: nil, imageSize: .avatar, alt: ""))
+    }
+
+    private var avatarUrl: URL? {
+        guard let avatar = viewModel.profile.avatar else { return nil }
+        return URL(string: avatar)
     }
     
     var body: some View {
@@ -30,7 +32,12 @@ struct ProfileView: View {
                     ScrollView {
                         VStack(alignment: .leading){
                             HStack{
-                                AsyncImageView(viewModel: asyncImageViewModel)
+                                AsyncImage(url: avatarUrl) { image in
+                                    image.image?
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxWidth: 60, maxHeight: 60)
+                                }
                                 VStack(alignment: .leading){
                                     Text(viewModel.profile.handle)
                                         .font(.headline).padding()
@@ -204,6 +211,10 @@ struct ProfileView: View {
                     PostDetailView(viewModel: PostDetailViewModel(post: post))
                 }
             }
+        }
+        .task {
+            await viewModel.fetchProfile()
+            await viewModel.fetchPosts()
         }
     }
 }

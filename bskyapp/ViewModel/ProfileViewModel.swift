@@ -15,10 +15,6 @@ class ProfileViewModel: ObservableObject {
     init(actor: String, profile: GetProfileApiResponse) {
         self.actor = actor
         self.profile = profile
-        Task {
-            await fetchProfile()
-            await fetchPosts()
-        }
     }
 
     @MainActor

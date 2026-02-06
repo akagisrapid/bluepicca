@@ -33,8 +33,7 @@ struct PostDetailView: View {
                                     url: viewModel.parentAvatarUrl,
                                     imageSize: .timeline,
                                     alt: viewModel.parentAuthorName
-                                ),
-                                actor: viewModel.parentAuthorDid
+                                )
                             )
                             .frame(width: 30, height: 30)
                             
@@ -75,7 +74,7 @@ struct PostDetailView: View {
             }
             
             HStack{
-                ProfileImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""), actor: viewModel.post.author?.did ?? "")
+                ProfileImageView(viewModel: AsyncImageViewModel(url: viewModel.avatarUrl, imageSize: .avatar, alt: ""))
                 Text(viewModel.displayName).font(.headline)
                 Spacer()
             }
