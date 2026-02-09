@@ -1,6 +1,12 @@
 import Foundation
 import SwiftUI
 
+struct TextSegment: Identifiable {
+    let id = UUID()
+    let text: String
+    let hashtag: String?
+}
+
 class PostDetailViewModel: ObservableObject {
   @Published var post: Post
   @Published var reason: Reason?
@@ -10,6 +16,8 @@ class PostDetailViewModel: ObservableObject {
   @Published var replies: [ThreadViewPost] = []
   @Published var isFetchingReplies: Bool = false
   @Published var isRepliesExpanded: Bool = false
+  @Published var selectedHashtag: String?
+  @Published var isShowingHashtagSheet: Bool = false
   var likesResponse: GetLikesApiResponse = .init(uri: "", likes: [])
 
   init(post: Post, reason: Reason? = nil) {
@@ -52,6 +60,75 @@ class PostDetailViewModel: ObservableObject {
   }
   var text: String {
     return post.record?.text ?? ""
+  }
+
+  var textSegments: [TextSegment] {
+    guard let facets = post.record?.facets else {
+      return [TextSegment(text: text, hashtag: nil)]
+    }
+
+    let utf8Bytes = Array(text.utf8)
+    var hashtagRanges: [(byteStart: Int, byteEnd: Int, tag: String)] = []
+
+    for facet in facets {
+      guard let index = facet.index, let features = facet.features else { continue }
+      for feature in features {
+        if let tag = feature.tag, feature.type == "app.bsky.richtext.facet#tag" {
+          hashtagRanges.append((index.byteStart, index.byteEnd, tag))
+        }
+      }
+    }
+
+    hashtagRanges.sort { $0.byteStart < $1.byteStart }
+
+    if hashtagRanges.isEmpty {
+      return [TextSegment(text: text, hashtag: nil)]
+    }
+
+    var segments: [TextSegment] = []
+    var currentByte = 0
+
+    for range in hashtagRanges {
+      let start = max(range.byteStart, 0)
+      let end = min(range.byteEnd, utf8Bytes.count)
+      guard start >= currentByte, end <= utf8Bytes.count else { continue }
+
+      if currentByte < start {
+        let slice = Array(utf8Bytes[currentByte..<start])
+        if let str = String(bytes: slice, encoding: .utf8) {
+          segments.append(TextSegment(text: str, hashtag: nil))
+        }
+      }
+
+      let tagSlice = Array(utf8Bytes[start..<end])
+      if let tagText = String(bytes: tagSlice, encoding: .utf8) {
+        segments.append(TextSegment(text: tagText, hashtag: range.tag))
+      }
+
+      currentByte = end
+    }
+
+    if currentByte < utf8Bytes.count {
+      let slice = Array(utf8Bytes[currentByte..<utf8Bytes.count])
+      if let str = String(bytes: slice, encoding: .utf8) {
+        segments.append(TextSegment(text: str, hashtag: nil))
+      }
+    }
+
+    return segments
+  }
+
+  var hashtagAttributedText: AttributedString {
+    var result = AttributedString()
+    for segment in textSegments {
+      var attr = AttributedString(segment.text)
+      if let tag = segment.hashtag {
+        attr.foregroundColor = .blue
+        attr.link = URL(string: "hashtag://\(tag)")
+      }
+      result.append(attr)
+    }
+    return result
   }
 
   var textWithLinks: AttributedString {

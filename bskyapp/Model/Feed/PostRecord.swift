@@ -20,4 +20,5 @@ class FacetIndex: Codable {
 class FacetFeature: Codable {
     let type: String?
     let uri: String?
+    let tag: String?
 }

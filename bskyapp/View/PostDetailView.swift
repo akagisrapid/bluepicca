@@ -79,9 +79,17 @@ struct PostDetailView: View {
                 Text(viewModel.displayName).font(.headline)
                 Spacer()
             }
-            Text(viewModel.text)
+            Text(viewModel.hashtagAttributedText)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
+                .environment(\.openURL, OpenURLAction { url in
+                    if url.scheme == "hashtag", let tag = url.host {
+                        viewModel.selectedHashtag = tag
+                        viewModel.isShowingHashtagSheet = true
+                        return .handled
+                    }
+                    return .systemAction
+                })
                 
             // すべてのリンクをexternalLink形式で表示
             ForEach(viewModel.linkCards, id: \.uri) { externalLink in
@@ -250,6 +258,13 @@ struct PostDetailView: View {
                 Task {
                     await viewModel.refreshRepliesAfterPost()
                 }
+            }
+        }
+        .sheet(isPresented: $viewModel.isShowingHashtagSheet) {
+            if let tag = viewModel.selectedHashtag {
+                HashtagPostsView(
+                    viewModel: HashtagPostsViewModel(hashtag: tag)
+                )
             }
         }
     }

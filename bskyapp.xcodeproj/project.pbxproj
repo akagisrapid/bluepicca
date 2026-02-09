@@ -96,6 +96,10 @@
 		BBBB00012F400001007BBBBB /* EmbedVideoViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00002F400001007BBBBB /* EmbedVideoViewItem.swift */; };
 		BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00022F400003007BBBBB /* VideoPlayerView.swift */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
+		CCCC00012F500001007CCCCC /* SearchPostsApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00002F500001007CCCCC /* SearchPostsApiModel.swift */; };
+		CCCC00032F500003007CCCCC /* SearchPostsApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00022F500003007CCCCC /* SearchPostsApi.swift */; };
+		CCCC00052F500005007CCCCC /* HashtagPostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00042F500005007CCCCC /* HashtagPostsViewModel.swift */; };
+		CCCC00072F500007007CCCCC /* HashtagPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00062F500007007CCCCC /* HashtagPostsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -192,6 +196,10 @@
 		B0C057782B8712D90066AD91 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BBBB00002F400001007BBBBB /* EmbedVideoViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbedVideoViewItem.swift; sourceTree = "<group>"; };
 		BBBB00022F400003007BBBBB /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		CCCC00002F500001007CCCCC /* SearchPostsApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPostsApiModel.swift; sourceTree = "<group>"; };
+		CCCC00022F500003007CCCCC /* SearchPostsApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPostsApi.swift; sourceTree = "<group>"; };
+		CCCC00042F500005007CCCCC /* HashtagPostsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagPostsViewModel.swift; sourceTree = "<group>"; };
+		CCCC00062F500007007CCCCC /* HashtagPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagPostsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -279,6 +287,7 @@
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
 				987153592C29BC8200E08633 /* AsyncImageViewModel.swift */,
 				98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */,
+				CCCC00042F500005007CCCCC /* HashtagPostsViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -295,6 +304,7 @@
 				98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */,
 				98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */,
 				98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */,
+				CCCC00002F500001007CCCCC /* SearchPostsApiModel.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -317,6 +327,7 @@
 				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
 				B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */,
 				983B2C132BB27216004E20F3 /* GetTimelineApi.swift */,
+				CCCC00022F500003007CCCCC /* SearchPostsApi.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -383,6 +394,7 @@
 				9874EC6A2E7C5DCF00F116D0 /* FollowListView.swift */,
 				98D959612CADA8CF00E6A6B7 /* ProfileImageView.swift */,
 				98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */,
+				CCCC00062F500007007CCCCC /* HashtagPostsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -641,6 +653,10 @@
 				98D959602CADA2AA00E6A6B7 /* GetProfileApiModel.swift in Sources */,
 				BBBB00012F400001007BBBBB /* EmbedVideoViewItem.swift in Sources */,
 				BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */,
+				CCCC00012F500001007CCCCC /* SearchPostsApiModel.swift in Sources */,
+				CCCC00032F500003007CCCCC /* SearchPostsApi.swift in Sources */,
+				CCCC00052F500005007CCCCC /* HashtagPostsViewModel.swift in Sources */,
+				CCCC00072F500007007CCCCC /* HashtagPostsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
