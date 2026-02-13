@@ -73,7 +73,7 @@ class PostDetailViewModel: ObservableObject {
     for facet in facets {
       guard let index = facet.index, let features = facet.features else { continue }
       for feature in features {
-        if let tag = feature.tag, feature.type == "app.bsky.richtext.facet#tag" {
+        if let tag = feature.tag {
           hashtagRanges.append((index.byteStart, index.byteEnd, tag))
         }
       }
@@ -122,9 +122,10 @@ class PostDetailViewModel: ObservableObject {
     var result = AttributedString()
     for segment in textSegments {
       var attr = AttributedString(segment.text)
-      if let tag = segment.hashtag {
+      if let tag = segment.hashtag,
+         let encoded = tag.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
         attr.foregroundColor = .blue
-        attr.link = URL(string: "hashtag://\(tag)")
+        attr.link = URL(string: "hashtag://\(encoded)")
       }
       result.append(attr)
     }

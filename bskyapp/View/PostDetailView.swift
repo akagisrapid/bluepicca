@@ -83,7 +83,8 @@ struct PostDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .environment(\.openURL, OpenURLAction { url in
-                    if url.scheme == "hashtag", let tag = url.host {
+                    if url.scheme == "hashtag", let host = url.host {
+                        let tag = host.removingPercentEncoding ?? host
                         viewModel.selectedHashtag = tag
                         viewModel.isShowingHashtagSheet = true
                         return .handled
