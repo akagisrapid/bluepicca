@@ -29,20 +29,8 @@ struct bskyappApp: App {
     var body: some Scene {
         WindowGroup {
             if isLoggedIn {
-                NavigationStack {
-                    ContentView(viewModel: contentViewModel, isLoggedIn: $isLoggedIn)
-                        .onAppear {
-                            // Refresh timeline when appearing
-                            Task {
-                                do {
-                                    try await contentViewModel.fetchTimeline()
-                                } catch {
-                                    print("Error fetching timeline: \(error)")
-                                }
-                            }
-                        }
-                }
-                .modelContainer(sharedModelContainer)
+                ContentView(viewModel: contentViewModel, isLoggedIn: $isLoggedIn)
+                    .modelContainer(sharedModelContainer)
             } else {
                 // Use LoginView directly
                 LoginView(isLoggedIn: $isLoggedIn)
