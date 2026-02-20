@@ -2,15 +2,15 @@ import Foundation
 import Alamofire
 
 struct GetTimelineApi{
-    func getTimeline() async throws -> FeedResponse{
-        print("Fetching timeline from API")
-        
+    func getTimeline(cursor: String? = nil) async throws -> FeedResponse{
+        print("Fetching timeline from API (cursor: \(cursor ?? "nil"))")
+
         let session = try await SessionManager.shared.getSession()
         let endPoint = "https://bsky.social/xrpc/"
         let repo = "app.bsky.feed.getTimeline"
         let urlString = endPoint + repo
-        
-        let param: FeedRequest = FeedRequest(algorithm: "", limit: 50, cursor: nil)
+
+        let param: FeedRequest = FeedRequest(algorithm: "", limit: 50, cursor: cursor)
         let headers: HTTPHeaders =
         [
             "Content-Type": "application/json",

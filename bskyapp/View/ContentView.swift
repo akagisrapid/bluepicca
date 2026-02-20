@@ -19,21 +19,38 @@ struct ContentView: View {
             .scaleEffect(2.0)  // サイズを調整したい場合
             .padding()
         } else {
-          List(viewModel.validFeeds) { feedItem in
-            if let post = feedItem.post {
-              var timelineCardViewModel = TimelineCardViewModel(
-                post: post, reason: feedItem.reason, reply: feedItem.reply)
-              var postDetailViewModel = PostDetailViewModel(post: post)
-              ZStack {
-                NavigationLink(
-                  destination: PostDetailView(viewModel: postDetailViewModel)
-                ) {
-                  EmptyView()
+          List {
+            ForEach(viewModel.validFeeds) { feedItem in
+              if let post = feedItem.post {
+                var timelineCardViewModel = TimelineCardViewModel(
+                  post: post, reason: feedItem.reason, reply: feedItem.reply)
+                var postDetailViewModel = PostDetailViewModel(post: post)
+                ZStack {
+                  NavigationLink(
+                    destination: PostDetailView(viewModel: postDetailViewModel)
+                  ) {
+                    EmptyView()
+                  }
+                  .opacity(0)
+                  TimelineCardView(
+                    viewModel: timelineCardViewModel)
                 }
-                .opacity(0)
-                TimelineCardView(
-                  viewModel: timelineCardViewModel)
+                .onAppear {
+                  if feedItem.id == viewModel.validFeeds.last?.id {
+                    Task {
+                      await viewModel.loadMore()
+                    }
+                  }
+                }
               }
+            }
+            if viewModel.isLoadingMore {
+              HStack {
+                Spacer()
+                ProgressView()
+                Spacer()
+              }
+              .listRowSeparator(.hidden)
             }
           }.listStyle(.plain)
         }
@@ -52,46 +69,45 @@ struct ContentView: View {
           .transition(.scale)
         }
       }
-    }
-
-    .toolbar {
-        ToolbarItem(placement: .title){
-            Text("timelines")
-        }
-        ToolbarItem(placement: .navigationBarTrailing){
-            Button(action: {
-                isShowSettings = true
-            }) {
-                Image(systemName: "gearshape")
-            }
-            .buttonStyle(.plain)
-        }
-      ToolbarItemGroup(placement: .bottomBar) {
-          Button("Post", systemImage: "square.and.pencil") {
-            withAnimation(.easeInOut(duration: 0.3)) {
-              viewModel.isShowPostCard.toggle()
-            }
+      .toolbar {
+          ToolbarItem(placement: .title){
+              Text("timelines")
           }
-          Button("Replies", systemImage: "bubble.left.and.bubble.right") {
-            isShowReplies = true
+          ToolbarItem(placement: .navigationBarTrailing){
+              Button(action: {
+                  isShowSettings = true
+              }) {
+                  Image(systemName: "gearshape")
+              }
+              .buttonStyle(.plain)
           }
-          Spacer()
-          Button("Refresh", systemImage: "arrow.clockwise") {
-            Task {
-              do {
-                try await viewModel.fetchTimeline()
-              } catch {
-                print("Error fetching timeline: \(error)")
+        ToolbarItemGroup(placement: .bottomBar) {
+            Button("Post", systemImage: "square.and.pencil") {
+              withAnimation(.easeInOut(duration: 0.3)) {
+                viewModel.isShowPostCard.toggle()
               }
             }
-          }
+            Button("Replies", systemImage: "bubble.left.and.bubble.right") {
+              isShowReplies = true
+            }
+            Spacer()
+            Button("Refresh", systemImage: "arrow.clockwise") {
+              Task {
+                do {
+                  try await viewModel.fetchTimeline()
+                } catch {
+                  print("Error fetching timeline: \(error)")
+                }
+              }
+            }
+        }
       }
-    }
-    .sheet(isPresented: $isShowReplies) {
-      RepliesView(viewModel: RepliesViewModel())
-    }
-    .sheet(isPresented: $isShowSettings) {
-      SettingsView(isLoggedIn: $isLoggedIn)
+      .sheet(isPresented: $isShowReplies) {
+        RepliesView(viewModel: RepliesViewModel())
+      }
+      .sheet(isPresented: $isShowSettings) {
+        SettingsView(isLoggedIn: $isLoggedIn)
+      }
     }
   }
 }
