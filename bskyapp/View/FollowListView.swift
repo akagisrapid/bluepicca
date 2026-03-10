@@ -11,8 +11,8 @@ struct FollowListView: View {
     }
     
     var body: some View {
-        ZStack {
-            NavigationStack {
+        NavigationStack {
+            ZStack {
                 List {
                     if viewModel.listType == .follows {
                         ForEach(viewModel.followItems, id: \.did) { item in
@@ -60,9 +60,8 @@ struct FollowListView: View {
                         .padding()
                     }
                 }
-                .navigationTitle(title)
-                .navigationBarTitleDisplayMode(.inline)
-                
+                .listStyle(.plain)
+
                 // 右下の戻るボタン
                 VStack {
                     Spacer()
@@ -84,6 +83,8 @@ struct FollowListView: View {
                     }
                 }
             }
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     
