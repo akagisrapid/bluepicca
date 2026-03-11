@@ -6,8 +6,10 @@ struct PostCardView: View {
     @StateObject var viewModel: PostCardViewModel
     @Binding var isShowPostCard: Bool
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     @FocusState private var isTextEditorFocused: Bool
     @State private var keyboardHeight: CGFloat = 0
+    @State private var isShowDrafts = false
     
     var body: some View {
         NavigationStack {
@@ -77,7 +79,7 @@ struct PostCardView: View {
 
                 Spacer()
 
-                // 下部ツールバー: 画像追加（左）と投稿ボタン（右）
+                // 下部ツールバー: 画像追加（左）・下書き一覧（中）と投稿ボタン（右）
                 HStack {
                     PhotosPicker(selection: $viewModel.selectedPhotoItems, maxSelectionCount: 1, matching: .images) {
                         Image(systemName: "photo.badge.plus")
@@ -85,6 +87,13 @@ struct PostCardView: View {
                             .foregroundColor(viewModel.canAddMoreImages() ? .blue : .gray)
                     }
                     .disabled(!viewModel.canAddMoreImages())
+
+                    Button(action: { isShowDrafts = true }) {
+                        Image(systemName: "tray.and.arrow.down")
+                            .font(.title2)
+                            .foregroundColor(.blue)
+                    }
+                    .padding(.leading, 16)
 
                     Spacer()
 
@@ -128,6 +137,18 @@ struct PostCardView: View {
                         Image(systemName: "xmark")
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { saveDraft() }) {
+                        Image(systemName: "doc.badge.plus")
+                    }
+                    .disabled(viewModel.text.isEmpty)
+                }
+            }
+            .sheet(isPresented: $isShowDrafts) {
+                DraftsView { draft in
+                    viewModel.text = draft.text
+                    viewModel.checkTextCount()
+                }
             }
             .alert(isPresented: $viewModel.isPostCompleted) {
                 Alert(title: Text("送信完了"), message: nil)
@@ -146,5 +167,11 @@ struct PostCardView: View {
                 }
             }
         }
+    }
+
+    private func saveDraft() {
+        guard !viewModel.text.isEmpty else { return }
+        let draft = PostDraft(text: viewModel.text)
+        modelContext.insert(draft)
     }
 }
