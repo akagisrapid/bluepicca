@@ -10,6 +10,7 @@ struct PostCardView: View {
     @FocusState private var isTextEditorFocused: Bool
     @State private var keyboardHeight: CGFloat = 0
     @State private var isShowDrafts = false
+    @State private var isDraftSaved = false
     
     var body: some View {
         NavigationStack {
@@ -150,6 +151,9 @@ struct PostCardView: View {
                     viewModel.checkTextCount()
                 }
             }
+            .alert("下書きを保存しました", isPresented: $isDraftSaved) {
+                Button("OK") {}
+            }
             .alert(isPresented: $viewModel.isPostCompleted) {
                 Alert(title: Text("送信完了"), message: nil)
             }
@@ -173,5 +177,6 @@ struct PostCardView: View {
         guard !viewModel.text.isEmpty else { return }
         let draft = PostDraft(text: viewModel.text)
         modelContext.insert(draft)
+        isDraftSaved = true
     }
 }
