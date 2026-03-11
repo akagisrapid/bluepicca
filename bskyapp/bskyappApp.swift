@@ -17,14 +17,19 @@ struct bskyappApp: App {
     }()
     
     var contentViewModel = ContentViewModel()
-    
+
     @State private var isLoggedIn: Bool = false
-    
+    @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system.rawValue
+
+    private var preferredColorScheme: ColorScheme? {
+        (AppearanceMode(rawValue: appearanceModeRaw) ?? .system).colorScheme
+    }
+
     init() {
         // Check if user is already logged in
         _isLoggedIn = State(initialValue: SessionManager.shared.isLoggedIn())
     }
-    
+
     @MainActor
     var body: some Scene {
         WindowGroup {
@@ -42,10 +47,12 @@ struct bskyappApp: App {
                             }
                         }
                 }
+                .preferredColorScheme(preferredColorScheme)
                 .modelContainer(sharedModelContainer)
             } else {
                 // Use LoginView directly
                 LoginView(isLoggedIn: $isLoggedIn)
+                    .preferredColorScheme(preferredColorScheme)
                     .modelContainer(sharedModelContainer)
             }
         }
