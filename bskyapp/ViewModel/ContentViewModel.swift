@@ -5,6 +5,8 @@ class ContentViewModel: ObservableObject{
     @Published var posts: [Post] = []
     @Published var isFetchingTimeline: Bool = false
     @Published var isShowPostCard: Bool = false
+    @Published var isLoadingMore: Bool = false
+    var timelineCursor: String?
     
     // postフィールドがnilでないFeedItemのみを返す
     var validFeeds: [FeedItem] {
@@ -29,11 +31,12 @@ class ContentViewModel: ObservableObject{
             print("ContentViewModel: Calling GetTimelineApi")
             
             let timelineResponse = try await GetTimelineApi().getTimeline()
-            
+
             print("ContentViewModel: Received timeline response with \(timelineResponse.feed.count) items")
-            
+
             self.feeds = timelineResponse.feed
             self.posts = self.feeds.compactMap { $0.post }
+            self.timelineCursor = timelineResponse.cursor
 
             // サーバーの状態でローカルのいいね/リポスト状態を同期
             PostStateManager.shared.syncWithServerState(posts: self.posts)
@@ -48,5 +51,22 @@ class ContentViewModel: ObservableObject{
             print("ContentViewModel: Timeline fetch error: \(error)")
             throw error
         }
+    }
+
+    @MainActor
+    func loadMore() async {
+        guard !isLoadingMore, let cursor = timelineCursor else { return }
+        isLoadingMore = true
+        do {
+            let response = try await GetTimelineApi().getTimeline(cursor: cursor)
+            print("ContentViewModel: loadMore received \(response.feed.count) items")
+            self.feeds.append(contentsOf: response.feed)
+            self.posts = self.feeds.compactMap { $0.post }
+            self.timelineCursor = response.cursor
+            PostStateManager.shared.syncWithServerState(posts: self.posts)
+        } catch {
+            print("ContentViewModel: loadMore error: \(error)")
+        }
+        isLoadingMore = false
     }
 }
