@@ -17,23 +17,42 @@ struct bskyappApp: App {
     }()
     
     var contentViewModel = ContentViewModel()
-    
+
     @State private var isLoggedIn: Bool = false
-    
+    @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system.rawValue
+
+    private var preferredColorScheme: ColorScheme? {
+        (AppearanceMode(rawValue: appearanceModeRaw) ?? .system).colorScheme
+    }
+
     init() {
         // Check if user is already logged in
         _isLoggedIn = State(initialValue: SessionManager.shared.isLoggedIn())
     }
-    
+
     @MainActor
     var body: some Scene {
         WindowGroup {
             if isLoggedIn {
-                ContentView(viewModel: contentViewModel, isLoggedIn: $isLoggedIn)
-                    .modelContainer(sharedModelContainer)
+                NavigationStack {
+                    ContentView(viewModel: contentViewModel, isLoggedIn: $isLoggedIn)
+                        .onAppear {
+                            // Refresh timeline when appearing
+                            Task {
+                                do {
+                                    try await contentViewModel.fetchTimeline()
+                                } catch {
+                                    print("Error fetching timeline: \(error)")
+                                }
+                            }
+                        }
+                }
+                .preferredColorScheme(preferredColorScheme)
+                .modelContainer(sharedModelContainer)
             } else {
                 // Use LoginView directly
                 LoginView(isLoggedIn: $isLoggedIn)
+                    .preferredColorScheme(preferredColorScheme)
                     .modelContainer(sharedModelContainer)
             }
         }

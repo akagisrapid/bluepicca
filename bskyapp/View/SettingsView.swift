@@ -1,13 +1,49 @@
 import SwiftUI
 
+enum AppearanceMode: String, CaseIterable {
+    case system = "system"
+    case light = "light"
+    case dark = "dark"
+
+    var label: String {
+        switch self {
+        case .system: return "システム"
+        case .light: return "ライト"
+        case .dark: return "ダーク"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+}
+
 struct SettingsView: View {
     @Binding var isLoggedIn: Bool
     @Environment(\.dismiss) private var dismiss
     @State private var showLogoutConfirmation = false
+    @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system.rawValue
+
+    private var appearanceMode: AppearanceMode {
+        AppearanceMode(rawValue: appearanceModeRaw) ?? .system
+    }
 
     var body: some View {
         NavigationStack {
             List {
+                Section("外観") {
+                    Picker("テーマ", selection: $appearanceModeRaw) {
+                        ForEach(AppearanceMode.allCases, id: \.rawValue) { mode in
+                            Text(mode.label).tag(mode.rawValue)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
                 Section {
                     Button(role: .destructive) {
                         showLogoutConfirmation = true
@@ -37,6 +73,7 @@ struct SettingsView: View {
                 }
             }
         }
+        .preferredColorScheme(appearanceMode.colorScheme)
     }
 }
 

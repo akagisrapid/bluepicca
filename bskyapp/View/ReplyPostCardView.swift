@@ -7,13 +7,16 @@
 
 import SwiftUI
 import PhotosUI
+import Combine
 
 struct ReplyPostCardView: View {
     let notification: NotificationItem?
     let post: Post?
     @Binding var isShowReplyCard: Bool
     @StateObject private var viewModel: ReplyPostCardViewModel
-    
+    @FocusState private var isTextEditorFocused: Bool
+    @State private var keyboardHeight: CGFloat = 0
+
     // NotificationItem用のイニシャライザー
     init(notification: NotificationItem, isShowReplyCard: Binding<Bool>) {
         self.notification = notification
@@ -21,7 +24,7 @@ struct ReplyPostCardView: View {
         self._isShowReplyCard = isShowReplyCard
         self._viewModel = StateObject(wrappedValue: ReplyPostCardViewModel(notification: notification))
     }
-    
+
     // Post用のイニシャライザー
     init(post: Post, isShowReplyCard: Binding<Bool>) {
         self.notification = nil
@@ -29,151 +32,116 @@ struct ReplyPostCardView: View {
         self._isShowReplyCard = isShowReplyCard
         self._viewModel = StateObject(wrappedValue: ReplyPostCardViewModel(post: post))
     }
-    
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
-                // リプライ先の投稿を表示
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("リプライ先:")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    HStack {
-                        ProfileImageView(
-                            viewModel: AsyncImageViewModel(
-                                url: replyTargetAvatarUrl,
-                                imageSize: .timeline,
-                                alt: replyTargetDisplayName
-                            ),
-                            actor: replyTargetDid
+            VStack(spacing: 0) {
+                // リプライ先の投稿
+                HStack(alignment: .top, spacing: 10) {
+                    ProfileImageView(
+                        viewModel: AsyncImageViewModel(
+                            url: replyTargetAvatarUrl,
+                            imageSize: .timeline,
+                            alt: replyTargetDisplayName
+                        ),
+                        actor: replyTargetDid
+                    )
+                    .frame(width: 36, height: 36)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(replyTargetDisplayName)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                        Text(replyTargetText)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .lineLimit(3)
+                    }
+
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+
+                Divider()
+
+                // テキストエディタエリア
+                ZStack(alignment: .topTrailing) {
+                    TextEditor(text: $viewModel.text)
+                        .padding(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(viewModel.isTextValid ? Color.gray.opacity(0.3) : Color.red, lineWidth: 1)
                         )
-                        .frame(width: 30, height: 30)
-                        
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(replyTargetDisplayName)
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                            
-                            Text(replyTargetText)
-                                .font(.body)
-                                .lineLimit(3)
+                        .focused($isTextEditorFocused)
+                        .onChange(of: viewModel.text) {
+                            viewModel.checkTextCount()
                         }
-                        
+
+                    Text(viewModel.textCountString)
+                        .font(.caption)
+                        .foregroundColor(viewModel.isTextValid ? .secondary : .red)
+                        .padding(8)
+                }
+                .padding(.horizontal)
+                .padding(.top, 8)
+
+                // 選択された画像の表示
+                if !viewModel.selectedImages.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 10) {
+                            ForEach(0..<viewModel.selectedImages.count, id: \.self) { index in
+                                ZStack(alignment: .topTrailing) {
+                                    Image(uiImage: viewModel.selectedImages[index])
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 80, height: 80)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                                    Button(action: {
+                                        viewModel.removeImage(at: index)
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.red)
+                                            .background(Circle().fill(Color.white))
+                                    }
+                                    .padding(4)
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    }
+                }
+
+                // アップロード進捗表示
+                if viewModel.isUploading {
+                    HStack {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                        Text("アップロード中... \(Int(viewModel.uploadProgress * 100))%")
+                            .font(.caption)
+                            .foregroundColor(.blue)
                         Spacer()
                     }
-                    .padding()
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
+                    .padding(.horizontal)
+                    .padding(.vertical, 4)
                 }
-                
-                // リプライ入力エリア
-                VStack(spacing: 10) {
-                    HStack {
-                        TextEditor(text: $viewModel.text)
-                            .frame(height: 120)
-                            .border(viewModel.isTextValid ? Color.green : Color.red)
-                            .onChange(of: viewModel.text) {
-                                viewModel.checkTextCount()
-                            }
-                        VStack {
-                            Text(viewModel.textCountString).frame(width: 50)
-                        }
-                    }
-                    
-                    // 画像選択と表示エリア（簡略版）
-                    VStack(alignment: .leading) {
-                        if !viewModel.selectedImages.isEmpty {
-                            Text("選択された画像: \(viewModel.selectedImages.count)枚")
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                            
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 10) {
-                                    ForEach(0..<viewModel.selectedImages.count, id: \.self) { index in
-                                        ZStack(alignment: .topTrailing) {
-                                            Image(uiImage: viewModel.selectedImages[index])
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 80, height: 80)
-                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                            
-                                            Button(action: {
-                                                viewModel.removeImage(at: index)
-                                            }) {
-                                                Image(systemName: "xmark.circle.fill")
-                                                    .foregroundColor(.red)
-                                                    .background(Circle().fill(Color.white))
-                                            }
-                                            .padding(4)
-                                        }
-                                    }
-                                    
-                                    if viewModel.canAddMoreImages() {
-                                        PhotosPicker(selection: $viewModel.selectedPhotoItems, maxSelectionCount: 1, matching: .images) {
-                                            VStack {
-                                                Image(systemName: "plus")
-                                                    .font(.system(size: 20))
-                                                Text("追加")
-                                                    .font(.caption2)
-                                            }
-                                            .frame(width: 80, height: 80)
-                                            .background(Color.gray.opacity(0.2))
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        }
-                                    }
-                                }
-                                .padding(.vertical, 8)
-                            }
-                        } else {
-                            PhotosPicker(selection: $viewModel.selectedPhotoItems, maxSelectionCount: 1, matching: .images) {
-                                HStack {
-                                    Image(systemName: "photo")
-                                    Text("画像を追加")
-                                }
-                                .padding(8)
-                                .background(Color.blue.opacity(0.1))
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                            }
-                        }
-                    }
-                    
-                    // アップロード進捗表示
-                    if viewModel.isUploading {
-                        VStack(spacing: 4) {
-                            ProgressView(value: viewModel.uploadProgress)
-                                .progressViewStyle(LinearProgressViewStyle())
-                                .frame(height: 8)
-                            
-                            HStack {
-                                Image(systemName: "arrow.up.to.line")
-                                    .foregroundColor(.blue)
-                                Text("画像をアップロード中... \(Int(viewModel.uploadProgress * 100))%")
-                                    .font(.caption)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                            }
-                        }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 4)
-                        .background(Color.blue.opacity(0.1))
-                        .cornerRadius(8)
-                    }
-                }
-                
+
                 Spacer()
-            }
-            .padding()
-            .navigationTitle("リプライ")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("キャンセル") {
-                        isShowReplyCard = false
+
+                // 下部ツールバー: 画像追加（左）と送信ボタン（右）
+                HStack {
+                    PhotosPicker(selection: $viewModel.selectedPhotoItems, maxSelectionCount: 1, matching: .images) {
+                        Image(systemName: "photo.badge.plus")
+                            .font(.title2)
+                            .foregroundColor(viewModel.canAddMoreImages() ? .blue : .gray)
                     }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("送信") {
+                    .disabled(!viewModel.canAddMoreImages())
+
+                    Spacer()
+
+                    Button(action: {
                         Task {
                             do {
                                 try await viewModel.postReply()
@@ -184,24 +152,47 @@ struct ReplyPostCardView: View {
                                 print("リプライ送信エラー: \(error)")
                             }
                         }
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                            .font(.title2)
+                            .foregroundColor(viewModel.isTextValid && !viewModel.isUploading ? .blue : .gray)
                     }
                     .disabled(!viewModel.isTextValid || viewModel.isUploading)
                 }
+                .padding(.horizontal)
+                .padding(.vertical, 12)
+                .padding(.bottom, keyboardHeight > 0 ? 0 : 8)
             }
-        }
-        .alert(isPresented: $viewModel.isPostCompleted) {
-            Alert(title: Text("リプライを送信しました"), message: nil)
-        }
-        .alert(isPresented: $viewModel.isPostFailed) {
-            Alert(title: Text("送信エラー"), message: Text(viewModel.errorMessage))
-        }
-        .onChange(of: viewModel.selectedPhotoItems) { newItems in
-            if let latestItem = newItems.last {
-                viewModel.loadImage(from: latestItem)
+            .navigationTitle("リプライ")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        isShowReplyCard = false
+                    }) {
+                        Image(systemName: "xmark")
+                    }
+                }
+            }
+            .alert(isPresented: $viewModel.isPostCompleted) {
+                Alert(title: Text("リプライを送信しました"), message: nil)
+            }
+            .alert(isPresented: $viewModel.isPostFailed) {
+                Alert(title: Text("送信エラー"), message: Text(viewModel.errorMessage))
+            }
+            .onChange(of: viewModel.selectedPhotoItems) { newItems in
+                if let latestItem = newItems.last {
+                    viewModel.loadImage(from: latestItem)
+                }
+            }
+            .onReceive(Publishers.keyboardHeight) { height in
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    keyboardHeight = height
+                }
             }
         }
     }
-    
+
     // リプライ先の情報を取得するためのcomputed properties
     private var replyTargetAvatarUrl: URL? {
         if let notification = notification {
@@ -211,7 +202,7 @@ struct ReplyPostCardView: View {
         }
         return nil
     }
-    
+
     private var replyTargetDisplayName: String {
         if let notification = notification {
             return notification.author.displayName ?? notification.author.handle
@@ -220,7 +211,7 @@ struct ReplyPostCardView: View {
         }
         return ""
     }
-    
+
     private var replyTargetDid: String {
         if let notification = notification {
             return notification.author.did
@@ -229,7 +220,7 @@ struct ReplyPostCardView: View {
         }
         return ""
     }
-    
+
     private var replyTargetText: String {
         if let notification = notification, let record = notification.record, let text = record.text {
             return text
