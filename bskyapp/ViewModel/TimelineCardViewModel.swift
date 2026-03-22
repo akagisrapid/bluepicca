@@ -14,7 +14,12 @@ struct TimelineCardViewModel {
     PostInteractionHelper.restorePersistedStates(for: post)
   }
   var authorName: String {
-    post.author?.displayName ?? ""
+    post.author?.displayName ?? post.author?.handle ?? ""
+  }
+
+  var authorHandle: String {
+    let handle = post.author?.handle ?? ""
+    return handle.isEmpty ? "" : "@\(handle)"
   }
   var text: String {
     post.record?.text ?? ""
@@ -74,6 +79,10 @@ struct TimelineCardViewModel {
 
   var externalUrl: String? {
     return post.embed?.external?.uri
+  }
+
+  var externalLink: EmbeddedExternalViewItem? {
+    return post.embed?.external
   }
 
   var videoCount: Int {
