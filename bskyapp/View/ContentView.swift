@@ -8,6 +8,7 @@ struct ContentView: View {
   @State private var isShowReplies = false
   @State private var isShowLikes = false
   @State private var isShowSettings = false
+  @State private var isShowBookmarks = false
   @State private var selectedPostForLikes: Post?
 
   var body: some View {
@@ -100,6 +101,9 @@ struct ContentView: View {
             Button("Replies", systemImage: "bubble.left.and.bubble.right") {
               isShowReplies = true
             }
+            Button("Bookmarks", systemImage: "bookmark") {
+              isShowBookmarks = true
+            }
             Spacer()
             Button("Refresh", systemImage: "arrow.clockwise") {
               Task {
@@ -114,6 +118,9 @@ struct ContentView: View {
       }
       .sheet(isPresented: $isShowReplies) {
         RepliesView(viewModel: RepliesViewModel())
+      }
+      .sheet(isPresented: $isShowBookmarks) {
+        BookmarksView()
       }
       .sheet(isPresented: $isShowSettings) {
         SettingsView(isLoggedIn: $isLoggedIn)
