@@ -142,13 +142,16 @@ struct PostCardView: View {
                     Button(action: { saveDraft() }) {
                         Image(systemName: "doc.badge.plus")
                     }
-                    .disabled(viewModel.text.isEmpty)
+                    .disabled(viewModel.text.isEmpty && viewModel.selectedImages.isEmpty)
                 }
             }
             .sheet(isPresented: $isShowDrafts) {
                 DraftsView { draft in
                     viewModel.text = draft.text
                     viewModel.checkTextCount()
+                    viewModel.selectedImages = draft.imageFilenames.compactMap {
+                        DraftImageStore.load(filename: $0)
+                    }
                 }
             }
             .alert("下書きを保存しました", isPresented: $isDraftSaved) {
@@ -174,8 +177,9 @@ struct PostCardView: View {
     }
 
     private func saveDraft() {
-        guard !viewModel.text.isEmpty else { return }
-        let draft = PostDraft(text: viewModel.text)
+        guard !viewModel.text.isEmpty || !viewModel.selectedImages.isEmpty else { return }
+        let filenames = viewModel.selectedImages.compactMap { DraftImageStore.save($0) }
+        let draft = PostDraft(text: viewModel.text, imageFilenames: filenames)
         modelContext.insert(draft)
         isDraftSaved = true
     }

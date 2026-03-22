@@ -24,16 +24,7 @@ struct DraftsView: View {
                                 onSelect(draft)
                                 dismiss()
                             } label: {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(draft.text)
-                                        .font(.body)
-                                        .foregroundColor(.primary)
-                                        .lineLimit(3)
-                                    Text(draft.updatedAt.formatted(.relative(presentation: .named)))
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                .padding(.vertical, 2)
+                                DraftRowView(draft: draft)
                             }
                         }
                         .onDelete(perform: deleteDrafts)
@@ -60,7 +51,44 @@ struct DraftsView: View {
 
     private func deleteDrafts(at offsets: IndexSet) {
         for index in offsets {
+            DraftImageStore.deleteAll(filenames: drafts[index].imageFilenames)
             modelContext.delete(drafts[index])
         }
+    }
+}
+
+private struct DraftRowView: View {
+    let draft: PostDraft
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            if !draft.text.isEmpty {
+                Text(draft.text)
+                    .font(.body)
+                    .foregroundColor(.primary)
+                    .lineLimit(3)
+            }
+
+            if !draft.imageFilenames.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(draft.imageFilenames, id: \.self) { filename in
+                            if let image = DraftImageStore.load(filename: filename) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 56, height: 56)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                            }
+                        }
+                    }
+                }
+            }
+
+            Text(draft.updatedAt.formatted(.relative(presentation: .named)))
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding(.vertical, 2)
     }
 }
