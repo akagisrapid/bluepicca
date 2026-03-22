@@ -7,6 +7,7 @@ struct bskyappApp: App {
         let schema = Schema([
             Item.self,
             PostDraft.self,
+            BookmarkedPost.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

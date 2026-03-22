@@ -1,13 +1,38 @@
 import SwiftUI
+import SwiftData
 
 struct TimelineCardView: View {
   let viewModel: TimelineCardViewModel
   @ObservedObject var post: Post
   @State private var isShowingReplySheet = false
+  @Environment(\.modelContext) private var modelContext
+  @Query private var bookmarks: [BookmarkedPost]
 
   init(viewModel: TimelineCardViewModel) {
     self.viewModel = viewModel
     self._post = ObservedObject(wrappedValue: viewModel.post)
+  }
+
+  private var isBookmarked: Bool {
+    guard let uri = viewModel.post.uri else { return false }
+    return bookmarks.contains { $0.postUri == uri }
+  }
+
+  private func toggleBookmark() {
+    guard let uri = viewModel.post.uri else { return }
+    if let existing = bookmarks.first(where: { $0.postUri == uri }) {
+      modelContext.delete(existing)
+    } else {
+      let bookmark = BookmarkedPost(
+        postUri: uri,
+        postCid: viewModel.post.cid ?? "",
+        authorDisplayName: viewModel.authorName,
+        authorHandle: viewModel.post.author?.handle ?? "",
+        authorAvatarUrl: viewModel.post.author?.avatarUrl?.absoluteString,
+        text: viewModel.text
+      )
+      modelContext.insert(bookmark)
+    }
   }
 
   var body: some View {
@@ -161,6 +186,15 @@ struct TimelineCardView: View {
         .buttonStyle(.plain)
 
         Spacer()
+
+        // ブックマークボタン
+        Button(action: { toggleBookmark() }) {
+          Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
+            .font(.caption)
+            .foregroundColor(isBookmarked ? .blue : .secondary)
+            .frame(minWidth: 44, minHeight: 36)
+        }
+        .buttonStyle(.plain)
       }
       .padding(.horizontal, 8)
       .padding(.bottom, 4)

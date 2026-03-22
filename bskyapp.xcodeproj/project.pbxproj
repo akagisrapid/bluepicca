@@ -97,6 +97,8 @@
 		BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00022F400003007BBBBB /* VideoPlayerView.swift */; };
 		DDDD00012F500001007DDDDD /* PostDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00002F500001007DDDDD /* PostDraft.swift */; };
 		DDDD00032F500001007DDDDD /* DraftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00022F500001007DDDDD /* DraftsView.swift */; };
+		EEEE00012F600001007EEEEE /* BookmarkedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00002F600001007EEEEE /* BookmarkedPost.swift */; };
+		EEEE00032F600001007EEEEE /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00022F600001007EEEEE /* BookmarksView.swift */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
 /* End PBXBuildFile section */
 
@@ -196,6 +198,8 @@
 		BBBB00022F400003007BBBBB /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		DDDD00002F500001007DDDDD /* PostDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDraft.swift; sourceTree = "<group>"; };
 		DDDD00022F500001007DDDDD /* DraftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftsView.swift; sourceTree = "<group>"; };
+		EEEE00002F600001007EEEEE /* BookmarkedPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkedPost.swift; sourceTree = "<group>"; };
+		EEEE00022F600001007EEEEE /* BookmarksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -375,6 +379,7 @@
 				B0C057712B8712D80066AD91 /* ContentView.swift */,
 				B01C96C42BA4210F0077D572 /* PostCardView.swift */,
 				DDDD00022F500001007DDDDD /* DraftsView.swift */,
+				EEEE00022F600001007EEEEE /* BookmarksView.swift */,
 				980FD2062E7AFAF700AE29EF /* RepliesView.swift */,
 				9874EC5A2E7C335800F116D0 /* LikesView.swift */,
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
@@ -417,6 +422,7 @@
 				B0C0576F2B8712D80066AD91 /* bskyappApp.swift */,
 				9871534F2C08C96A00E08633 /* Item.swift */,
 				DDDD00002F500001007DDDDD /* PostDraft.swift */,
+				EEEE00002F600001007EEEEE /* BookmarkedPost.swift */,
 				B0C057752B8712D90066AD91 /* Assets.xcassets */,
 				983B2C192BB29573004E20F3 /* Model */,
 				B0C057772B8712D90066AD91 /* Preview Content */,
@@ -573,6 +579,8 @@
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
 				DDDD00012F500001007DDDDD /* PostDraft.swift in Sources */,
 				DDDD00032F500001007DDDDD /* DraftsView.swift in Sources */,
+				EEEE00012F600001007EEEEE /* BookmarkedPost.swift in Sources */,
+				EEEE00032F600001007EEEEE /* BookmarksView.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				980FD2122E7B042900AE29EF /* PostThreadResponse.swift in Sources */,
 				9874EC5B2E7C335800F116D0 /* LikesView.swift in Sources */,
