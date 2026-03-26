@@ -27,7 +27,7 @@ class MuteBlockListViewModel: ObservableObject {
         isFetchingMuted = true
         do {
             let response = try await MuteBlockApi.getMutes()
-            mutedActors = response.subjects.map {
+            mutedActors = response.mutes.map {
                 ModeratedActor(
                     did: $0.did,
                     handle: $0.handle,

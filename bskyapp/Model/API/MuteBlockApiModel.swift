@@ -12,7 +12,7 @@ struct GetMutesRequest: Encodable {
 
 struct GetMutesResponse: Decodable {
     let cursor: String?
-    let subjects: [ModeratedSubject]
+    let mutes: [ModeratedSubject]
 }
 
 // MARK: - Block
