@@ -59,10 +59,8 @@ private struct MutedListSection: View {
                     ForEach(viewModel.mutedActors) { actor in
                         ModeratedActorRow(actor: actor)
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
+                                Button("ミュート解除", systemImage: "speaker.wave.2") {
                                     Task { await viewModel.unmute(actor: actor) }
-                                } label: {
-                                    Label("ミュート解除", systemImage: "speaker.wave.2")
                                 }
                                 .tint(.orange)
                             }
@@ -91,10 +89,8 @@ private struct BlockedListSection: View {
                     ForEach(viewModel.blockedActors) { actor in
                         ModeratedActorRow(actor: actor)
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
+                                Button("ブロック解除", systemImage: "hand.raised.slash") {
                                     Task { await viewModel.unblock(actor: actor) }
-                                } label: {
-                                    Label("ブロック解除", systemImage: "hand.raised.slash")
                                 }
                                 .tint(.red)
                             }
