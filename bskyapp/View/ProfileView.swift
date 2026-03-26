@@ -221,18 +221,108 @@ struct ProfileView: View {
         .sheet(isPresented: $showingMuteBlockList) {
             MuteBlockListView()
         }
-        .confirmationDialog("アカウント操作", isPresented: $showingMuteBlockMenu, titleVisibility: .visible) {
-            Button(viewModel.isMuted ? "ミュート解除" : "ミュート") {
-                Task { await viewModel.toggleMute() }
+        .overlay {
+            if showingMuteBlockMenu {
+                AccountActionMenu(
+                    isMuted: viewModel.isMuted,
+                    isBlocked: viewModel.isBlocked,
+                    isProcessing: viewModel.isProcessingMuteBlock,
+                    onMute: { Task { await viewModel.toggleMute() } },
+                    onBlock: { Task { await viewModel.toggleBlock() } },
+                    onShowList: { showingMuteBlockList = true },
+                    onDismiss: { withAnimation(.easeOut(duration: 0.15)) { showingMuteBlockMenu = false } }
+                )
+                .transition(.opacity)
             }
-            Button(viewModel.isBlocked ? "ブロック解除" : "ブロック", role: viewModel.isBlocked ? nil : .destructive) {
-                Task { await viewModel.toggleBlock() }
-            }
-            Button("ミュート・ブロックリストを表示") {
-                showingMuteBlockList = true
-            }
-            Button("キャンセル", role: .cancel) {}
         }
+        .animation(.easeIn(duration: 0.2), value: showingMuteBlockMenu)
+    }
+}
+
+private struct AccountActionMenu: View {
+    let isMuted: Bool
+    let isBlocked: Bool
+    let isProcessing: Bool
+    let onMute: () -> Void
+    let onBlock: () -> Void
+    let onShowList: () -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+                .onTapGesture { onDismiss() }
+
+            VStack(spacing: 0) {
+                Text("アカウント操作")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 12)
+
+                Divider()
+
+                MenuButton(label: isMuted ? "ミュート解除" : "ミュート",
+                           icon: isMuted ? "speaker.wave.2" : "speaker.slash",
+                           color: .primary) {
+                    onMute()
+                    onDismiss()
+                }
+
+                Divider()
+
+                MenuButton(label: isBlocked ? "ブロック解除" : "ブロック",
+                           icon: isBlocked ? "hand.raised.slash" : "hand.raised",
+                           color: isBlocked ? .primary : .red) {
+                    onBlock()
+                    onDismiss()
+                }
+
+                Divider()
+
+                MenuButton(label: "ミュート・ブロックリスト", icon: "list.bullet", color: .primary) {
+                    onShowList()
+                    onDismiss()
+                }
+
+                Divider()
+
+                MenuButton(label: "キャンセル", icon: nil, color: .secondary) {
+                    onDismiss()
+                }
+            }
+            .background(.regularMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .padding(.horizontal, 24)
+            .disabled(isProcessing)
+            .opacity(isProcessing ? 0.6 : 1)
+        }
+    }
+}
+
+private struct MenuButton: View {
+    let label: String
+    let icon: String?
+    let color: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                if let icon {
+                    Image(systemName: icon)
+                        .frame(width: 20)
+                }
+                Text(label)
+                Spacer()
+            }
+            .foregroundColor(color)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 #Preview {
