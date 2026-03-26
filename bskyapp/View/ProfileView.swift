@@ -7,6 +7,8 @@ struct ProfileView: View {
     @State private var showingFollowersList = false
     @State private var selectedPost: Post?
     @State private var showingPostDetail = false
+    @State private var showingMuteBlockMenu = false
+    @State private var showingMuteBlockList = false
     @Environment(\.dismiss) private var dismiss
     
     init(viewModel: ProfileViewModel) {
@@ -21,12 +23,11 @@ struct ProfileView: View {
     
     var body: some View {
         ZStack {
-            Group {
-                if viewModel.isFetching {
+            if viewModel.isFetching {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .padding()
-                } else {
+            } else {
                     ScrollView {
                         VStack(alignment: .leading){
                             HStack{
@@ -178,33 +179,143 @@ struct ProfileView: View {
                     }
                 }
                 
-                // 右下の戻るボタン
+                // オーバーレイボタン群
                 VStack {
+                    HStack {
+                        Spacer()
+                        // ︙ メニューボタン（右上）
+                        Button(action: { showingMuteBlockMenu = true }) {
+                            Image(systemName: "ellipsis.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                                .shadow(radius: 4)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.trailing, 20)
+                        .padding(.top, 16)
+                    }
                     Spacer()
                     HStack {
                         Spacer()
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .background(Color.black.opacity(0.7))
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
-                    }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
-                    .scaleEffect(1.2)
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.largeTitle)
+                                .foregroundColor(.white)
+                                .background(Color.black.opacity(0.7))
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
+                        }
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 20)
+                        .scaleEffect(1.2)
                     }
                 }
-            }
-            .sheet(isPresented: $showingPostDetail) {
+        }
+        .sheet(isPresented: $showingPostDetail) {
                 if let post = selectedPost {
                     PostDetailView(viewModel: PostDetailViewModel(post: post))
                 }
             }
+        .sheet(isPresented: $showingMuteBlockList) {
+            MuteBlockListView()
         }
+        .overlay {
+            if showingMuteBlockMenu {
+                AccountActionMenu(
+                    isMuted: viewModel.isMuted,
+                    isBlocked: viewModel.isBlocked,
+                    isProcessing: viewModel.isProcessingMuteBlock,
+                    onMute: { Task { await viewModel.toggleMute() } },
+                    onBlock: { Task { await viewModel.toggleBlock() } },
+                    onShowList: { showingMuteBlockList = true },
+                    onDismiss: { withAnimation(.easeOut(duration: 0.15)) { showingMuteBlockMenu = false } }
+                )
+                .transition(.opacity)
+            }
+        }
+        .animation(.easeIn(duration: 0.2), value: showingMuteBlockMenu)
+    }
+}
+
+private struct AccountActionMenu: View {
+    let isMuted: Bool
+    let isBlocked: Bool
+    let isProcessing: Bool
+    let onMute: () -> Void
+    let onBlock: () -> Void
+    let onShowList: () -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+                .onTapGesture { onDismiss() }
+
+            VStack(spacing: 8) {
+                // アクションカード
+                VStack(spacing: 0) {
+                    Text("アカウント操作")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .padding(.vertical, 14)
+
+                    Divider()
+
+                    MenuButton(label: isMuted ? "ミュート解除" : "ミュート",
+                               color: .primary) {
+                        onMute(); onDismiss()
+                    }
+
+                    Divider()
+
+                    MenuButton(label: isBlocked ? "ブロック解除" : "ブロック",
+                               color: isBlocked ? .primary : .red) {
+                        onBlock(); onDismiss()
+                    }
+
+                    Divider()
+
+                    MenuButton(label: "ミュート・ブロックリスト", color: .primary) {
+                        onShowList(); onDismiss()
+                    }
+                }
+                .background(.regularMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                // キャンセルカード
+                MenuButton(label: "キャンセル", color: .primary, fontWeight: .semibold) {
+                    onDismiss()
+                }
+                .background(.regularMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
+            .padding(.horizontal, 8)
+            .padding(.bottom, 16)
+            .disabled(isProcessing)
+            .opacity(isProcessing ? 0.6 : 1)
+        }
+    }
+}
+
+private struct MenuButton: View {
+    let label: String
+    let color: Color
+    var fontWeight: Font.Weight = .regular
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.system(size: 20, weight: fontWeight))
+                .foregroundColor(color)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 #Preview {

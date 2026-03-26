@@ -8,9 +8,15 @@ class ContentViewModel: ObservableObject{
     @Published var isLoadingMore: Bool = false
     var timelineCursor: String?
     
-    // postフィールドがnilでないFeedItemのみを返す
+    // ミュート・ブロック済みアカウントの投稿を除外する
     var validFeeds: [FeedItem] {
-        return feeds.filter { $0.post != nil }
+        return feeds.filter { feedItem in
+            guard let post = feedItem.post else { return false }
+            let viewer = post.author?.viewer
+            if viewer?.muted == true { return false }
+            if viewer?.blocking != nil { return false }
+            return true
+        }
     }
     
     init() {

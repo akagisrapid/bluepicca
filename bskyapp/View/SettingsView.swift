@@ -26,6 +26,7 @@ struct SettingsView: View {
     @Binding var isLoggedIn: Bool
     @Environment(\.dismiss) private var dismiss
     @State private var showLogoutConfirmation = false
+    @State private var showMuteBlockList = false
     @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system.rawValue
 
     private var appearanceMode: AppearanceMode {
@@ -42,6 +43,20 @@ struct SettingsView: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                }
+
+                Section("モデレーション") {
+                    Button(action: { showMuteBlockList = true }) {
+                        HStack {
+                            Image(systemName: "hand.raised")
+                            Text("ミュート・ブロックリスト")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .foregroundColor(.primary)
                 }
 
                 Section {
@@ -63,6 +78,9 @@ struct SettingsView: View {
                         dismiss()
                     }
                 }
+            }
+            .sheet(isPresented: $showMuteBlockList) {
+                MuteBlockListView()
             }
             .alert("ログアウトしますか？", isPresented: $showLogoutConfirmation) {
                 Button("キャンセル", role: .cancel) {}
