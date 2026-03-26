@@ -23,12 +23,11 @@ struct ProfileView: View {
     
     var body: some View {
         ZStack {
-            Group {
-                if viewModel.isFetching {
+            if viewModel.isFetching {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .padding()
-                } else {
+            } else {
                     ScrollView {
                         VStack(alignment: .leading){
                             HStack{
@@ -213,27 +212,26 @@ struct ProfileView: View {
                         .scaleEffect(1.2)
                     }
                 }
-            }
-            .sheet(isPresented: $showingPostDetail) {
+        }
+        .sheet(isPresented: $showingPostDetail) {
                 if let post = selectedPost {
                     PostDetailView(viewModel: PostDetailViewModel(post: post))
                 }
             }
-            .sheet(isPresented: $showingMuteBlockList) {
-                MuteBlockListView()
+        .sheet(isPresented: $showingMuteBlockList) {
+            MuteBlockListView()
+        }
+        .confirmationDialog("アカウント操作", isPresented: $showingMuteBlockMenu, titleVisibility: .visible) {
+            Button(viewModel.isMuted ? "ミュート解除" : "ミュート") {
+                Task { await viewModel.toggleMute() }
             }
-            .confirmationDialog("アカウント操作", isPresented: $showingMuteBlockMenu, titleVisibility: .visible) {
-                Button(viewModel.isMuted ? "ミュート解除" : "ミュート") {
-                    Task { await viewModel.toggleMute() }
-                }
-                Button(viewModel.isBlocked ? "ブロック解除" : "ブロック", role: viewModel.isBlocked ? nil : .destructive) {
-                    Task { await viewModel.toggleBlock() }
-                }
-                Button("ミュート・ブロックリストを表示") {
-                    showingMuteBlockList = true
-                }
-                Button("キャンセル", role: .cancel) {}
+            Button(viewModel.isBlocked ? "ブロック解除" : "ブロック", role: viewModel.isBlocked ? nil : .destructive) {
+                Task { await viewModel.toggleBlock() }
             }
+            Button("ミュート・ブロックリストを表示") {
+                showingMuteBlockList = true
+            }
+            Button("キャンセル", role: .cancel) {}
         }
     }
 }
