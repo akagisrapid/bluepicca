@@ -97,6 +97,10 @@
 		BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00022F400003007BBBBB /* VideoPlayerView.swift */; };
 		DDDD00012F500001007DDDDD /* PostDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00002F500001007DDDDD /* PostDraft.swift */; };
 		DDDD00032F500001007DDDDD /* DraftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00022F500001007DDDDD /* DraftsView.swift */; };
+		FFFF00012F700001007FFFFF /* MuteBlockApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */; };
+		FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00022F700002007FFFFF /* MuteBlockApi.swift */; };
+		FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */; };
+		FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00062F700004007FFFFF /* MuteBlockListView.swift */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
 /* End PBXBuildFile section */
 
@@ -196,6 +200,10 @@
 		BBBB00022F400003007BBBBB /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		DDDD00002F500001007DDDDD /* PostDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDraft.swift; sourceTree = "<group>"; };
 		DDDD00022F500001007DDDDD /* DraftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftsView.swift; sourceTree = "<group>"; };
+		FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApiModel.swift; sourceTree = "<group>"; };
+		FFFF00022F700002007FFFFF /* MuteBlockApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApi.swift; sourceTree = "<group>"; };
+		FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListViewModel.swift; sourceTree = "<group>"; };
+		FFFF00062F700004007FFFFF /* MuteBlockListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -283,6 +291,7 @@
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
 				987153592C29BC8200E08633 /* AsyncImageViewModel.swift */,
 				98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */,
+				FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -292,6 +301,7 @@
 			children = (
 				9874EC622E7C59CD00F116D0 /* CreateFollowApiModel.swift */,
 				9874EC632E7C59CD00F116D0 /* DeleteRecordApiModel.swift */,
+				FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */,
 				9874EC722E7C5DEF00F116D0 /* GetFollowersApiModel.swift */,
 				9874EC732E7C5DEF00F116D0 /* GetFollowsApiModel.swift */,
 				98C635E12F2CCC1D0064F497 /* GetActorLikesApiModel.swift */,
@@ -316,6 +326,7 @@
 				9874EC5E2E7C59B800F116D0 /* CreateFollowApi.swift */,
 				9874EC5F2E7C59B800F116D0 /* DeleteRecordApi.swift */,
 				98697E9C2F1E4C9B007EFC2F /* InteractionService.swift */,
+				FFFF00022F700002007FFFFF /* MuteBlockApi.swift */,
 				AAAA00002F000001007AAAAA /* PostCreationService.swift */,
 				980FD20E2E7B041900AE29EF /* GetPostThreadApi.swift */,
 				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
@@ -375,6 +386,7 @@
 				B0C057712B8712D80066AD91 /* ContentView.swift */,
 				B01C96C42BA4210F0077D572 /* PostCardView.swift */,
 				DDDD00022F500001007DDDDD /* DraftsView.swift */,
+				FFFF00062F700004007FFFFF /* MuteBlockListView.swift */,
 				980FD2062E7AFAF700AE29EF /* RepliesView.swift */,
 				9874EC5A2E7C335800F116D0 /* LikesView.swift */,
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
@@ -569,6 +581,10 @@
 				9871533D2C08ACC700E08633 /* Reason.swift in Sources */,
 				AAAA00012F000001007AAAAA /* PostCreationService.swift in Sources */,
 				AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */,
+				FFFF00012F700001007FFFFF /* MuteBlockApiModel.swift in Sources */,
+				FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */,
+				FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */,
+				FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */,
 				9874EC6D2E7C5DD700F116D0 /* FollowListViewModel.swift in Sources */,
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
 				DDDD00012F500001007DDDDD /* PostDraft.swift in Sources */,

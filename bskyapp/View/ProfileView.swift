@@ -7,6 +7,8 @@ struct ProfileView: View {
     @State private var showingFollowersList = false
     @State private var selectedPost: Post?
     @State private var showingPostDetail = false
+    @State private var showingMuteBlockMenu = false
+    @State private var showingMuteBlockList = false
     @Environment(\.dismiss) private var dismiss
     
     init(viewModel: ProfileViewModel) {
@@ -178,24 +180,37 @@ struct ProfileView: View {
                     }
                 }
                 
-                // 右下の戻るボタン
+                // オーバーレイボタン群
                 VStack {
+                    HStack {
+                        Spacer()
+                        // ︙ メニューボタン（右上）
+                        Button(action: { showingMuteBlockMenu = true }) {
+                            Image(systemName: "ellipsis.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(.white)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                                .shadow(radius: 4)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.trailing, 20)
+                        .padding(.top, 16)
+                    }
                     Spacer()
                     HStack {
                         Spacer()
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .background(Color.black.opacity(0.7))
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
-                    }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
-                    .scaleEffect(1.2)
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.largeTitle)
+                                .foregroundColor(.white)
+                                .background(Color.black.opacity(0.7))
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
+                        }
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 20)
+                        .scaleEffect(1.2)
                     }
                 }
             }
@@ -203,6 +218,21 @@ struct ProfileView: View {
                 if let post = selectedPost {
                     PostDetailView(viewModel: PostDetailViewModel(post: post))
                 }
+            }
+            .sheet(isPresented: $showingMuteBlockList) {
+                MuteBlockListView()
+            }
+            .confirmationDialog("アカウント操作", isPresented: $showingMuteBlockMenu, titleVisibility: .visible) {
+                Button(viewModel.isMuted ? "ミュート解除" : "ミュート") {
+                    Task { await viewModel.toggleMute() }
+                }
+                Button(viewModel.isBlocked ? "ブロック解除" : "ブロック", role: viewModel.isBlocked ? nil : .destructive) {
+                    Task { await viewModel.toggleBlock() }
+                }
+                Button("ミュート・ブロックリストを表示") {
+                    showingMuteBlockList = true
+                }
+                Button("キャンセル", role: .cancel) {}
             }
         }
     }

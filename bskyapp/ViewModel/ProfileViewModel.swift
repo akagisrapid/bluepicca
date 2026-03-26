@@ -6,7 +6,13 @@ class ProfileViewModel: ObservableObject {
     @Published var isFollowing: Bool = false
     @Published var followUri: String?
     @Published var isProcessingFollow: Bool = false
-    
+
+    // ミュート・ブロック状態
+    @Published var isMuted: Bool = false
+    @Published var isBlocked: Bool = false
+    @Published var blockUri: String? = nil
+    @Published var isProcessingMuteBlock: Bool = false
+
     // ポスト関連のプロパティ
     @Published var posts: [FeedItem] = []
     @Published var isFetchingPosts: Bool = false
@@ -32,8 +38,10 @@ class ProfileViewModel: ObservableObject {
             self.profile = fetchedProfile
             self.isFollowing = fetchedProfile.viewer?.following != nil
             self.followUri = fetchedProfile.viewer?.following
-            
-            
+            self.isMuted = fetchedProfile.viewer?.muted ?? false
+            self.isBlocked = fetchedProfile.viewer?.blocking != nil
+            self.blockUri = fetchedProfile.viewer?.blocking
+
             self.isFetching = false
         } catch {
             self.isFetching = false
@@ -80,6 +88,48 @@ class ProfileViewModel: ObservableObject {
     @MainActor
     func forceRefreshProfile() async {
         await fetchProfile()
+    }
+
+    // MARK: - ミュート
+
+    @MainActor
+    func toggleMute() async {
+        guard !isProcessingMuteBlock else { return }
+        isProcessingMuteBlock = true
+        do {
+            if isMuted {
+                try await MuteBlockApi.unmuteActor(did: profile.did)
+                isMuted = false
+            } else {
+                try await MuteBlockApi.muteActor(did: profile.did)
+                isMuted = true
+            }
+        } catch {
+            print("toggleMute error: \(error)")
+        }
+        isProcessingMuteBlock = false
+    }
+
+    // MARK: - ブロック
+
+    @MainActor
+    func toggleBlock() async {
+        guard !isProcessingMuteBlock else { return }
+        isProcessingMuteBlock = true
+        do {
+            if isBlocked, let uri = blockUri {
+                try await MuteBlockApi.unblockActor(uri: uri)
+                isBlocked = false
+                blockUri = nil
+            } else {
+                let uri = try await MuteBlockApi.blockActor(did: profile.did)
+                isBlocked = true
+                blockUri = uri
+            }
+        } catch {
+            print("toggleBlock error: \(error)")
+        }
+        isProcessingMuteBlock = false
     }
     
     /// ユーザーのポストを取得
