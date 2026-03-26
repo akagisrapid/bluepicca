@@ -8,16 +8,17 @@ struct ContentView: View {
   @State private var isShowReplies = false
   @State private var isShowLikes = false
   @State private var isShowSettings = false
+  @State private var isShowBookmarks = false
   @State private var selectedPostForLikes: Post?
 
   var body: some View {
     NavigationStack {
-      VStack {
-        if viewModel.isFetchingTimeline {
+      ZStack {
+        if viewModel.validFeeds.isEmpty && viewModel.isFetchingTimeline {
+          // 初回ロード時のみ中央スピナー
           ProgressView()
             .progressViewStyle(CircularProgressViewStyle())
-            .scaleEffect(2.0)  // サイズを調整したい場合
-            .padding()
+            .scaleEffect(1.5)
         } else {
           List {
             ForEach(viewModel.validFeeds) { feedItem in
@@ -32,9 +33,9 @@ struct ContentView: View {
                     EmptyView()
                   }
                   .opacity(0)
-                  TimelineCardView(
-                    viewModel: timelineCardViewModel)
+                  TimelineCardView(viewModel: timelineCardViewModel)
                 }
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .onAppear {
                   if feedItem.id == viewModel.validFeeds.last?.id {
                     Task {
@@ -52,7 +53,17 @@ struct ContentView: View {
               }
               .listRowSeparator(.hidden)
             }
-          }.listStyle(.plain)
+          }
+          .listStyle(.plain)
+          // リフレッシュ中は上部に細いインジケーターを表示
+          if viewModel.isFetchingTimeline {
+            VStack {
+              ProgressView()
+                .progressViewStyle(LinearProgressViewStyle())
+                .tint(.accentColor)
+              Spacer()
+            }
+          }
         }
       }
 
@@ -90,6 +101,9 @@ struct ContentView: View {
             Button("Replies", systemImage: "bubble.left.and.bubble.right") {
               isShowReplies = true
             }
+            Button("Bookmarks", systemImage: "bookmark") {
+              isShowBookmarks = true
+            }
             Spacer()
             Button("Refresh", systemImage: "arrow.clockwise") {
               Task {
@@ -104,6 +118,9 @@ struct ContentView: View {
       }
       .sheet(isPresented: $isShowReplies) {
         RepliesView(viewModel: RepliesViewModel())
+      }
+      .sheet(isPresented: $isShowBookmarks) {
+        BookmarksView()
       }
       .sheet(isPresented: $isShowSettings) {
         SettingsView(isLoggedIn: $isLoggedIn)

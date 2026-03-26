@@ -1,105 +1,274 @@
 import SwiftUI
+import SwiftData
 
 struct TimelineCardView: View {
   let viewModel: TimelineCardViewModel
   @ObservedObject var post: Post
+  @State private var isShowingReplySheet = false
+  @Environment(\.modelContext) private var modelContext
+  @Query private var bookmarks: [BookmarkedPost]
 
   init(viewModel: TimelineCardViewModel) {
     self.viewModel = viewModel
     self._post = ObservedObject(wrappedValue: viewModel.post)
   }
 
+  private var isBookmarked: Bool {
+    guard let uri = viewModel.post.uri else { return false }
+    return bookmarks.contains { $0.postUri == uri }
+  }
+
+  private func toggleBookmark() {
+    guard let uri = viewModel.post.uri else { return }
+    if let existing = bookmarks.first(where: { $0.postUri == uri }) {
+      modelContext.delete(existing)
+    } else {
+      let bookmark = BookmarkedPost(
+        postUri: uri,
+        postCid: viewModel.post.cid ?? "",
+        authorDisplayName: viewModel.authorName,
+        authorHandle: viewModel.post.author?.handle ?? "",
+        authorAvatarUrl: viewModel.post.author?.avatarUrl?.absoluteString,
+        text: viewModel.text
+      )
+      modelContext.insert(bookmark)
+    }
+  }
+
   var body: some View {
-    VStack(alignment: .leading) {
-      // リポスト情報を表示
+    VStack(alignment: .leading, spacing: 0) {
+      // リポスト情報バナー
       if viewModel.isRepost {
-        HStack {
+        HStack(spacing: 4) {
           Image(systemName: "repeat")
-            .foregroundColor(.gray)
-            .font(.caption)
-          Text("\(viewModel.repostAuthorName)がリポストしました")
-            .font(.caption)
-            .foregroundColor(.gray)
+            .font(.caption2)
+          Text("\(viewModel.repostAuthorName)がリポスト")
+            .font(.caption2)
           Spacer()
         }
+        .foregroundColor(.secondary)
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
         .padding(.bottom, 4)
       }
 
-      // リプライ情報を表示
+      // リプライ情報バナー
       if viewModel.isReply {
-        HStack {
+        HStack(spacing: 4) {
           Image(systemName: "arrowshape.turn.up.left")
-            .foregroundColor(.gray)
-            .font(.caption)
+            .font(.caption2)
           Text("\(viewModel.replyTargetAuthorName)への返信")
-            .font(.caption)
-            .foregroundColor(.gray)
+            .font(.caption2)
           Spacer()
         }
+        .foregroundColor(.secondary)
+        .padding(.horizontal, 16)
+        .padding(.top, viewModel.isRepost ? 0 : 8)
         .padding(.bottom, 4)
       }
 
-      HStack {
+      // ヘッダー: アバター + 著者情報 + 時刻
+      HStack(alignment: .top, spacing: 10) {
         ProfileImageView(
           viewModel: AsyncImageViewModel(
-            url: viewModel.post.author?.avatarUrl, imageSize: .timeline, alt: ""),
+            url: viewModel.post.author?.avatarUrl,
+            imageSize: .timeline,
+            alt: viewModel.authorName),
           actor: viewModel.post.author?.did ?? "")
-        Text(viewModel.authorName).font(.headline)
-        Spacer()
-        VStack(alignment: .trailing, spacing: 2) {
-          Text(viewModel.postedTimeRelative)
-            .dynamicTypeSize(.xSmall)
-            .foregroundColor(.gray)
 
-          // いいね・リポスト数表示
-          HStack(spacing: 8) {
-            HStack(spacing: 2) {
-              Image(systemName: viewModel.isLiked ? "star.fill" : "star")
-                .foregroundColor(viewModel.isLiked ? .yellow : .gray)
-                .font(.caption2)
-              Text("\(viewModel.likeCount)")
-                .font(.caption2)
-                .foregroundColor(.gray)
-            }
-
-            HStack(spacing: 2) {
-              Image(systemName: "arrow.rectanglepath")
-                .foregroundColor(viewModel.isReposted ? .red : .gray)
-                .font(.caption2)
-              Text("\(viewModel.repostCount)")
-                .font(.caption2)
-                .foregroundColor(.gray)
-            }
-          }
+        VStack(alignment: .leading, spacing: 1) {
+          Text(viewModel.authorName)
+            .font(.subheadline)
+            .fontWeight(.semibold)
+            .foregroundColor(.primary)
+            .lineLimit(1)
+          Text(viewModel.authorHandle)
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .lineLimit(1)
         }
-      }
 
-      VStack(alignment: .leading) {
+        Spacer()
+
+        Text(viewModel.postedTimeRelative)
+          .font(.caption)
+          .foregroundColor(.secondary)
+      }
+      .padding(.horizontal, 16)
+      .padding(.top, (viewModel.isRepost || viewModel.isReply) ? 0 : 10)
+      .padding(.bottom, 6)
+
+      // 本文テキスト（メイン）
+      if !viewModel.text.isEmpty {
         Text(viewModel.text)
+          .font(.body)
+          .foregroundColor(.primary)
+          .fixedSize(horizontal: false, vertical: true)
+          .padding(.horizontal, 16)
+          .padding(.bottom, 8)
       }
 
-      // 添付情報（画像枚数・動画・リンクURL）
-      if viewModel.imageCount > 0 || viewModel.videoCount > 0 || viewModel.externalUrl != nil {
-        HStack(spacing: 8) {
+      // 添付メディアバッジ（画像・動画）
+      let hasMedia = viewModel.imageCount > 0 || viewModel.videoCount > 0
+      if hasMedia {
+        HStack(spacing: 6) {
           if viewModel.imageCount > 0 {
-            Text("🖼️x\(viewModel.imageCount)")
-              .font(.caption)
-              .foregroundColor(.gray)
+            MediaBadge(
+              icon: "photo",
+              label: viewModel.imageCount > 1 ? "\(viewModel.imageCount)枚の画像" : "画像"
+            )
           }
           if viewModel.videoCount > 0 {
-            Text("🎬x\(viewModel.videoCount)")
-              .font(.caption)
-              .foregroundColor(.gray)
+            MediaBadge(icon: "play.rectangle", label: "動画")
           }
-          if let url = viewModel.externalUrl {
-            Text("🔗 \(url)")
-              .font(.caption)
-              .foregroundColor(.blue)
-              .lineLimit(1)
-              .truncationMode(.middle)
-          }
+          Spacer()
         }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
       }
-    }.padding(.horizontal).padding(.vertical, 6)
+
+      // リンクカード（外部リンク埋め込みがある場合のみ）
+      if let externalLink = viewModel.externalLink {
+        CompactLinkCard(externalLink: externalLink)
+          .padding(.horizontal, 16)
+          .padding(.bottom, 8)
+      }
+
+      // アクションバー: リプライ・リポスト・いいね
+      HStack(spacing: 0) {
+        // リプライボタン
+        Button(action: {
+          isShowingReplySheet = true
+        }) {
+          HStack(spacing: 4) {
+            Image(systemName: "bubble.left")
+              .font(.caption)
+            Text("\(viewModel.post.replyCount ?? 0)")
+              .font(.caption)
+          }
+          .foregroundColor(.secondary)
+          .frame(minWidth: 44, minHeight: 36)
+        }
+        .buttonStyle(.plain)
+
+        Spacer()
+
+        // リポストボタン
+        Button(action: {
+          Task { await viewModel.toggleRepost() }
+        }) {
+          HStack(spacing: 4) {
+            Image(systemName: "arrow.rectanglepath")
+              .font(.caption)
+            Text("\(viewModel.repostCount)")
+              .font(.caption)
+          }
+          .foregroundColor(viewModel.isReposted ? .green : .secondary)
+          .frame(minWidth: 44, minHeight: 36)
+        }
+        .buttonStyle(.plain)
+
+        Spacer()
+
+        // いいねボタン
+        Button(action: {
+          Task { await viewModel.toggleLike() }
+        }) {
+          HStack(spacing: 4) {
+            Image(systemName: viewModel.isLiked ? "star.fill" : "star")
+              .font(.caption)
+            Text("\(viewModel.likeCount)")
+              .font(.caption)
+          }
+          .foregroundColor(viewModel.isLiked ? .yellow : .secondary)
+          .frame(minWidth: 44, minHeight: 36)
+        }
+        .buttonStyle(.plain)
+
+        Spacer()
+
+        // ブックマークボタン
+        Button(action: { toggleBookmark() }) {
+          Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
+            .font(.caption)
+            .foregroundColor(isBookmarked ? .blue : .secondary)
+            .frame(minWidth: 44, minHeight: 36)
+        }
+        .buttonStyle(.plain)
+      }
+      .padding(.horizontal, 8)
+      .padding(.bottom, 4)
+    }
+    .sheet(isPresented: $isShowingReplySheet) {
+      ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
+    }
+  }
+}
+
+// MARK: - 添付メディアバッジ（ピル形状）
+
+private struct MediaBadge: View {
+  let icon: String
+  let label: String
+
+  var body: some View {
+    HStack(spacing: 4) {
+      Image(systemName: icon)
+        .font(.caption2)
+      Text(label)
+        .font(.caption2)
+    }
+    .foregroundColor(.secondary)
+    .padding(.horizontal, 8)
+    .padding(.vertical, 4)
+    .background(Color(.systemGray6))
+    .clipShape(Capsule())
+  }
+}
+
+// MARK: - タイムライン用コンパクトリンクカード
+
+private struct CompactLinkCard: View {
+  let externalLink: EmbeddedExternalViewItem
+
+  var body: some View {
+    Link(destination: URL(string: externalLink.uri) ?? URL(string: "https://example.com")!) {
+      HStack(spacing: 10) {
+        Image(systemName: "link")
+          .font(.caption)
+          .foregroundColor(.secondary)
+          .frame(width: 16)
+
+        VStack(alignment: .leading, spacing: 1) {
+          Text(externalLink.title.isEmpty ? displayHost : externalLink.title)
+            .font(.caption)
+            .fontWeight(.medium)
+            .foregroundColor(.primary)
+            .lineLimit(1)
+          Text(displayHost)
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .lineLimit(1)
+        }
+
+        Spacer()
+
+        Image(systemName: "chevron.right")
+          .font(.caption2)
+          .foregroundColor(.secondary)
+      }
+      .padding(.horizontal, 10)
+      .padding(.vertical, 8)
+      .background(Color(.systemGray6))
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+    .buttonStyle(.plain)
+  }
+
+  private var displayHost: String {
+    guard let url = URL(string: externalLink.uri), let host = url.host else {
+      return externalLink.uri
+    }
+    return host
   }
 }
