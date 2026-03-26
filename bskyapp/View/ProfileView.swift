@@ -249,51 +249,51 @@ private struct AccountActionMenu: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             Color.black.opacity(0.4)
                 .ignoresSafeArea()
                 .onTapGesture { onDismiss() }
 
-            VStack(spacing: 0) {
-                Text("アカウント操作")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding(.vertical, 12)
+            VStack(spacing: 8) {
+                // アクションカード
+                VStack(spacing: 0) {
+                    Text("アカウント操作")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .padding(.vertical, 14)
 
-                Divider()
+                    Divider()
 
-                MenuButton(label: isMuted ? "ミュート解除" : "ミュート",
-                           icon: isMuted ? "speaker.wave.2" : "speaker.slash",
-                           color: .primary) {
-                    onMute()
+                    MenuButton(label: isMuted ? "ミュート解除" : "ミュート",
+                               color: .primary) {
+                        onMute(); onDismiss()
+                    }
+
+                    Divider()
+
+                    MenuButton(label: isBlocked ? "ブロック解除" : "ブロック",
+                               color: isBlocked ? .primary : .red) {
+                        onBlock(); onDismiss()
+                    }
+
+                    Divider()
+
+                    MenuButton(label: "ミュート・ブロックリスト", color: .primary) {
+                        onShowList(); onDismiss()
+                    }
+                }
+                .background(.regularMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                // キャンセルカード
+                MenuButton(label: "キャンセル", color: .primary, fontWeight: .semibold) {
                     onDismiss()
                 }
-
-                Divider()
-
-                MenuButton(label: isBlocked ? "ブロック解除" : "ブロック",
-                           icon: isBlocked ? "hand.raised.slash" : "hand.raised",
-                           color: isBlocked ? .primary : .red) {
-                    onBlock()
-                    onDismiss()
-                }
-
-                Divider()
-
-                MenuButton(label: "ミュート・ブロックリスト", icon: "list.bullet", color: .primary) {
-                    onShowList()
-                    onDismiss()
-                }
-
-                Divider()
-
-                MenuButton(label: "キャンセル", icon: nil, color: .secondary) {
-                    onDismiss()
-                }
+                .background(.regularMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
             }
-            .background(.regularMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 14))
-            .padding(.horizontal, 24)
+            .padding(.horizontal, 8)
+            .padding(.bottom, 16)
             .disabled(isProcessing)
             .opacity(isProcessing ? 0.6 : 1)
         }
@@ -302,25 +302,18 @@ private struct AccountActionMenu: View {
 
 private struct MenuButton: View {
     let label: String
-    let icon: String?
     let color: Color
+    var fontWeight: Font.Weight = .regular
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack {
-                if let icon {
-                    Image(systemName: icon)
-                        .frame(width: 20)
-                }
-                Text(label)
-                Spacer()
-            }
-            .foregroundColor(color)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 14)
-            .frame(maxWidth: .infinity)
-            .contentShape(Rectangle())
+            Text(label)
+                .font(.system(size: 20, weight: fontWeight))
+                .foregroundColor(color)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
