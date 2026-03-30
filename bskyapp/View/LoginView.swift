@@ -10,7 +10,7 @@ struct LoginView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 // Logo or App Title
-                Text("Rapipopo")
+                Text("Bluepicca")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 50)

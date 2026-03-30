@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Rapipopo** is a native iOS Bluesky client built with SwiftUI. It implements the AT Protocol to interact with Bluesky's social networking features (timeline, posts, likes, reposts, profiles, replies, follows).
+**Bluepicca** is a native iOS Bluesky client built with SwiftUI. It implements the AT Protocol to interact with Bluesky's social networking features (timeline, posts, likes, reposts, profiles, replies, follows).
 
 The Xcode project lives in `rapipopo/`. All source code is under `rapipopo/bskyapp/`.
 
