@@ -91,3 +91,6 @@ iOSInjectionProject/
 .DS_Store
 bskyapp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 bskyapp.xcodeproj/xcshareddata/xcschemes/bskyapp.xcscheme
+
+# Claude agent memory and agent files
+.claude/
