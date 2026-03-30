@@ -101,6 +101,8 @@
 		FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00022F700002007FFFFF /* MuteBlockApi.swift */; };
 		FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */; };
 		FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00062F700004007FFFFF /* MuteBlockListView.swift */; };
+		FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00082F700005007FFFFF /* MuteWordManager.swift */; };
+		FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF000A2F700006007FFFFF /* MuteWordsView.swift */; };
 		EEEE00012F600001007EEEEE /* BookmarkedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00002F600001007EEEEE /* BookmarkedPost.swift */; };
 		EEEE00032F600001007EEEEE /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00022F600001007EEEEE /* BookmarksView.swift */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
@@ -206,6 +208,8 @@
 		FFFF00022F700002007FFFFF /* MuteBlockApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApi.swift; sourceTree = "<group>"; };
 		FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListViewModel.swift; sourceTree = "<group>"; };
 		FFFF00062F700004007FFFFF /* MuteBlockListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListView.swift; sourceTree = "<group>"; };
+		FFFF00082F700005007FFFFF /* MuteWordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordManager.swift; sourceTree = "<group>"; };
+		FFFF000A2F700006007FFFFF /* MuteWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordsView.swift; sourceTree = "<group>"; };
 		EEEE00002F600001007EEEEE /* BookmarkedPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkedPost.swift; sourceTree = "<group>"; };
 		EEEE00022F600001007EEEEE /* BookmarksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -379,6 +383,7 @@
 				980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */,
 				980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */,
 				AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */,
+				FFFF00082F700005007FFFFF /* MuteWordManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -391,6 +396,7 @@
 				B01C96C42BA4210F0077D572 /* PostCardView.swift */,
 				DDDD00022F500001007DDDDD /* DraftsView.swift */,
 				FFFF00062F700004007FFFFF /* MuteBlockListView.swift */,
+				FFFF000A2F700006007FFFFF /* MuteWordsView.swift */,
 				EEEE00022F600001007EEEEE /* BookmarksView.swift */,
 				980FD2062E7AFAF700AE29EF /* RepliesView.swift */,
 				9874EC5A2E7C335800F116D0 /* LikesView.swift */,
@@ -591,6 +597,8 @@
 				FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */,
 				FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */,
 				FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */,
+				FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */,
+				FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */,
 				9874EC6D2E7C5DD700F116D0 /* FollowListViewModel.swift in Sources */,
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
 				DDDD00012F500001007DDDDD /* PostDraft.swift in Sources */,

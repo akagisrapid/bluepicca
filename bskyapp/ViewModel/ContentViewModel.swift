@@ -8,13 +8,16 @@ class ContentViewModel: ObservableObject{
     @Published var isLoadingMore: Bool = false
     var timelineCursor: String?
     
-    // ミュート・ブロック済みアカウントの投稿を除外する
+    // ミュート・ブロック済みアカウント・ミュートワードに該当する投稿を除外する
     var validFeeds: [FeedItem] {
+        let muteWordManager = MuteWordManager.shared
         return feeds.filter { feedItem in
             guard let post = feedItem.post else { return false }
             let viewer = post.author?.viewer
             if viewer?.muted == true { return false }
             if viewer?.blocking != nil { return false }
+            let text = post.record?.text ?? ""
+            if muteWordManager.matches(text) { return false }
             return true
         }
     }
