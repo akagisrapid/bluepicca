@@ -4,6 +4,7 @@ struct MuteWordsView: View {
     @StateObject private var manager = MuteWordManager.shared
     @State private var newWord = ""
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.editMode) private var editMode
 
     var body: some View {
         NavigationStack {
@@ -49,7 +50,11 @@ struct MuteWordsView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                    Button {
+                        editMode?.wrappedValue = editMode?.wrappedValue.isEditing == true ? .inactive : .active
+                    } label: {
+                        Image(systemName: editMode?.wrappedValue.isEditing == true ? "checkmark" : "pencil")
+                    }
                 }
             }
         }
