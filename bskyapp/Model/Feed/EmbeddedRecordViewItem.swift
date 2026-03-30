@@ -1,11 +1,7 @@
 import Foundation
 
-struct EmbeddedRecordViewRecord: Codable {
+struct EmbeddedRecordViewItem: Codable {
     let uri: String?
     let author: Author?
     let value: PostRecord?
-}
-
-struct EmbeddedRecordViewItem: Codable {
-    let record: EmbeddedRecordViewRecord?
 }

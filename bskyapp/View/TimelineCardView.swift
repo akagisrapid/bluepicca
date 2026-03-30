@@ -236,7 +236,7 @@ private struct MediaBadge: View {
 // MARK: - 引用ポストカード
 
 private struct QuotePostCard: View {
-  let quoted: EmbeddedRecordViewRecord
+  let quoted: EmbeddedRecordViewItem
 
   var body: some View {
     VStack(alignment: .leading, spacing: 4) {

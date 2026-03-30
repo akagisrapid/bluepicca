@@ -85,8 +85,8 @@ struct TimelineCardViewModel {
     return post.embed?.external
   }
 
-  var quotedPost: EmbeddedRecordViewRecord? {
-    return post.embed?.record?.record
+  var quotedPost: EmbeddedRecordViewItem? {
+    return post.embed?.record
   }
 
   var videoCount: Int {
