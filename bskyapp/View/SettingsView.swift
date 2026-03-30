@@ -27,6 +27,7 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showLogoutConfirmation = false
     @State private var showMuteBlockList = false
+    @State private var showMuteWords = false
     @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system.rawValue
 
     private var appearanceMode: AppearanceMode {
@@ -50,6 +51,18 @@ struct SettingsView: View {
                         HStack {
                             Image(systemName: "hand.raised")
                             Text("ミュート・ブロックリスト")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .foregroundColor(.primary)
+
+                    Button(action: { showMuteWords = true }) {
+                        HStack {
+                            Image(systemName: "text.badge.minus")
+                            Text("ミュートワード")
                             Spacer()
                             Image(systemName: "chevron.right")
                                 .font(.caption)
@@ -81,6 +94,9 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showMuteBlockList) {
                 MuteBlockListView()
+            }
+            .sheet(isPresented: $showMuteWords) {
+                MuteWordsView()
             }
             .alert("ログアウトしますか？", isPresented: $showLogoutConfirmation) {
                 Button("キャンセル", role: .cancel) {}
