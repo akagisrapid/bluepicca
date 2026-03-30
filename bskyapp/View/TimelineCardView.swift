@@ -127,6 +127,13 @@ struct TimelineCardView: View {
         .padding(.bottom, 8)
       }
 
+      // 引用ポスト（存在する場合のみ）
+      if let quoted = viewModel.quotedPost {
+        QuotePostCard(quoted: quoted)
+          .padding(.horizontal, 16)
+          .padding(.bottom, 8)
+      }
+
       // リンクカード（外部リンク埋め込みがある場合のみ）
       if let externalLink = viewModel.externalLink {
         CompactLinkCard(externalLink: externalLink)
@@ -223,6 +230,59 @@ private struct MediaBadge: View {
     .padding(.vertical, 4)
     .background(Color(.systemGray6))
     .clipShape(Capsule())
+  }
+}
+
+// MARK: - 引用ポストカード
+
+struct QuotePostCard: View {
+  let quoted: EmbeddedRecordViewItem
+
+  private var quotedAsPost: Post {
+    Post(uri: quoted.uri, cid: nil, author: quoted.author, record: quoted.value)
+  }
+
+  var body: some View {
+    NavigationLink(destination: PostDetailView(viewModel: PostDetailViewModel(post: quotedAsPost))) {
+      VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: 6) {
+          AsyncImage(url: quoted.author?.avatarUrl) { image in
+            image.resizable()
+          } placeholder: {
+            Circle().fill(Color(.systemGray5))
+          }
+          .frame(width: 16, height: 16)
+          .clipShape(Circle())
+
+          Text(quoted.author?.displayName ?? quoted.author?.handle ?? "")
+            .font(.caption)
+            .fontWeight(.semibold)
+            .foregroundColor(.primary)
+            .lineLimit(1)
+
+          Text("@\(quoted.author?.handle ?? "")")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .lineLimit(1)
+        }
+
+        if let text = quoted.value?.text, !text.isEmpty {
+          Text(text)
+            .font(.caption)
+            .foregroundColor(.primary)
+            .lineLimit(4)
+        }
+      }
+      .padding(10)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .background(Color(.systemGray6))
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+      .overlay(
+        RoundedRectangle(cornerRadius: 8)
+          .stroke(Color(.systemGray4), lineWidth: 0.5)
+      )
+    }
+    .buttonStyle(.plain)
   }
 }
 

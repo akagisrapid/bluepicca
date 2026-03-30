@@ -1,5 +1,7 @@
 import Foundation
 
 struct EmbeddedRecordViewItem: Codable {
-    let record: PostRecord?
+    let uri: String?
+    let author: Author?
+    let value: PostRecord?
 }

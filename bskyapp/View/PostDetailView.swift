@@ -108,6 +108,13 @@ struct PostDetailView: View {
                     .padding(.horizontal, 16)
                     .padding(.bottom, 12)
 
+                // 引用ポスト
+                if let quoted = viewModel.quotedPost {
+                    QuotePostCard(quoted: quoted)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 12)
+                }
+
                 // 画像
                 if !viewModel.embeddedImages.isEmpty {
                     VStack(spacing: 8) {

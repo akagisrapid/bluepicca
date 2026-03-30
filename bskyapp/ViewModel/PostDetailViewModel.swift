@@ -59,6 +59,10 @@ class PostDetailViewModel: ObservableObject {
     return uri?.detectLinks() ?? AttributedString(text)
   }
 
+  var quotedPost: EmbeddedRecordViewItem? {
+    return post.embed?.record
+  }
+
   var externalLink: EmbeddedExternalViewItem? {
     return post.embed?.external
   }
