@@ -210,7 +210,7 @@ struct TimelineCardView: View {
       Button {
         Task { await viewModel.toggleLike() }
       } label: {
-        Label(viewModel.isLiked ? "いいね解除" : "いいね", systemImage: viewModel.isLiked ? "star.slash.fill" : "star.fill")
+        Image(systemName: viewModel.isLiked ? "star.slash.fill" : "star.fill")
       }
       .tint(.yellow)
     }
@@ -218,7 +218,7 @@ struct TimelineCardView: View {
       Button {
         Task { await viewModel.toggleRepost() }
       } label: {
-        Label(viewModel.isReposted ? "リポスト解除" : "リポスト", systemImage: "arrow.rectanglepath")
+        Image(systemName: "arrow.rectanglepath")
       }
       .tint(.green)
     }
