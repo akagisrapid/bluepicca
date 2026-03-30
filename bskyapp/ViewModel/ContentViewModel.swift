@@ -1,13 +1,18 @@
 import Foundation
 
-class ContentViewModel: ObservableObject{
+class ContentViewModel: ObservableObject {
     @Published var feeds: [FeedItem] = []
     @Published var posts: [Post] = []
     @Published var isFetchingTimeline: Bool = false
     @Published var isShowPostCard: Bool = false
     @Published var isLoadingMore: Bool = false
+
+    @Published var feedTabs: [FeedTab] = [.home]
+    @Published var selectedTab: FeedTab = .home
+    @Published var isLoadingFeedTabs: Bool = false
+
     var timelineCursor: String?
-    
+
     // ミュート・ブロック済みアカウント・ミュートワードに該当する投稿を除外する
     var validFeeds: [FeedItem] {
         let muteWordManager = MuteWordManager.shared
@@ -21,43 +26,46 @@ class ContentViewModel: ObservableObject{
             return true
         }
     }
-    
+
     init() {
         Task { @MainActor in
+            await loadFeedTabs()
             try await fetchTimeline()
         }
     }
-    
+
+    // MARK: - フィードタブ読み込み
+
     @MainActor
-    func fetchTimeline() async throws -> Void{
-        print("ContentViewModel: fetchTimeline called")
-        
-        
-        print("ContentViewModel: Starting timeline fetch")
-        self.isFetchingTimeline = true
-        
-        do{
-            print("ContentViewModel: Calling GetTimelineApi")
-            
-            let timelineResponse = try await GetTimelineApi().getTimeline()
-
-            print("ContentViewModel: Received timeline response with \(timelineResponse.feed.count) items")
-
-            self.feeds = timelineResponse.feed
-            self.posts = self.feeds.compactMap { $0.post }
-            self.timelineCursor = timelineResponse.cursor
-
-            // サーバーの状態でローカルのいいね/リポスト状態を同期
-            PostStateManager.shared.syncWithServerState(posts: self.posts)
-
-            print("ContentViewModel: Updated posts count: \(self.posts.count)")
-            
-            self.isFetchingTimeline = false
-            print("ContentViewModel: Timeline fetch completed successfully")
+    func loadFeedTabs() async {
+        isLoadingFeedTabs = true
+        do {
+            feedTabs = try await GetUserFeedsApi().getUserFeeds()
+        } catch {
+            print("ContentViewModel: loadFeedTabs error: \(error)")
+            feedTabs = [.home]
         }
-        catch{
-            self.isFetchingTimeline = false
-            print("ContentViewModel: Timeline fetch error: \(error)")
+        isLoadingFeedTabs = false
+    }
+
+    // MARK: - タイムライン取得
+
+    @MainActor
+    func fetchTimeline() async throws {
+        print("ContentViewModel: fetchTimeline called (tab: \(selectedTab.name))")
+        isFetchingTimeline = true
+        timelineCursor = nil
+
+        do {
+            let response = try await fetchFeed(cursor: nil)
+            feeds = response.feed
+            posts = feeds.compactMap { $0.post }
+            timelineCursor = response.cursor
+            PostStateManager.shared.syncWithServerState(posts: posts)
+            isFetchingTimeline = false
+        } catch {
+            isFetchingTimeline = false
+            print("ContentViewModel: fetchTimeline error: \(error)")
             throw error
         }
     }
@@ -67,15 +75,35 @@ class ContentViewModel: ObservableObject{
         guard !isLoadingMore, let cursor = timelineCursor else { return }
         isLoadingMore = true
         do {
-            let response = try await GetTimelineApi().getTimeline(cursor: cursor)
-            print("ContentViewModel: loadMore received \(response.feed.count) items")
-            self.feeds.append(contentsOf: response.feed)
-            self.posts = self.feeds.compactMap { $0.post }
-            self.timelineCursor = response.cursor
-            PostStateManager.shared.syncWithServerState(posts: self.posts)
+            let response = try await fetchFeed(cursor: cursor)
+            feeds.append(contentsOf: response.feed)
+            posts = feeds.compactMap { $0.post }
+            timelineCursor = response.cursor
+            PostStateManager.shared.syncWithServerState(posts: posts)
         } catch {
             print("ContentViewModel: loadMore error: \(error)")
         }
         isLoadingMore = false
+    }
+
+    // MARK: - タブ切り替え
+
+    @MainActor
+    func selectTab(_ tab: FeedTab) {
+        guard tab.id != selectedTab.id else { return }
+        selectedTab = tab
+        Task {
+            try await fetchTimeline()
+        }
+    }
+
+    // MARK: - 内部: タブに応じて適切なAPIを呼ぶ
+
+    private func fetchFeed(cursor: String?) async throws -> FeedResponse {
+        if let uri = selectedTab.uri {
+            return try await GetFeedApi().getFeed(uri: uri, cursor: cursor)
+        } else {
+            return try await GetTimelineApi().getTimeline(cursor: cursor)
+        }
     }
 }

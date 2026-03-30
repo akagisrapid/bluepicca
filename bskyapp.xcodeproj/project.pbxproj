@@ -105,6 +105,13 @@
 		FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF000A2F700006007FFFFF /* MuteWordsView.swift */; };
 		EEEE00012F600001007EEEEE /* BookmarkedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00002F600001007EEEEE /* BookmarkedPost.swift */; };
 		EEEE00032F600001007EEEEE /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00022F600001007EEEEE /* BookmarksView.swift */; };
+		EEEE00052F600001007EEEEE /* SearchPostsApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00042F600001007EEEEE /* SearchPostsApiModel.swift */; };
+		EEEE00072F600001007EEEEE /* SearchPostsApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00062F600001007EEEEE /* SearchPostsApi.swift */; };
+		EEEE00092F600001007EEEEE /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00082F600001007EEEEE /* SearchViewModel.swift */; };
+		EEEE000B2F600001007EEEEE /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE000A2F600001007EEEEE /* SearchView.swift */; };
+		EEEE000D2F600001007EEEEE /* GetUserFeedsApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE000C2F600001007EEEEE /* GetUserFeedsApiModel.swift */; };
+		EEEE000F2F600001007EEEEE /* GetUserFeedsApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE000E2F600001007EEEEE /* GetUserFeedsApi.swift */; };
+		EEEE00112F600001007EEEEE /* GetFeedApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00102F600001007EEEEE /* GetFeedApi.swift */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
 /* End PBXBuildFile section */
 
@@ -212,6 +219,13 @@
 		FFFF000A2F700006007FFFFF /* MuteWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordsView.swift; sourceTree = "<group>"; };
 		EEEE00002F600001007EEEEE /* BookmarkedPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkedPost.swift; sourceTree = "<group>"; };
 		EEEE00022F600001007EEEEE /* BookmarksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksView.swift; sourceTree = "<group>"; };
+		EEEE00042F600001007EEEEE /* SearchPostsApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPostsApiModel.swift; sourceTree = "<group>"; };
+		EEEE00062F600001007EEEEE /* SearchPostsApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPostsApi.swift; sourceTree = "<group>"; };
+		EEEE00082F600001007EEEEE /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		EEEE000A2F600001007EEEEE /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		EEEE000C2F600001007EEEEE /* GetUserFeedsApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserFeedsApiModel.swift; sourceTree = "<group>"; };
+		EEEE000E2F600001007EEEEE /* GetUserFeedsApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserFeedsApi.swift; sourceTree = "<group>"; };
+		EEEE00102F600001007EEEEE /* GetFeedApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFeedApi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -290,6 +304,7 @@
 			children = (
 				987153512C29ADBD00E08633 /* PostDetailViewModel.swift */,
 				980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */,
+				EEEE00082F600001007EEEEE /* SearchViewModel.swift */,
 				9874EC6C2E7C5DD700F116D0 /* FollowListViewModel.swift */,
 				980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */,
 				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
@@ -317,6 +332,8 @@
 				98D9595F2CADA2A200E6A6B7 /* GetProfileApiModel.swift */,
 				98AF4B952BC55D0C007DE10F /* CreateRecordApiModel.swift */,
 				98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */,
+				EEEE00042F600001007EEEEE /* SearchPostsApiModel.swift */,
+				EEEE000C2F600001007EEEEE /* GetUserFeedsApiModel.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -340,6 +357,9 @@
 				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
 				B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */,
 				983B2C132BB27216004E20F3 /* GetTimelineApi.swift */,
+				EEEE00062F600001007EEEEE /* SearchPostsApi.swift */,
+				EEEE000E2F600001007EEEEE /* GetUserFeedsApi.swift */,
+				EEEE00102F600001007EEEEE /* GetFeedApi.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -398,6 +418,7 @@
 				FFFF00062F700004007FFFFF /* MuteBlockListView.swift */,
 				FFFF000A2F700006007FFFFF /* MuteWordsView.swift */,
 				EEEE00022F600001007EEEEE /* BookmarksView.swift */,
+				EEEE000A2F600001007EEEEE /* SearchView.swift */,
 				980FD2062E7AFAF700AE29EF /* RepliesView.swift */,
 				9874EC5A2E7C335800F116D0 /* LikesView.swift */,
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
@@ -605,6 +626,13 @@
 				DDDD00032F500001007DDDDD /* DraftsView.swift in Sources */,
 				EEEE00012F600001007EEEEE /* BookmarkedPost.swift in Sources */,
 				EEEE00032F600001007EEEEE /* BookmarksView.swift in Sources */,
+				EEEE000B2F600001007EEEEE /* SearchView.swift in Sources */,
+				EEEE00052F600001007EEEEE /* SearchPostsApiModel.swift in Sources */,
+				EEEE00072F600001007EEEEE /* SearchPostsApi.swift in Sources */,
+				EEEE00092F600001007EEEEE /* SearchViewModel.swift in Sources */,
+				EEEE000D2F600001007EEEEE /* GetUserFeedsApiModel.swift in Sources */,
+				EEEE000F2F600001007EEEEE /* GetUserFeedsApi.swift in Sources */,
+				EEEE00112F600001007EEEEE /* GetFeedApi.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				980FD2122E7B042900AE29EF /* PostThreadResponse.swift in Sources */,
 				9874EC5B2E7C335800F116D0 /* LikesView.swift in Sources */,
