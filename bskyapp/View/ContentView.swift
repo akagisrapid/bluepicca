@@ -9,6 +9,7 @@ struct ContentView: View {
   @State private var isShowLikes = false
   @State private var isShowSettings = false
   @State private var isShowBookmarks = false
+  @State private var isShowSearch = false
   @State private var selectedPostForLikes: Post?
 
   var body: some View {
@@ -81,16 +82,36 @@ struct ContentView: View {
         }
       }
       .toolbar {
-          ToolbarItem(placement: .title){
-              Text("timelines")
+          ToolbarItem(placement: .navigationBarLeading) {
+              if viewModel.feedTabs.count > 1 {
+                  Picker(selection: Binding(
+                      get: { viewModel.selectedTab.id },
+                      set: { id in
+                          if let tab = viewModel.feedTabs.first(where: { $0.id == id }) {
+                              viewModel.selectTab(tab)
+                          }
+                      }
+                  ), label: Text(viewModel.selectedTab.name).fontWeight(.semibold)) {
+                      ForEach(viewModel.feedTabs) { tab in
+                          Text(tab.name).tag(tab.id)
+                      }
+                  }
+                  .pickerStyle(.menu)
+              } else {
+                  Text(viewModel.selectedTab.name).fontWeight(.semibold)
+              }
           }
           ToolbarItem(placement: .navigationBarTrailing){
-              Button(action: {
-                  isShowSettings = true
-              }) {
-                  Image(systemName: "gearshape")
+              HStack(spacing: 16) {
+                  Button(action: { isShowSearch = true }) {
+                      Image(systemName: "magnifyingglass")
+                  }
+                  .buttonStyle(.plain)
+                  Button(action: { isShowSettings = true }) {
+                      Image(systemName: "gearshape")
+                  }
+                  .buttonStyle(.plain)
               }
-              .buttonStyle(.plain)
           }
         ToolbarItemGroup(placement: .bottomBar) {
             Button("Post", systemImage: "square.and.pencil") {
@@ -125,9 +146,21 @@ struct ContentView: View {
       .sheet(isPresented: $isShowSettings) {
         SettingsView(isLoggedIn: $isLoggedIn)
       }
+      .sheet(isPresented: $isShowSearch) {
+        SearchView()
+      }
+      .alert("エラー", isPresented: Binding(
+        get: { viewModel.feedError != nil },
+        set: { if !$0 { viewModel.feedError = nil } }
+      )) {
+        Button("OK") { viewModel.feedError = nil }
+      } message: {
+        Text(viewModel.feedError ?? "")
+      }
     }
   }
 }
+
 #Preview {
   var vm = ContentViewModel()
   return ContentView(viewModel: vm, isLoggedIn: .constant(true))

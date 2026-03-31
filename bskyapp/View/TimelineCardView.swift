@@ -206,6 +206,22 @@ struct TimelineCardView: View {
       .padding(.horizontal, 8)
       .padding(.bottom, 4)
     }
+    .swipeActions(edge: .leading, allowsFullSwipe: true) {
+      Button {
+        Task { await viewModel.toggleLike() }
+      } label: {
+        Image(systemName: viewModel.isLiked ? "star.slash.fill" : "star.fill")
+      }
+      .tint(.yellow)
+    }
+    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+      Button {
+        Task { await viewModel.toggleRepost() }
+      } label: {
+        Image(systemName: "arrow.rectanglepath")
+      }
+      .tint(.green)
+    }
     .sheet(isPresented: $isShowingReplySheet) {
       ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
     }
