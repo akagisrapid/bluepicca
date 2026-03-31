@@ -88,21 +88,19 @@ struct ContentView: View {
           ToolbarItem(placement: .navigationBarTrailing){
               HStack(spacing: 16) {
                   if viewModel.feedTabs.count > 1 {
-                      Menu {
-                          ForEach(viewModel.feedTabs) { tab in
-                              Button {
+                      Picker(selection: Binding(
+                          get: { viewModel.selectedTab.id },
+                          set: { id in
+                              if let tab = viewModel.feedTabs.first(where: { $0.id == id }) {
                                   viewModel.selectTab(tab)
-                              } label: {
-                                  if tab.id == viewModel.selectedTab.id {
-                                      Label(tab.name, systemImage: "checkmark")
-                                  } else {
-                                      Text(tab.name)
-                                  }
                               }
                           }
-                      } label: {
-                          Image(systemName: "list.bullet")
+                      ), label: Image(systemName: "list.bullet")) {
+                          ForEach(viewModel.feedTabs) { tab in
+                              Text(tab.name).tag(tab.id)
+                          }
                       }
+                      .pickerStyle(.menu)
                   }
                   Button(action: { isShowSearch = true }) {
                       Image(systemName: "magnifyingglass")
