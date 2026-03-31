@@ -16,6 +16,8 @@ class ContentViewModel: ObservableObject {
     @Published var isLoadingFeedTabs: Bool = false
     @Published var feedError: String? = nil
 
+    private var currentFetchTask: Task<Void, Never>?
+
     var timelineCursor: String?
 
     // ミュート・ブロック済みアカウント・ミュートワードに該当する投稿を除外する
@@ -68,6 +70,7 @@ class ContentViewModel: ObservableObject {
 
         do {
             let response = try await fetchFeed(cursor: nil)
+            try Task.checkCancellation()
             feeds = response.feed
             posts = feeds.compactMap { $0.post }
             timelineCursor = response.cursor
@@ -101,11 +104,14 @@ class ContentViewModel: ObservableObject {
     @MainActor
     func selectTab(_ tab: FeedTab) {
         guard tab.id != selectedTab.id else { return }
+        currentFetchTask?.cancel()
         selectedTab = tab
         feedError = nil
-        Task {
+        currentFetchTask = Task {
             do {
                 try await fetchTimeline()
+            } catch is CancellationError {
+                // タブ切り替えによるキャンセルは無視
             } catch {
                 feedError = "フィードの読み込みに失敗しました: \(error.localizedDescription)"
                 print("ContentViewModel: selectTab fetchTimeline error: \(error)")
