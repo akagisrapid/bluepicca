@@ -81,17 +81,29 @@ struct ContentView: View {
           .transition(.scale)
         }
       }
-      .safeAreaInset(edge: .top, spacing: 0) {
-        FeedTabBar(tabs: viewModel.feedTabs, selectedId: viewModel.selectedTab.id) { tab in
-          viewModel.selectTab(tab)
-        }
-      }
       .toolbar {
           ToolbarItem(placement: .title){
               Text(viewModel.selectedTab.name)
           }
           ToolbarItem(placement: .navigationBarTrailing){
               HStack(spacing: 16) {
+                  if viewModel.feedTabs.count > 1 {
+                      Menu {
+                          ForEach(viewModel.feedTabs) { tab in
+                              Button {
+                                  viewModel.selectTab(tab)
+                              } label: {
+                                  if tab.id == viewModel.selectedTab.id {
+                                      Label(tab.name, systemImage: "checkmark")
+                                  } else {
+                                      Text(tab.name)
+                                  }
+                              }
+                          }
+                      } label: {
+                          Image(systemName: "list.bullet")
+                      }
+                  }
                   Button(action: { isShowSearch = true }) {
                       Image(systemName: "magnifyingglass")
                   }
@@ -146,41 +158,6 @@ struct ContentView: View {
       } message: {
         Text(viewModel.feedError ?? "")
       }
-    }
-  }
-}
-// MARK: - フィードタブバー
-
-private struct FeedTabBar: View {
-  let tabs: [FeedTab]
-  let selectedId: String
-  let onSelect: (FeedTab) -> Void
-
-  var body: some View {
-    ScrollView(.horizontal, showsIndicators: false) {
-      HStack(spacing: 0) {
-        ForEach(tabs) { tab in
-          Button(action: { onSelect(tab) }) {
-            VStack(spacing: 4) {
-              Text(tab.name)
-                .font(.subheadline)
-                .fontWeight(tab.id == selectedId ? .semibold : .regular)
-                .foregroundColor(tab.id == selectedId ? .primary : .secondary)
-                .lineLimit(1)
-              Rectangle()
-                .fill(tab.id == selectedId ? Color.accentColor : Color.clear)
-                .frame(height: 2)
-            }
-          }
-          .buttonStyle(.plain)
-          .padding(.horizontal, 14)
-          .padding(.vertical, 8)
-        }
-      }
-    }
-    .background(.bar)
-    .overlay(alignment: .bottom) {
-      Divider()
     }
   }
 }
