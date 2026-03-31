@@ -5,8 +5,7 @@ struct TimelineCardView: View {
   let viewModel: TimelineCardViewModel
   @ObservedObject var post: Post
   @State private var isShowingReplySheet = false
-  @State private var hashtagSearchQuery: String = ""
-  @State private var isShowingHashtagSearch = false
+  @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
 
@@ -103,8 +102,7 @@ struct TimelineCardView: View {
       // 本文テキスト（メイン）
       if !viewModel.text.isEmpty {
         PostTextView(text: viewModel.text) { tag in
-          hashtagSearchQuery = tag
-          isShowingHashtagSearch = true
+          hashtagSearchItem = HashtagSearchItem(query: tag)
         }
         .font(.body)
         .foregroundColor(.primary)
@@ -230,8 +228,8 @@ struct TimelineCardView: View {
     .sheet(isPresented: $isShowingReplySheet) {
       ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
     }
-    .sheet(isPresented: $isShowingHashtagSearch) {
-      SearchView(initialQuery: hashtagSearchQuery)
+    .sheet(item: $hashtagSearchItem) { item in
+      SearchView(initialQuery: item.query)
     }
   }
 }
@@ -355,4 +353,9 @@ private struct CompactLinkCard: View {
     }
     return host
   }
+}
+
+struct HashtagSearchItem: Identifiable {
+  let id = UUID()
+  let query: String
 }
