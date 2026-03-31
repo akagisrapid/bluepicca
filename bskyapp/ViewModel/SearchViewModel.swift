@@ -1,13 +1,17 @@
 import Foundation
 
 class SearchViewModel: ObservableObject {
-    @Published var query: String = ""
+    @Published var query: String
     @Published var posts: [Post] = []
     @Published var isSearching: Bool = false
     @Published var errorMessage: String? = nil
 
     private var searchCursor: String?
     @Published var isLoadingMore: Bool = false
+
+    init(initialQuery: String = "") {
+        self.query = initialQuery
+    }
 
     @MainActor
     func search() async {

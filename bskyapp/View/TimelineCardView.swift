@@ -5,6 +5,8 @@ struct TimelineCardView: View {
   let viewModel: TimelineCardViewModel
   @ObservedObject var post: Post
   @State private var isShowingReplySheet = false
+  @State private var hashtagSearchQuery: String = ""
+  @State private var isShowingHashtagSearch = false
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
 
@@ -100,12 +102,15 @@ struct TimelineCardView: View {
 
       // 本文テキスト（メイン）
       if !viewModel.text.isEmpty {
-        Text(viewModel.text)
-          .font(.body)
-          .foregroundColor(.primary)
-          .fixedSize(horizontal: false, vertical: true)
-          .padding(.horizontal, 16)
-          .padding(.bottom, 8)
+        PostTextView(text: viewModel.text) { tag in
+          hashtagSearchQuery = tag
+          isShowingHashtagSearch = true
+        }
+        .font(.body)
+        .foregroundColor(.primary)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
       }
 
       // 添付メディアバッジ（画像・動画）
@@ -224,6 +229,9 @@ struct TimelineCardView: View {
     }
     .sheet(isPresented: $isShowingReplySheet) {
       ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
+    }
+    .sheet(isPresented: $isShowingHashtagSearch) {
+      SearchView(initialQuery: hashtagSearchQuery)
     }
   }
 }

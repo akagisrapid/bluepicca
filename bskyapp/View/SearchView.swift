@@ -2,8 +2,12 @@ import SwiftUI
 import SwiftData
 
 struct SearchView: View {
-    @StateObject private var viewModel = SearchViewModel()
+    @StateObject private var viewModel: SearchViewModel
     @Environment(\.dismiss) private var dismiss
+
+    init(initialQuery: String = "") {
+        _viewModel = StateObject(wrappedValue: SearchViewModel(initialQuery: initialQuery))
+    }
 
     var body: some View {
         NavigationStack {
@@ -88,6 +92,11 @@ struct SearchView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("閉じる") { dismiss() }
+                }
+            }
+            .task {
+                if !viewModel.query.isEmpty {
+                    await viewModel.search()
                 }
             }
         }
