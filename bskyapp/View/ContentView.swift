@@ -96,14 +96,14 @@ struct ContentView: View {
                               viewModel.selectTab(tab)
                           }
                       }
-                  ), label: Text(viewModel.selectedTab.name).fontWeight(.semibold)) {
+                  ), label: Image(systemName: "list.bullet")) {
                       ForEach(viewModel.feedTabs) { tab in
                           Text(tab.name).tag(tab.id)
                       }
                   }
                   .pickerStyle(.menu)
               } else {
-                  Text(viewModel.selectedTab.name).fontWeight(.semibold)
+                  Image(systemName: "list.bullet")
               }
           }
           ToolbarItem(placement: .navigationBarTrailing){
