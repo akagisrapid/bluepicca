@@ -138,6 +138,14 @@ struct ContentView: View {
       .sheet(isPresented: $isShowSearch) {
         SearchView()
       }
+      .alert("エラー", isPresented: Binding(
+        get: { viewModel.feedError != nil },
+        set: { if !$0 { viewModel.feedError = nil } }
+      )) {
+        Button("OK") { viewModel.feedError = nil }
+      } message: {
+        Text(viewModel.feedError ?? "")
+      }
     }
   }
 }

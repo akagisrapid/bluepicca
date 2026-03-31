@@ -14,6 +14,7 @@ class ContentViewModel: ObservableObject {
     @Published var feedTabs: [FeedTab] = [.home]
     @Published var selectedTab: FeedTab = .home
     @Published var isLoadingFeedTabs: Bool = false
+    @Published var feedError: String? = nil
 
     var timelineCursor: String?
 
@@ -101,13 +102,20 @@ class ContentViewModel: ObservableObject {
     func selectTab(_ tab: FeedTab) {
         guard tab.id != selectedTab.id else { return }
         selectedTab = tab
+        feedError = nil
         Task {
-            try await fetchTimeline()
+            do {
+                try await fetchTimeline()
+            } catch {
+                feedError = "フィードの読み込みに失敗しました: \(error.localizedDescription)"
+                print("ContentViewModel: selectTab fetchTimeline error: \(error)")
+            }
         }
     }
 
     // MARK: - 内部: タブに応じて適切なAPIを呼ぶ
 
+    @MainActor
     private func fetchFeed(cursor: String?) async throws -> FeedResponse {
         if let uri = selectedTab.uri {
             return try await GetFeedApi().getFeed(uri: uri, cursor: cursor)
