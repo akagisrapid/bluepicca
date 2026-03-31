@@ -82,26 +82,27 @@ struct ContentView: View {
         }
       }
       .toolbar {
-          ToolbarItem(placement: .title){
-              Text(viewModel.selectedTab.name)
+          ToolbarItem(placement: .navigationBarLeading) {
+              if viewModel.feedTabs.count > 1 {
+                  Picker(selection: Binding(
+                      get: { viewModel.selectedTab.id },
+                      set: { id in
+                          if let tab = viewModel.feedTabs.first(where: { $0.id == id }) {
+                              viewModel.selectTab(tab)
+                          }
+                      }
+                  ), label: Text(viewModel.selectedTab.name).fontWeight(.semibold)) {
+                      ForEach(viewModel.feedTabs) { tab in
+                          Text(tab.name).tag(tab.id)
+                      }
+                  }
+                  .pickerStyle(.menu)
+              } else {
+                  Text(viewModel.selectedTab.name).fontWeight(.semibold)
+              }
           }
           ToolbarItem(placement: .navigationBarTrailing){
               HStack(spacing: 16) {
-                  if viewModel.feedTabs.count > 1 {
-                      Picker(selection: Binding(
-                          get: { viewModel.selectedTab.id },
-                          set: { id in
-                              if let tab = viewModel.feedTabs.first(where: { $0.id == id }) {
-                                  viewModel.selectTab(tab)
-                              }
-                          }
-                      ), label: Image(systemName: "list.bullet")) {
-                          ForEach(viewModel.feedTabs) { tab in
-                              Text(tab.name).tag(tab.id)
-                          }
-                      }
-                      .pickerStyle(.menu)
-                  }
                   Button(action: { isShowSearch = true }) {
                       Image(systemName: "magnifyingglass")
                   }
