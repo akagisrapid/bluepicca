@@ -54,6 +54,7 @@ class PostCardViewModel: ObservableObject {
             }
 
             try await PostCreationService.shared.createPost(text: text, images: uploadedImages)
+            NotificationCenter.default.post(name: .postCreated, object: nil)
         } catch {
             await MainActor.run {
                 isUploading = false

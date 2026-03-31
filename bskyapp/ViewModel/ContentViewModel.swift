@@ -1,5 +1,9 @@
 import Foundation
 
+extension Notification.Name {
+    static let postCreated = Notification.Name("postCreated")
+}
+
 class ContentViewModel: ObservableObject {
     @Published var feeds: [FeedItem] = []
     @Published var posts: [Post] = []
@@ -31,6 +35,11 @@ class ContentViewModel: ObservableObject {
         Task { @MainActor in
             await loadFeedTabs()
             try await fetchTimeline()
+        }
+        NotificationCenter.default.addObserver(forName: .postCreated, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                try? await self?.fetchTimeline()
+            }
         }
     }
 

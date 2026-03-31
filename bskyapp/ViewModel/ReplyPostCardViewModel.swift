@@ -97,6 +97,7 @@ class ReplyPostCardViewModel: ObservableObject {
                 text = ""
                 selectedImages = []
                 selectedPhotoItems = []
+                NotificationCenter.default.post(name: .postCreated, object: nil)
             }
         } catch {
             await MainActor.run {
