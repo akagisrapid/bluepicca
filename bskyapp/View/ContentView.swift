@@ -11,6 +11,7 @@ struct ContentView: View {
   @State private var isShowBookmarks = false
   @State private var isShowSearch = false
   @State private var selectedPostForLikes: Post?
+  @State private var scrollProxy: ScrollViewProxy? = nil
 
   var body: some View {
     NavigationStack {
@@ -21,41 +22,45 @@ struct ContentView: View {
             .progressViewStyle(CircularProgressViewStyle())
             .scaleEffect(1.5)
         } else {
-          List {
-            ForEach(viewModel.validFeeds) { feedItem in
-              if let post = feedItem.post {
-                var timelineCardViewModel = TimelineCardViewModel(
-                  post: post, reason: feedItem.reason, reply: feedItem.reply)
-                var postDetailViewModel = PostDetailViewModel(post: post)
-                ZStack {
-                  NavigationLink(
-                    destination: PostDetailView(viewModel: postDetailViewModel)
-                  ) {
-                    EmptyView()
+          ScrollViewReader { proxy in
+            List {
+              Color.clear.frame(height: 0).id("top")
+              ForEach(viewModel.validFeeds) { feedItem in
+                if let post = feedItem.post {
+                  var timelineCardViewModel = TimelineCardViewModel(
+                    post: post, reason: feedItem.reason, reply: feedItem.reply)
+                  var postDetailViewModel = PostDetailViewModel(post: post)
+                  ZStack {
+                    NavigationLink(
+                      destination: PostDetailView(viewModel: postDetailViewModel)
+                    ) {
+                      EmptyView()
+                    }
+                    .opacity(0)
+                    TimelineCardView(viewModel: timelineCardViewModel)
                   }
-                  .opacity(0)
-                  TimelineCardView(viewModel: timelineCardViewModel)
-                }
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .onAppear {
-                  if feedItem.id == viewModel.validFeeds.last?.id {
-                    Task {
-                      await viewModel.loadMore()
+                  .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                  .onAppear {
+                    if feedItem.id == viewModel.validFeeds.last?.id {
+                      Task {
+                        await viewModel.loadMore()
+                      }
                     }
                   }
                 }
               }
-            }
-            if viewModel.isLoadingMore {
-              HStack {
-                Spacer()
-                ProgressView()
-                Spacer()
+              if viewModel.isLoadingMore {
+                HStack {
+                  Spacer()
+                  ProgressView()
+                  Spacer()
+                }
+                .listRowSeparator(.hidden)
               }
-              .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .onAppear { scrollProxy = proxy }
           }
-          .listStyle(.plain)
           // リフレッシュ中は上部に細いインジケーターを表示
           if viewModel.isFetchingTimeline {
             VStack {
@@ -126,6 +131,11 @@ struct ContentView: View {
               isShowBookmarks = true
             }
             Spacer()
+            Button("Top", systemImage: "arrow.up.to.line") {
+              withAnimation {
+                scrollProxy?.scrollTo("top", anchor: .top)
+              }
+            }
             Button("Refresh", systemImage: "arrow.clockwise") {
               Task {
                 do {
