@@ -111,19 +111,17 @@ struct TimelineCardView: View {
         .padding(.bottom, 8)
       }
 
-      // 添付メディアバッジ（画像・動画）
-      let hasMedia = viewModel.imageCount > 0 || viewModel.videoCount > 0
-      if hasMedia {
+      // 添付画像サムネイル
+      if let images = viewModel.post.embed?.images, !images.isEmpty {
+        ImageGridView(images: images)
+          .padding(.horizontal, 16)
+          .padding(.bottom, 8)
+      }
+
+      // 動画バッジ
+      if viewModel.videoCount > 0 {
         HStack(spacing: 6) {
-          if viewModel.imageCount > 0 {
-            MediaBadge(
-              icon: "photo",
-              label: viewModel.imageCount > 1 ? "\(viewModel.imageCount)枚の画像" : "画像"
-            )
-          }
-          if viewModel.videoCount > 0 {
-            MediaBadge(icon: "play.rectangle", label: "動画")
-          }
+          MediaBadge(icon: "play.rectangle", label: "動画")
           Spacer()
         }
         .padding(.horizontal, 16)
@@ -314,37 +312,39 @@ private struct CompactLinkCard: View {
   let externalLink: EmbeddedExternalViewItem
 
   var body: some View {
-    Link(destination: URL(string: externalLink.uri) ?? URL(string: "https://example.com")!) {
-      HStack(spacing: 10) {
-        Image(systemName: "link")
-          .font(.caption)
-          .foregroundColor(.secondary)
-          .frame(width: 16)
-
-        VStack(alignment: .leading, spacing: 1) {
-          Text(externalLink.title.isEmpty ? displayHost : externalLink.title)
+    if let destination = URL(string: externalLink.uri) {
+      Link(destination: destination) {
+        HStack(spacing: 10) {
+          Image(systemName: "link")
             .font(.caption)
-            .fontWeight(.medium)
-            .foregroundColor(.primary)
-            .lineLimit(1)
-          Text(displayHost)
+            .foregroundColor(.secondary)
+            .frame(width: 16)
+
+          VStack(alignment: .leading, spacing: 1) {
+            Text(externalLink.title.isEmpty ? displayHost : externalLink.title)
+              .font(.caption)
+              .fontWeight(.medium)
+              .foregroundColor(.primary)
+              .lineLimit(1)
+            Text(displayHost)
+              .font(.caption2)
+              .foregroundColor(.secondary)
+              .lineLimit(1)
+          }
+
+          Spacer()
+
+          Image(systemName: "chevron.right")
             .font(.caption2)
             .foregroundColor(.secondary)
-            .lineLimit(1)
         }
-
-        Spacer()
-
-        Image(systemName: "chevron.right")
-          .font(.caption2)
-          .foregroundColor(.secondary)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
       }
-      .padding(.horizontal, 10)
-      .padding(.vertical, 8)
-      .background(Color(.systemGray6))
-      .clipShape(RoundedRectangle(cornerRadius: 8))
+      .buttonStyle(.plain)
     }
-    .buttonStyle(.plain)
   }
 
   private var displayHost: String {
@@ -358,4 +358,111 @@ private struct CompactLinkCard: View {
 struct HashtagSearchItem: Identifiable {
   let id = UUID()
   let query: String
+}
+
+// MARK: - 画像グリッド（1〜4枚、タップでフルスクリーン）
+
+private struct ImageGridView: View {
+  let images: [EmbedImagesViewItem]
+  @State private var viewerIndex: Int? = nil
+
+  var body: some View {
+    let count = min(images.count, 4)
+    Group {
+      switch count {
+      case 1:
+        SingleThumbView(image: images[0])
+          .onTapGesture { viewerIndex = 0 }
+      case 2:
+        HStack(spacing: 2) {
+          ForEach(0..<2, id: \.self) { i in
+            ThumbTile(url: images[i].thumbUrl, alt: images[i].alt)
+              .onTapGesture { viewerIndex = i }
+          }
+        }
+        .frame(height: 160)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+      case 3:
+        HStack(spacing: 2) {
+          ThumbTile(url: images[0].thumbUrl, alt: images[0].alt)
+            .onTapGesture { viewerIndex = 0 }
+          VStack(spacing: 2) {
+            ThumbTile(url: images[1].thumbUrl, alt: images[1].alt)
+              .onTapGesture { viewerIndex = 1 }
+            ThumbTile(url: images[2].thumbUrl, alt: images[2].alt)
+              .onTapGesture { viewerIndex = 2 }
+          }
+        }
+        .frame(height: 160)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+      default:
+        VStack(spacing: 2) {
+          HStack(spacing: 2) {
+            ThumbTile(url: images[0].thumbUrl, alt: images[0].alt)
+              .onTapGesture { viewerIndex = 0 }
+            ThumbTile(url: images[1].thumbUrl, alt: images[1].alt)
+              .onTapGesture { viewerIndex = 1 }
+          }
+          HStack(spacing: 2) {
+            ThumbTile(url: images[2].thumbUrl, alt: images[2].alt)
+              .onTapGesture { viewerIndex = 2 }
+            ThumbTile(url: images[3].thumbUrl, alt: images[3].alt)
+              .onTapGesture { viewerIndex = 3 }
+          }
+        }
+        .frame(height: 200)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+      }
+    }
+    .fullScreenCover(item: Binding(
+      get: { viewerIndex.map { ImageViewerItem(index: $0) } },
+      set: { viewerIndex = $0?.index }
+    )) { item in
+      FullScreenImageView(images: images, initialIndex: item.index)
+    }
+  }
+}
+
+private struct SingleThumbView: View {
+  let image: EmbedImagesViewItem
+
+  private var aspectRatio: CGFloat {
+    guard let ar = image.aspectRatio, ar.width > 0 else { return 16 / 9 }
+    return min(max(CGFloat(ar.width) / CGFloat(ar.height), 0.5), 3.0)
+  }
+
+  var body: some View {
+    CachedAsyncImage(url: image.thumbUrl) { img in
+      img.resizable().scaledToFill()
+    } placeholder: {
+      Color(.systemGray6)
+    }
+    .aspectRatio(aspectRatio, contentMode: .fill)
+    .frame(maxWidth: .infinity)
+    .frame(maxHeight: 300)
+    .clipped()
+    .clipShape(RoundedRectangle(cornerRadius: 8))
+    .accessibilityLabel(image.alt.isEmpty ? "画像" : image.alt)
+  }
+}
+
+private struct ThumbTile: View {
+  let url: URL?
+  let alt: String
+
+  var body: some View {
+    CachedAsyncImage(url: url) { img in
+      img.resizable().scaledToFill()
+    } placeholder: {
+      Color(.systemGray6)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .clipped()
+    .accessibilityLabel(alt.isEmpty ? "画像" : alt)
+  }
+}
+
+private struct ImageViewerItem: Identifiable {
+  let id = UUID()
+  let index: Int
 }
