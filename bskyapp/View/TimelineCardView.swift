@@ -380,6 +380,7 @@ private struct ImageGridView: View {
               .onTapGesture { viewerIndex = i }
           }
         }
+        .frame(maxWidth: .infinity)
         .frame(height: 160)
         .clipShape(RoundedRectangle(cornerRadius: 8))
       case 3:
@@ -393,6 +394,7 @@ private struct ImageGridView: View {
               .onTapGesture { viewerIndex = 2 }
           }
         }
+        .frame(maxWidth: .infinity)
         .frame(height: 160)
         .clipShape(RoundedRectangle(cornerRadius: 8))
       default:
@@ -410,6 +412,7 @@ private struct ImageGridView: View {
               .onTapGesture { viewerIndex = 3 }
           }
         }
+        .frame(maxWidth: .infinity)
         .frame(height: 200)
         .clipShape(RoundedRectangle(cornerRadius: 8))
       }
