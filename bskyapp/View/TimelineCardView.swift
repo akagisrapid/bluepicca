@@ -426,9 +426,11 @@ private struct ImageGridView: View {
 private struct SingleThumbView: View {
   let image: EmbedImagesViewItem
 
-  private var aspectRatio: CGFloat {
-    guard let ar = image.aspectRatio, ar.width > 0 else { return 16 / 9 }
-    return min(max(CGFloat(ar.width) / CGFloat(ar.height), 0.5), 3.0)
+  private var imageHeight: CGFloat {
+    guard let ar = image.aspectRatio, ar.width > 0, ar.height > 0 else { return 220 }
+    let availableWidth = UIScreen.main.bounds.width - 32
+    let natural = availableWidth * CGFloat(ar.height) / CGFloat(ar.width)
+    return min(max(natural, 100), 300)
   }
 
   var body: some View {
@@ -437,9 +439,8 @@ private struct SingleThumbView: View {
     } placeholder: {
       Color(.systemGray6)
     }
-    .aspectRatio(aspectRatio, contentMode: .fill)
     .frame(maxWidth: .infinity)
-    .frame(maxHeight: 300)
+    .frame(height: imageHeight)
     .clipped()
     .clipShape(RoundedRectangle(cornerRadius: 8))
     .accessibilityLabel(image.alt.isEmpty ? "画像" : image.alt)
