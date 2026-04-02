@@ -312,37 +312,39 @@ private struct CompactLinkCard: View {
   let externalLink: EmbeddedExternalViewItem
 
   var body: some View {
-    Link(destination: URL(string: externalLink.uri) ?? URL(string: "https://example.com")!) {
-      HStack(spacing: 10) {
-        Image(systemName: "link")
-          .font(.caption)
-          .foregroundColor(.secondary)
-          .frame(width: 16)
-
-        VStack(alignment: .leading, spacing: 1) {
-          Text(externalLink.title.isEmpty ? displayHost : externalLink.title)
+    if let destination = URL(string: externalLink.uri) {
+      Link(destination: destination) {
+        HStack(spacing: 10) {
+          Image(systemName: "link")
             .font(.caption)
-            .fontWeight(.medium)
-            .foregroundColor(.primary)
-            .lineLimit(1)
-          Text(displayHost)
+            .foregroundColor(.secondary)
+            .frame(width: 16)
+
+          VStack(alignment: .leading, spacing: 1) {
+            Text(externalLink.title.isEmpty ? displayHost : externalLink.title)
+              .font(.caption)
+              .fontWeight(.medium)
+              .foregroundColor(.primary)
+              .lineLimit(1)
+            Text(displayHost)
+              .font(.caption2)
+              .foregroundColor(.secondary)
+              .lineLimit(1)
+          }
+
+          Spacer()
+
+          Image(systemName: "chevron.right")
             .font(.caption2)
             .foregroundColor(.secondary)
-            .lineLimit(1)
         }
-
-        Spacer()
-
-        Image(systemName: "chevron.right")
-          .font(.caption2)
-          .foregroundColor(.secondary)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
       }
-      .padding(.horizontal, 10)
-      .padding(.vertical, 8)
-      .background(Color(.systemGray6))
-      .clipShape(RoundedRectangle(cornerRadius: 8))
+      .buttonStyle(.plain)
     }
-    .buttonStyle(.plain)
   }
 
   private var displayHost: String {
