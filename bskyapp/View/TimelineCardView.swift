@@ -437,16 +437,19 @@ private struct SingleThumbView: View {
   }
 
   var body: some View {
-    CachedAsyncImage(url: image.thumbUrl) { img in
-      img.resizable().scaledToFill()
-    } placeholder: {
-      Color(.systemGray6)
-    }
-    .frame(maxWidth: .infinity)
-    .frame(height: imageHeight)
-    .clipped()
-    .clipShape(RoundedRectangle(cornerRadius: 8))
-    .accessibilityLabel(image.alt.isEmpty ? "画像" : image.alt)
+    Color.clear
+      .frame(maxWidth: .infinity)
+      .frame(height: imageHeight)
+      .overlay(
+        CachedAsyncImage(url: image.thumbUrl) { img in
+          img.resizable().scaledToFill()
+        } placeholder: {
+          Color(.systemGray6)
+        }
+      )
+      .clipped()
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+      .accessibilityLabel(image.alt.isEmpty ? "画像" : image.alt)
   }
 }
 
@@ -455,14 +458,16 @@ private struct ThumbTile: View {
   let alt: String
 
   var body: some View {
-    CachedAsyncImage(url: url) { img in
-      img.resizable().scaledToFill()
-    } placeholder: {
-      Color(.systemGray6)
-    }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .clipped()
-    .accessibilityLabel(alt.isEmpty ? "画像" : alt)
+    Color.clear
+      .overlay(
+        CachedAsyncImage(url: url) { img in
+          img.resizable().scaledToFill()
+        } placeholder: {
+          Color(.systemGray6)
+        }
+      )
+      .clipped()
+      .accessibilityLabel(alt.isEmpty ? "画像" : alt)
   }
 }
 
