@@ -118,7 +118,7 @@ struct TimelineCardView: View {
           .padding(.bottom, 8)
       }
 
-      // 動画バッジ
+      // 動画バッジ（サムネイルなし）
       if viewModel.videoCount > 0 {
         HStack(spacing: 6) {
           MediaBadge(icon: "play.rectangle", label: "動画")
@@ -360,118 +360,86 @@ struct HashtagSearchItem: Identifiable {
   let query: String
 }
 
-// MARK: - 画像グリッド（1〜4枚、タップでフルスクリーン）
+// MARK: - 画像グリッド（1〜4枚対応）
 
 private struct ImageGridView: View {
   let images: [EmbedImagesViewItem]
-  @State private var viewerIndex: Int? = nil
 
   var body: some View {
     let count = min(images.count, 4)
-    Group {
-      switch count {
-      case 1:
-        SingleThumbView(image: images[0])
-          .onTapGesture { viewerIndex = 0 }
-      case 2:
-        HStack(spacing: 2) {
-          ForEach(0..<2, id: \.self) { i in
-            ThumbTile(url: images[i].thumbUrl, alt: images[i].alt)
-              .onTapGesture { viewerIndex = i }
-          }
+    switch count {
+    case 1:
+      SingleImageView(image: images[0])
+    case 2:
+      HStack(spacing: 2) {
+        ForEach(0..<2, id: \.self) { i in
+          ThumbView(url: images[i].thumbUrl)
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: 160)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-      case 3:
-        HStack(spacing: 2) {
-          ThumbTile(url: images[0].thumbUrl, alt: images[0].alt)
-            .onTapGesture { viewerIndex = 0 }
-          VStack(spacing: 2) {
-            ThumbTile(url: images[1].thumbUrl, alt: images[1].alt)
-              .onTapGesture { viewerIndex = 1 }
-            ThumbTile(url: images[2].thumbUrl, alt: images[2].alt)
-              .onTapGesture { viewerIndex = 2 }
-          }
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 160)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-      default:
-        VStack(spacing: 2) {
-          HStack(spacing: 2) {
-            ThumbTile(url: images[0].thumbUrl, alt: images[0].alt)
-              .onTapGesture { viewerIndex = 0 }
-            ThumbTile(url: images[1].thumbUrl, alt: images[1].alt)
-              .onTapGesture { viewerIndex = 1 }
-          }
-          HStack(spacing: 2) {
-            ThumbTile(url: images[2].thumbUrl, alt: images[2].alt)
-              .onTapGesture { viewerIndex = 2 }
-            ThumbTile(url: images[3].thumbUrl, alt: images[3].alt)
-              .onTapGesture { viewerIndex = 3 }
-          }
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 200)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
       }
-    }
-    .fullScreenCover(item: Binding(
-      get: { viewerIndex.map { ImageViewerItem(index: $0) } },
-      set: { viewerIndex = $0?.index }
-    )) { item in
-      FullScreenImageView(images: images, initialIndex: item.index)
+      .frame(height: 160)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+    case 3:
+      HStack(spacing: 2) {
+        ThumbView(url: images[0].thumbUrl)
+        VStack(spacing: 2) {
+          ThumbView(url: images[1].thumbUrl)
+          ThumbView(url: images[2].thumbUrl)
+        }
+      }
+      .frame(height: 160)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+    default:
+      VStack(spacing: 2) {
+        HStack(spacing: 2) {
+          ThumbView(url: images[0].thumbUrl)
+          ThumbView(url: images[1].thumbUrl)
+        }
+        HStack(spacing: 2) {
+          ThumbView(url: images[2].thumbUrl)
+          ThumbView(url: images[3].thumbUrl)
+        }
+      }
+      .frame(height: 200)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
     }
   }
 }
 
-private struct SingleThumbView: View {
+private struct SingleImageView: View {
   let image: EmbedImagesViewItem
 
-  private var imageHeight: CGFloat {
-    guard let ar = image.aspectRatio, ar.width > 0, ar.height > 0 else { return 220 }
-    let availableWidth = UIScreen.main.bounds.width - 32
-    let natural = availableWidth * CGFloat(ar.height) / CGFloat(ar.width)
-    return min(max(natural, 100), 300)
+  private var aspectRatio: CGFloat {
+    guard let ar = image.aspectRatio, ar.width > 0 else { return 16 / 9 }
+    let ratio = CGFloat(ar.width) / CGFloat(ar.height)
+    return min(max(ratio, 0.5), 3.0)
   }
 
   var body: some View {
-    Color.clear
+    ThumbView(url: image.thumbUrl)
+      .aspectRatio(aspectRatio, contentMode: .fill)
       .frame(maxWidth: .infinity)
-      .frame(height: imageHeight)
-      .overlay(
-        CachedAsyncImage(url: image.thumbUrl) { img in
-          img.resizable().scaledToFill()
-        } placeholder: {
-          Color(.systemGray6)
-        }
-      )
+      .frame(maxHeight: 300)
       .clipped()
       .clipShape(RoundedRectangle(cornerRadius: 8))
-      .accessibilityLabel(image.alt.isEmpty ? "画像" : image.alt)
   }
 }
 
-private struct ThumbTile: View {
+private struct ThumbView: View {
   let url: URL?
-  let alt: String
 
   var body: some View {
-    Color.clear
-      .overlay(
-        CachedAsyncImage(url: url) { img in
-          img.resizable().scaledToFill()
-        } placeholder: {
-          Color(.systemGray6)
-        }
-      )
-      .clipped()
-      .accessibilityLabel(alt.isEmpty ? "画像" : alt)
+    AsyncImage(url: url) { phase in
+      switch phase {
+      case .success(let image):
+        image.resizable().scaledToFill()
+      case .failure:
+        Color(.systemGray5)
+          .overlay(Image(systemName: "photo").foregroundColor(.secondary))
+      default:
+        Color(.systemGray6)
+      }
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .clipped()
   }
-}
-
-private struct ImageViewerItem: Identifiable {
-  let id = UUID()
-  let index: Int
 }
