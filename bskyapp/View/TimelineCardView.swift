@@ -111,19 +111,17 @@ struct TimelineCardView: View {
         .padding(.bottom, 8)
       }
 
-      // 添付メディアバッジ（画像・動画）
-      let hasMedia = viewModel.imageCount > 0 || viewModel.videoCount > 0
-      if hasMedia {
+      // 添付画像サムネイル
+      if let images = viewModel.post.embed?.images, !images.isEmpty {
+        ImageGridView(images: images)
+          .padding(.horizontal, 16)
+          .padding(.bottom, 8)
+      }
+
+      // 動画バッジ（サムネイルなし）
+      if viewModel.videoCount > 0 {
         HStack(spacing: 6) {
-          if viewModel.imageCount > 0 {
-            MediaBadge(
-              icon: "photo",
-              label: viewModel.imageCount > 1 ? "\(viewModel.imageCount)枚の画像" : "画像"
-            )
-          }
-          if viewModel.videoCount > 0 {
-            MediaBadge(icon: "play.rectangle", label: "動画")
-          }
+          MediaBadge(icon: "play.rectangle", label: "動画")
           Spacer()
         }
         .padding(.horizontal, 16)
@@ -358,4 +356,88 @@ private struct CompactLinkCard: View {
 struct HashtagSearchItem: Identifiable {
   let id = UUID()
   let query: String
+}
+
+// MARK: - 画像グリッド（1〜4枚対応）
+
+private struct ImageGridView: View {
+  let images: [EmbedImagesViewItem]
+
+  var body: some View {
+    let count = min(images.count, 4)
+    switch count {
+    case 1:
+      SingleImageView(image: images[0])
+    case 2:
+      HStack(spacing: 2) {
+        ForEach(0..<2, id: \.self) { i in
+          ThumbView(url: images[i].thumbUrl)
+        }
+      }
+      .frame(height: 160)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+    case 3:
+      HStack(spacing: 2) {
+        ThumbView(url: images[0].thumbUrl)
+        VStack(spacing: 2) {
+          ThumbView(url: images[1].thumbUrl)
+          ThumbView(url: images[2].thumbUrl)
+        }
+      }
+      .frame(height: 160)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+    default:
+      VStack(spacing: 2) {
+        HStack(spacing: 2) {
+          ThumbView(url: images[0].thumbUrl)
+          ThumbView(url: images[1].thumbUrl)
+        }
+        HStack(spacing: 2) {
+          ThumbView(url: images[2].thumbUrl)
+          ThumbView(url: images[3].thumbUrl)
+        }
+      }
+      .frame(height: 200)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+  }
+}
+
+private struct SingleImageView: View {
+  let image: EmbedImagesViewItem
+
+  private var aspectRatio: CGFloat {
+    guard let ar = image.aspectRatio, ar.width > 0 else { return 16 / 9 }
+    let ratio = CGFloat(ar.width) / CGFloat(ar.height)
+    return min(max(ratio, 0.5), 3.0)
+  }
+
+  var body: some View {
+    ThumbView(url: image.thumbUrl)
+      .aspectRatio(aspectRatio, contentMode: .fill)
+      .frame(maxWidth: .infinity)
+      .frame(maxHeight: 300)
+      .clipped()
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+  }
+}
+
+private struct ThumbView: View {
+  let url: URL?
+
+  var body: some View {
+    AsyncImage(url: url) { phase in
+      switch phase {
+      case .success(let image):
+        image.resizable().scaledToFill()
+      case .failure:
+        Color(.systemGray5)
+          .overlay(Image(systemName: "photo").foregroundColor(.secondary))
+      default:
+        Color(.systemGray6)
+      }
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .clipped()
+  }
 }
