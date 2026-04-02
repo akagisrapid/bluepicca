@@ -71,6 +71,18 @@ struct TimelineCardViewModel {
     return text
   }
 
+  /// スレッドのルート投稿（タップでスレッド全体を表示）
+  var replyRootPost: Post? {
+    return reply?.root
+  }
+
+  // MARK: - リプライ制限（Threadgate）
+
+  /// 返信が無効化されているか（投稿者がThreadgateで制限している場合）
+  var isReplyDisabled: Bool {
+    return post.viewer?.replyDisabled == true
+  }
+
   // MARK: - 添付情報
 
   var imageCount: Int {

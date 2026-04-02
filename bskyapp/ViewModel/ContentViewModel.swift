@@ -16,6 +16,10 @@ class ContentViewModel: ObservableObject {
     @Published var isLoadingFeedTabs: Bool = false
     @Published var feedError: String? = nil
 
+    /// フィードロード後にスクロールすべき投稿URI（一度使ったらnilにする）
+    @Published var targetScrollUri: String? = nil
+
+    private let lastReadUriKey = "lastReadPostUri"
     private var currentFetchTask: Task<Void, Never>?
 
     var timelineCursor: String?
@@ -76,11 +80,24 @@ class ContentViewModel: ObservableObject {
             timelineCursor = response.cursor
             PostStateManager.shared.syncWithServerState(posts: posts)
             isFetchingTimeline = false
+
+            // 既読位置が保存されていればスクロールターゲットとしてセット
+            let savedUri = UserDefaults.standard.string(forKey: lastReadUriKey)
+            if let uri = savedUri, feeds.contains(where: { $0.post?.uri == uri }) {
+                targetScrollUri = uri
+                UserDefaults.standard.removeObject(forKey: lastReadUriKey)
+            }
         } catch {
             isFetchingTimeline = false
             print("ContentViewModel: fetchTimeline error: \(error)")
             throw error
         }
+    }
+
+    // MARK: - 既読位置の保存
+
+    func saveReadPosition(uri: String?) {
+        UserDefaults.standard.set(uri, forKey: lastReadUriKey)
     }
 
     @MainActor
