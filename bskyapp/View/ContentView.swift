@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ContentView: View {
   @Environment(\.modelContext) private var modelContext
+  @Environment(\.scenePhase) private var scenePhase
   @StateObject var viewModel: ContentViewModel
   @Binding var isLoggedIn: Bool
   @State private var isShowReplies = false
@@ -40,6 +41,7 @@ struct ContentView: View {
                     TimelineCardView(viewModel: timelineCardViewModel)
                   }
                   .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                  .id(post.uri ?? feedItem.id)
                   .onAppear {
                     if feedItem.id == viewModel.validFeeds.last?.id {
                       Task {
@@ -158,6 +160,18 @@ struct ContentView: View {
       }
       .sheet(isPresented: $isShowSearch) {
         SearchView()
+      }
+      .onChange(of: viewModel.targetScrollUri) { _, uri in
+        guard let uri else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+          withAnimation { scrollProxy?.scrollTo(uri, anchor: .top) }
+        }
+        viewModel.targetScrollUri = nil
+      }
+      .onChange(of: scenePhase) { _, newPhase in
+        if newPhase == .background {
+          viewModel.saveReadPosition(uri: viewModel.validFeeds.first?.post?.uri)
+        }
       }
       .alert("エラー", isPresented: Binding(
         get: { viewModel.feedError != nil },

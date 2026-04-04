@@ -53,16 +53,24 @@ struct TimelineCardView: View {
         .padding(.bottom, 4)
       }
 
-      // リプライ情報バナー
+      // リプライ情報バナー（スレッドルートへのリンク付き）
       if viewModel.isReply {
-        HStack(spacing: 4) {
-          Image(systemName: "arrowshape.turn.up.left")
-            .font(.caption2)
-          Text("\(viewModel.replyTargetAuthorName)への返信")
-            .font(.caption2)
-          Spacer()
+        NavigationLink(
+          destination: PostDetailView(
+            viewModel: PostDetailViewModel(post: viewModel.replyRootPost ?? viewModel.post))
+        ) {
+          HStack(spacing: 4) {
+            Image(systemName: "arrowshape.turn.up.left")
+              .font(.caption2)
+            Text("\(viewModel.replyTargetAuthorName)への返信")
+              .font(.caption2)
+            Spacer()
+            Image(systemName: "chevron.right")
+              .font(.caption2)
+          }
+          .foregroundColor(.secondary)
         }
-        .foregroundColor(.secondary)
+        .buttonStyle(.plain)
         .padding(.horizontal, 16)
         .padding(.top, viewModel.isRepost ? 0 : 8)
         .padding(.bottom, 4)
@@ -144,20 +152,21 @@ struct TimelineCardView: View {
 
       // アクションバー: リプライ・リポスト・いいね
       HStack(spacing: 0) {
-        // リプライボタン
+        // リプライボタン（Threadgateで制限中はグレーアウト）
         Button(action: {
           isShowingReplySheet = true
         }) {
           HStack(spacing: 4) {
-            Image(systemName: "bubble.left")
+            Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
               .font(.caption)
             Text("\(viewModel.post.replyCount ?? 0)")
               .font(.caption)
           }
-          .foregroundColor(.secondary)
+          .foregroundColor(viewModel.isReplyDisabled ? .secondary.opacity(0.4) : .secondary)
           .frame(minWidth: 44, minHeight: 36)
         }
         .buttonStyle(.plain)
+        .disabled(viewModel.isReplyDisabled)
 
         Spacer()
 
