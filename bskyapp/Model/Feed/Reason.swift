@@ -1,6 +1,6 @@
 import Foundation
 
 struct Reason: Codable {
-    let by: Author
-    let indexedAt: String
+    let by: Author?
+    let indexedAt: String?
 }

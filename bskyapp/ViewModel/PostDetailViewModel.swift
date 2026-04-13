@@ -134,11 +134,11 @@ class PostDetailViewModel: ObservableObject {
   }
 
   var repostAuthorName: String {
-    return reason?.by.displayName ?? reason?.by.handle ?? ""
+    return reason?.by?.displayName ?? reason?.by?.handle ?? ""
   }
 
   var repostAuthorHandle: String {
-    return reason?.by.handle ?? ""
+    return reason?.by?.handle ?? ""
   }
 
   // MARK: - いいね機能

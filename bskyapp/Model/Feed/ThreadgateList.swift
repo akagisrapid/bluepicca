@@ -10,9 +10,9 @@ struct ThreadgateList: Codable {
     let uri: String
     let cid: String
     let name: String
-    let purpose: [String: String]
+    let purpose: String
     let avatar: String?
     let labels: [Label]
     let viewer: Viewer?
-    let indexedAt: Date?
+    let indexedAt: String?
 }

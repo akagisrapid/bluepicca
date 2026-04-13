@@ -14,6 +14,6 @@ struct Label: Codable {
     let val: String
     let neg: Bool?
     let cts: String?
-    let exp: Date?
+    let exp: String?
     let sig: UInt8?
 }
