@@ -335,6 +335,12 @@ private struct CompactLinkCard: View {
               .fontWeight(.medium)
               .foregroundColor(.primary)
               .lineLimit(1)
+            if !externalLink.description.isEmpty {
+              Text(externalLink.description)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .lineLimit(2)
+            }
             Text(displayHost)
               .font(.caption2)
               .foregroundColor(.secondary)
