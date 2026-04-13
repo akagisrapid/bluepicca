@@ -20,7 +20,7 @@ class ContentViewModel: ObservableObject {
     @Published var targetScrollUri: String? = nil
 
     private let lastReadUriKey = "lastReadPostUri"
-    private var currentFetchTask: Task<Void, Never>?
+    private var currentFetchTask: Task<Void, any Error>?
 
     var timelineCursor: String?
 
@@ -68,30 +68,40 @@ class ContentViewModel: ObservableObject {
 
     @MainActor
     func fetchTimeline() async throws {
-        print("ContentViewModel: fetchTimeline called (tab: \(selectedTab.name))")
-        isFetchingTimeline = true
-        timelineCursor = nil
+        // 前回の取得が進行中なら中断して新しいリクエストを優先する
+        currentFetchTask?.cancel()
 
-        do {
-            let response = try await fetchFeed(cursor: nil)
-            try Task.checkCancellation()
-            feeds = response.feed
-            posts = feeds.compactMap { $0.post }
-            timelineCursor = response.cursor
-            PostStateManager.shared.syncWithServerState(posts: posts)
-            isFetchingTimeline = false
+        let task = Task { @MainActor [weak self] in
+            guard let self else { return }
+            print("ContentViewModel: fetchTimeline called (tab: \(self.selectedTab.name))")
+            self.isFetchingTimeline = true
+            self.timelineCursor = nil
 
-            // 既読位置が保存されていればスクロールターゲットとしてセット
-            let savedUri = UserDefaults.standard.string(forKey: lastReadUriKey)
-            if let uri = savedUri, feeds.contains(where: { $0.post?.uri == uri }) {
-                targetScrollUri = uri
-                UserDefaults.standard.removeObject(forKey: lastReadUriKey)
+            do {
+                let response = try await self.fetchFeed(cursor: nil)
+                try Task.checkCancellation()
+                self.feeds = response.feed
+                self.posts = self.feeds.compactMap { $0.post }
+                self.timelineCursor = response.cursor
+                PostStateManager.shared.syncWithServerState(posts: self.posts)
+                self.isFetchingTimeline = false
+
+                // 既読位置が保存されていればスクロールターゲットとしてセット
+                let savedUri = UserDefaults.standard.string(forKey: self.lastReadUriKey)
+                if let uri = savedUri, self.feeds.contains(where: { $0.post?.uri == uri }) {
+                    self.targetScrollUri = uri
+                    UserDefaults.standard.removeObject(forKey: self.lastReadUriKey)
+                }
+            } catch {
+                self.isFetchingTimeline = false
+                if !(error is CancellationError) {
+                    print("ContentViewModel: fetchTimeline error: \(error)")
+                }
+                throw error
             }
-        } catch {
-            isFetchingTimeline = false
-            print("ContentViewModel: fetchTimeline error: \(error)")
-            throw error
         }
+        currentFetchTask = task
+        try await task.value
     }
 
     // MARK: - 既読位置の保存

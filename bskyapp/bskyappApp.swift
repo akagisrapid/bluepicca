@@ -38,16 +38,6 @@ struct bskyappApp: App {
             if isLoggedIn {
                 NavigationStack {
                     ContentView(viewModel: contentViewModel, isLoggedIn: $isLoggedIn)
-                        .onAppear {
-                            // Refresh timeline when appearing
-                            Task {
-                                do {
-                                    try await contentViewModel.fetchTimeline()
-                                } catch {
-                                    print("Error fetching timeline: \(error)")
-                                }
-                            }
-                        }
                 }
                 .preferredColorScheme(preferredColorScheme)
                 .modelContainer(sharedModelContainer)
