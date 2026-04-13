@@ -8,6 +8,7 @@ class SessionManager {
     private var currentSession: CreateSessionResponse?
     private var lastSessionTime: Date?
     private let sessionExpiryTime: TimeInterval = 12 * 60 * 60 // 12 hours in seconds
+    private var ongoingSessionTask: Task<CreateSessionResponse, Error>?
 
     private let userDefaults = UserDefaults.standard
     private let lastSessionTimeKey = "bsky_last_session_time"
@@ -32,23 +33,28 @@ class SessionManager {
             return session
         }
 
+        // 既存のセッション作成タスクがあればそれを待つ（並行リクエストによる多重ログインを防ぐ）
+        if let existing = ongoingSessionTask {
+            return try await existing.value
+        }
+
         // Check if we have saved credentials
-        if let identifier = getSavedIdentifier(), let password = getSavedAppPassword() {
-            // Create a new session with saved credentials
-            let newSession = try await createSession(identifier: identifier, password: password)
-
-            // Update session properties on the main thread
-            await MainActor.run {
-                currentSession = newSession
-                lastSessionTime = Date()
-                userDefaults.set(lastSessionTime, forKey: lastSessionTimeKey)
-            }
-
-            return newSession
-        } else {
-            // No saved credentials, throw an error
+        guard let identifier = getSavedIdentifier(), let password = getSavedAppPassword() else {
             throw SessionError.noSavedCredentials
         }
+
+        let task = Task<CreateSessionResponse, Error> {
+            let newSession = try await createSession(identifier: identifier, password: password)
+            await MainActor.run {
+                self.currentSession = newSession
+                self.lastSessionTime = Date()
+                self.userDefaults.set(self.lastSessionTime, forKey: self.lastSessionTimeKey)
+                self.ongoingSessionTask = nil
+            }
+            return newSession
+        }
+        ongoingSessionTask = task
+        return try await task.value
     }
 
     func createSessionWithCredentials(identifier: String, password: String) async throws -> CreateSessionResponse {
