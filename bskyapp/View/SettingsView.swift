@@ -29,6 +29,7 @@ struct SettingsView: View {
     @State private var showMuteBlockList = false
     @State private var showMuteWords = false
     @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system.rawValue
+    @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
 
     private var appearanceMode: AppearanceMode {
         AppearanceMode(rawValue: appearanceModeRaw) ?? .system
@@ -37,6 +38,14 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section("タイムライン") {
+                    Picker("フィード切り替え", selection: $feedSelectorStyle) {
+                        Text("ドロップダウン").tag("dropdown")
+                        Text("タブ").tag("tabs")
+                    }
+                    .pickerStyle(.segmented)
+                }
+
                 Section("外観") {
                     Picker("テーマ", selection: $appearanceModeRaw) {
                         ForEach(AppearanceMode.allCases, id: \.rawValue) { mode in
