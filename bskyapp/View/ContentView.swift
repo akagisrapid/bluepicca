@@ -87,9 +87,10 @@ struct ContentView: View {
           }
           .listStyle(.plain)
           .onAppear { scrollProxy = proxy }
-          .safeAreaInset(edge: .top, spacing: 0) {
-            tabStripIfNeeded
-          }
+          .modifier(FeedTabStripModifier(
+            show: feedSelectorStyle == "tabs" && viewModel.feedTabs.count > 1,
+            strip: feedTabStrip
+          ))
         }
         if viewModel.isFetchingTimeline {
           VStack {
@@ -219,6 +220,21 @@ struct ContentView: View {
           }
         }
       }
+    }
+  }
+}
+
+// MARK: - Feed tab strip modifier
+
+private struct FeedTabStripModifier<Strip: View>: ViewModifier {
+  let show: Bool
+  let strip: Strip
+
+  func body(content: Content) -> some View {
+    if show {
+      content.safeAreaInset(edge: .top, spacing: 0) { strip }
+    } else {
+      content
     }
   }
 }
