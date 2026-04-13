@@ -5,6 +5,7 @@ struct SearchView: View {
     @StateObject private var viewModel: SearchViewModel
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isTextFieldFocused: Bool
+    @State private var isShowPostCard = false
 
     init(initialQuery: String = "") {
         _viewModel = StateObject(wrappedValue: SearchViewModel(initialQuery: initialQuery))
@@ -141,6 +142,27 @@ struct SearchView: View {
                 if !viewModel.query.isEmpty {
                     await viewModel.search()
                 }
+            }
+            .overlay(alignment: .bottomTrailing) {
+                if viewModel.query.hasPrefix("#") {
+                    Button(action: { isShowPostCard = true }) {
+                        Image(systemName: "square.and.pencil")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .frame(width: 56, height: 56)
+                            .background(Color.accentColor)
+                            .clipShape(Circle())
+                            .shadow(radius: 4)
+                    }
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 28)
+                }
+            }
+            .sheet(isPresented: $isShowPostCard) {
+                PostCardView(
+                    viewModel: PostCardViewModel(text: "\(viewModel.query) "),
+                    isShowPostCard: $isShowPostCard
+                )
             }
         }
     }
