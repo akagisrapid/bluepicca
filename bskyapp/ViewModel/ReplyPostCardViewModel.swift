@@ -102,7 +102,7 @@ class ReplyPostCardViewModel: ObservableObject {
         } catch {
             await MainActor.run {
                 isUploading = false
-                errorMessage = error.localizedDescription
+                errorMessage = error.userFacingMessage
                 isPostFailed = true
             }
             throw error
