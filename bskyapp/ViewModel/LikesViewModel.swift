@@ -25,7 +25,7 @@ class LikesViewModel: ObservableObject {
             let response = try await getLikesApi.getLikes(param: request)
             likes = response.likes
         } catch {
-            errorMessage = "いいね一覧の取得に失敗しました: \(error.localizedDescription)"
+            errorMessage = error.userFacingMessage
             print("Error fetching likes: \(error)")
         }
         

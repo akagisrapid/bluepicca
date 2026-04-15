@@ -1,4 +1,5 @@
 import Foundation
+import Alamofire
 
 extension Notification.Name {
     static let postCreated = Notification.Name("postCreated")
@@ -140,7 +141,9 @@ class ContentViewModel: ObservableObject {
             } catch is CancellationError {
                 // タブ切り替えによるキャンセルは無視
             } catch {
-                feedError = "フィードの読み込みに失敗しました: \(error.localizedDescription)"
+                feedError = (error as? AFError)?.responseCode == 429
+                    ? error.userFacingMessage
+                    : "フィードの読み込みに失敗しました: \(error.localizedDescription)"
                 print("ContentViewModel: selectTab fetchTimeline error: \(error)")
             }
         }
