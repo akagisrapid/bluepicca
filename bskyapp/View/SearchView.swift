@@ -105,13 +105,10 @@ struct SearchView: View {
                         ForEach(viewModel.posts, id: \.uri) { post in
                             let cardViewModel = TimelineCardViewModel(post: post)
                             let detailViewModel = PostDetailViewModel(post: post)
-                            ZStack {
-                                NavigationLink(destination: PostDetailView(viewModel: detailViewModel)) {
-                                    EmptyView()
-                                }
-                                .opacity(0)
+                            NavigationLink(destination: PostDetailView(viewModel: detailViewModel)) {
                                 TimelineCardView(viewModel: cardViewModel)
                             }
+                            .buttonStyle(.plain)
                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                             .onAppear {
                                 if post.uri == viewModel.posts.last?.uri {

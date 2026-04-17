@@ -3,313 +3,377 @@ import SwiftUI
 struct PostDetailView: View {
     @StateObject var viewModel: PostDetailViewModel
     @State private var isShowingReplySheet = false
-    @Environment(\.dismiss) private var dismiss
+    @State private var hashtagSearchItem: HashtagSearchItem? = nil
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // リプライ元プレビュー
-                if viewModel.isReply {
-                    NavigationLink(
-                        destination: PostDetailView(
-                            viewModel: PostDetailViewModel(post: viewModel.parentPost!)
-                        )
-                    ) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            HStack(spacing: 4) {
-                                Image(systemName: "arrowshape.turn.up.left")
-                                    .font(.caption2)
-                                Text("返信先")
-                                    .font(.caption2)
-                                Spacer()
-                            }
-                            .foregroundColor(.secondary)
 
-                            HStack(alignment: .top, spacing: 10) {
-                                ProfileImageView(
-                                    viewModel: AsyncImageViewModel(
-                                        url: viewModel.parentAvatarUrl,
-                                        imageSize: .timeline,
-                                        alt: viewModel.parentAuthorName
-                                    ),
-                                    actor: viewModel.parentAuthorDid
-                                )
-
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(viewModel.parentAuthorName)
-                                        .font(.subheadline)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(.primary)
-
-                                    Text(viewModel.parentText)
-                                        .font(.body)
-                                        .lineLimit(3)
-                                        .foregroundColor(.secondary)
-                                }
-
-                                Spacer()
-                            }
-                        }
-                        .padding(12)
-                        .background(Color(.systemGray6))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .padding(.horizontal, 16)
-                        .padding(.top, 12)
-                        .padding(.bottom, 8)
+                // MARK: 親チェーン（スレッドの文脈）
+                if !viewModel.parentChain.isEmpty {
+                    ForEach(Array(viewModel.parentChain.enumerated()), id: \.offset) { _, parentPost in
+                        ThreadAncestorRow(post: parentPost)
                     }
-                    .buttonStyle(.plain)
                 }
 
-                // リポスト情報
-                if viewModel.isRepost {
-                    HStack(spacing: 4) {
-                        Image(systemName: "repeat")
-                            .font(.caption2)
-                        Text("\(viewModel.repostAuthorName)がリポスト")
-                            .font(.caption2)
-                        Spacer()
-                    }
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 4)
-                }
-
-                // ヘッダー: アバター + 著者情報
-                HStack(alignment: .center, spacing: 10) {
-                    ProfileImageView(
-                        viewModel: AsyncImageViewModel(
-                            url: viewModel.avatarUrl,
-                            imageSize: .avatar,
-                            alt: viewModel.displayName
-                        ),
-                        actor: viewModel.post.author?.did ?? ""
-                    )
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(viewModel.displayName)
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        Text("@\(viewModel.post.author?.handle ?? "")")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-                .padding(.bottom, 10)
-
-                // 本文テキスト
-                Text(viewModel.text)
-                    .font(.body)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 12)
-
-                // 引用ポスト
-                if let quoted = viewModel.quotedPost {
-                    QuotePostCard(quoted: quoted)
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 12)
-                }
-
-                // 画像
-                if !viewModel.embeddedImages.isEmpty {
-                    VStack(spacing: 8) {
-                        ForEach(viewModel.embeddedImages, id: \.thumb) { embed in
-                            let vm = AsyncImageViewModel(
-                                url: embed.thumbUrl,
-                                imageSize: .thumbnail,
-                                alt: embed.alt,
-                                fullSizeUrl: embed.fullsizeUrl
-                            )
-                            AsyncImageView(viewModel: vm)
-                                .frame(maxWidth: .infinity)
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 12)
-                }
-
-                // 動画
-                if let video = viewModel.embeddedVideo {
-                    VideoPlayerView(video: video)
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 12)
-                }
-
-                // リンクカード
-                ForEach(viewModel.linkCards, id: \.uri) { externalLink in
-                    LinkCardView(externalLink: externalLink)
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 8)
-                }
+                // MARK: フォーカス投稿
+                focusedPost
 
                 Divider()
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 4)
+                    .padding(.top, 4)
 
-                // 投稿時刻
-                Text(viewModel.indexedAt)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 8)
-
-                // アクションバー: リプライ・リポスト・いいね
-                HStack(spacing: 0) {
-                    Button(action: {
-                        isShowingReplySheet = true
-                    }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "bubble.left")
-                            Text("リプライ")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .frame(minWidth: 44, minHeight: 44)
-                    }
-                    .buttonStyle(.plain)
-
-                    Spacer()
-
-                    Button(action: {
-                        Task { await viewModel.toggleLike() }
-                    }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: viewModel.isLiked ? "star.fill" : "star")
-                            Text("\(viewModel.likeCount)")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(viewModel.isLiked ? .yellow : .secondary)
-                        .frame(minWidth: 44, minHeight: 44)
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(viewModel.isLiking)
-                    .opacity(viewModel.isLiking ? 0.5 : 1.0)
-
-                    Spacer()
-
-                    Button(action: {
-                        Task { await viewModel.toggleRepost() }
-                    }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "arrow.rectanglepath")
-                            Text("\(viewModel.repostCount)")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(viewModel.isReposted ? .green : .secondary)
-                        .frame(minWidth: 44, minHeight: 44)
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(viewModel.isReposting)
-                    .opacity(viewModel.isReposting ? 0.5 : 1.0)
-
-                    Spacer()
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 8)
-
-                Divider()
-                    .padding(.horizontal, 16)
-
-                // リプライ一覧セクション
-                VStack(alignment: .leading, spacing: 0) {
-                    HStack {
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                viewModel.toggleRepliesExpansion()
-                            }
-                        }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: viewModel.isRepliesExpanded ? "chevron.down" : "chevron.right")
-                                    .font(.caption)
-                                Text("リプライ (\(viewModel.replies.count))")
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                            }
-                            .foregroundColor(.primary)
-                        }
-                        .buttonStyle(.plain)
-
-                        Spacer()
-
-                        if viewModel.isRepliesExpanded {
-                            Button(action: {
-                                Task { await viewModel.fetchReplies() }
-                            }) {
-                                Image(systemName: "arrow.clockwise")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .frame(minWidth: 44, minHeight: 44)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-
-                    if viewModel.isRepliesExpanded {
-                        if viewModel.isFetchingReplies {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                    .padding(.vertical, 24)
-                                Spacer()
-                            }
-                        } else if viewModel.replies.isEmpty {
-                            Text("リプライはありません")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 12)
-                        } else {
-                            ForEach(viewModel.replies) { reply in
-                                Divider()
-                                    .padding(.horizontal, 16)
-                                NavigationLink(
-                                    destination: PostDetailView(
-                                        viewModel: PostDetailViewModel(post: reply.post)
-                                    )
-                                ) {
-                                    ReplyItemView(threadViewPost: reply)
-                                        .padding(.horizontal, 16)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                }
-                .padding(.bottom, 80) // 戻るボタンと被らないよう余白
+                // MARK: リプライ一覧
+                repliesSection
             }
         }
-        // 右下の閉じるボタン（既存デザインパターン踏襲）
-        .overlay(alignment: .bottomTrailing) {
-            Button(action: { dismiss() }) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.largeTitle)
-                    .foregroundColor(.white)
-                    .background(Color.black.opacity(0.7))
-                    .clipShape(Circle())
-                    .shadow(radius: 5)
-                    .scaleEffect(1.2)
-            }
-            .buttonStyle(.plain)
-            .padding(.trailing, 20)
-            .padding(.bottom, 20)
-        }
+        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isShowingReplySheet) {
             ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
         }
         .onChange(of: isShowingReplySheet) { isShowing in
             if !isShowing {
-                Task {
-                    await viewModel.refreshRepliesAfterPost()
-                }
+                Task { await viewModel.refreshAfterReply() }
             }
         }
+        .sheet(item: $hashtagSearchItem) { item in
+            SearchView(initialQuery: item.query)
+        }
+    }
+
+    // MARK: - フォーカス投稿
+
+    @ViewBuilder
+    private var focusedPost: some View {
+        VStack(alignment: .leading, spacing: 0) {
+
+            // リポスト情報
+            if viewModel.isRepost {
+                HStack(spacing: 4) {
+                    Image(systemName: "repeat").font(.caption2)
+                    Text("\(viewModel.repostAuthorName)がリポスト").font(.caption2)
+                    Spacer()
+                }
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
+            }
+
+            // 著者ヘッダー
+            HStack(alignment: .center, spacing: 10) {
+                ProfileImageView(
+                    viewModel: AsyncImageViewModel(
+                        url: viewModel.avatarUrl,
+                        imageSize: .avatar,
+                        alt: viewModel.displayName
+                    ),
+                    actor: viewModel.post.author?.did ?? ""
+                )
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(viewModel.displayName)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text("@\(viewModel.post.author?.handle ?? "")")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 10)
+
+            // 本文
+            if !viewModel.text.isEmpty {
+                PostTextView(text: viewModel.text) { tag in
+                    hashtagSearchItem = HashtagSearchItem(query: tag)
+                }
+                .font(.title3)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 12)
+            }
+
+            // 引用ポスト
+            if let quoted = viewModel.quotedPost {
+                QuotePostCard(quoted: quoted)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+            }
+
+            // 画像
+            if !viewModel.embeddedImages.isEmpty {
+                PostDetailImageGrid(images: viewModel.embeddedImages)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+            }
+
+            // 動画
+            if let video = viewModel.embeddedVideo {
+                VideoPlayerView(video: video)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+            }
+
+            // リンクカード
+            ForEach(viewModel.linkCards, id: \.uri) { externalLink in
+                LinkCardView(externalLink: externalLink)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
+            }
+
+            // 投稿日時
+            Text(viewModel.indexedAt)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+
+            Divider().padding(.horizontal, 16)
+
+            // アクションバー
+            HStack(spacing: 0) {
+                Button(action: { isShowingReplySheet = true }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "bubble.left")
+                        Text("リプライ")
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .frame(minWidth: 44, minHeight: 44)
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                Button(action: { Task { await viewModel.toggleLike() } }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: viewModel.isLiked ? "star.fill" : "star")
+                        Text("\(viewModel.likeCount)")
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(viewModel.isLiked ? .yellow : .secondary)
+                    .frame(minWidth: 44, minHeight: 44)
+                }
+                .buttonStyle(.plain)
+                .disabled(viewModel.isLiking)
+                .opacity(viewModel.isLiking ? 0.5 : 1.0)
+
+                Spacer()
+
+                Button(action: { Task { await viewModel.toggleRepost() } }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.rectanglepath")
+                        Text("\(viewModel.repostCount)")
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(viewModel.isReposted ? .green : .secondary)
+                    .frame(minWidth: 44, minHeight: 44)
+                }
+                .buttonStyle(.plain)
+                .disabled(viewModel.isReposting)
+                .opacity(viewModel.isReposting ? 0.5 : 1.0)
+
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 4)
+        }
+    }
+
+    // MARK: - リプライ一覧
+
+    @ViewBuilder
+    private var repliesSection: some View {
+        if viewModel.isLoadingThread {
+            HStack {
+                Spacer()
+                ProgressView().padding(.vertical, 32)
+                Spacer()
+            }
+        } else if viewModel.replies.isEmpty {
+            Text("リプライはありません")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 20)
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("リプライ \(viewModel.replies.count)件")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+
+                ForEach(viewModel.replies) { reply in
+                    Divider().padding(.horizontal, 16)
+                    NavigationLink(
+                        destination: PostDetailView(
+                            viewModel: PostDetailViewModel(post: reply.post)
+                        )
+                    ) {
+                        ReplyItemView(threadViewPost: reply)
+                            .padding(.horizontal, 16)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.bottom, 40)
+        }
+    }
+}
+
+// MARK: - 親投稿行（スレッドコネクター付き）
+
+private struct ThreadAncestorRow: View {
+    let post: Post
+
+    var body: some View {
+        NavigationLink(
+            destination: PostDetailView(viewModel: PostDetailViewModel(post: post))
+        ) {
+            HStack(alignment: .top, spacing: 10) {
+                // アバター + スレッドライン
+                VStack(spacing: 0) {
+                    ProfileImageView(
+                        viewModel: AsyncImageViewModel(
+                            url: post.author?.avatarUrl,
+                            imageSize: .timeline,
+                            alt: post.author?.displayName ?? post.author?.handle ?? ""
+                        ),
+                        actor: post.author?.did ?? ""
+                    )
+                    Rectangle()
+                        .fill(Color(.systemGray4))
+                        .frame(width: 2)
+                        .frame(maxHeight: .infinity)
+                        .padding(.top, 4)
+                }
+                .frame(width: 36)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 4) {
+                        Text(post.author?.displayName ?? post.author?.handle ?? "")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                            .lineLimit(1)
+                        Text("@\(post.author?.handle ?? "")")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                        Spacer()
+                    }
+                    if let text = post.record?.text, !text.isEmpty {
+                        Text(text)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .lineLimit(4)
+                    }
+                }
+                .padding(.bottom, 12)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - PostDetail用画像グリッド（高画質表示 + フルスクリーンビュアー）
+
+private struct PostDetailImageGrid: View {
+    let images: [EmbedImagesViewItem]
+    @State private var viewingIndex: Int? = nil
+    @State private var containerWidth: CGFloat = UIScreen.main.bounds.width - 32
+
+    var body: some View {
+        let count = min(images.count, 4)
+        Group {
+            switch count {
+            case 1:
+                CachedAsyncImage(url: images[0].fullsizeUrl) { img in
+                    img.resizable().scaledToFill()
+                } placeholder: {
+                    Color(.systemGray5).overlay(ProgressView())
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: singleImageHeight(for: images[0]))
+                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .onTapGesture { viewingIndex = 0 }
+            case 2:
+                HStack(spacing: 3) {
+                    detailThumb(index: 0)
+                    detailThumb(index: 1)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 220)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            case 3:
+                HStack(spacing: 3) {
+                    detailThumb(index: 0)
+                    VStack(spacing: 3) {
+                        detailThumb(index: 1)
+                        detailThumb(index: 2)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 220)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            default:
+                VStack(spacing: 3) {
+                    HStack(spacing: 3) {
+                        detailThumb(index: 0)
+                        detailThumb(index: 1)
+                    }
+                    HStack(spacing: 3) {
+                        detailThumb(index: 2)
+                        detailThumb(index: 3)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 280)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
+        .background(
+            GeometryReader { geo in
+                Color.clear.onAppear { containerWidth = geo.size.width }
+            }
+        )
+        .fullScreenCover(isPresented: Binding(
+            get: { viewingIndex != nil },
+            set: { if !$0 { viewingIndex = nil } }
+        )) {
+            FullScreenImageView(images: images, initialIndex: viewingIndex ?? 0)
+        }
+    }
+
+    @ViewBuilder
+    private func detailThumb(index: Int) -> some View {
+        Button { viewingIndex = index } label: {
+            CachedAsyncImage(url: images[index].fullsizeUrl) { image in
+                image.resizable().scaledToFill()
+            } placeholder: {
+                Color(.systemGray5)
+                    .overlay(ProgressView())
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .clipped()
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func singleImageHeight(for image: EmbedImagesViewItem) -> CGFloat {
+        let ratio: CGFloat
+        if let ar = image.aspectRatio, ar.width > 0 {
+            ratio = min(max(CGFloat(ar.width) / CGFloat(ar.height), 0.5), 3.0)
+        } else {
+            ratio = 16 / 9
+        }
+        return min(containerWidth / ratio, 400)
     }
 }
