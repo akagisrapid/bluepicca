@@ -375,67 +375,119 @@ struct HashtagSearchItem: Identifiable {
   let query: String
 }
 
-// MARK: - 画像グリッド（1〜4枚対応）
+// MARK: - 画像グリッド（1〜4枚対応、タップでフルスクリーン）
 
 private struct ImageGridView: View {
   let images: [EmbedImagesViewItem]
+  @State private var viewingIndex: Int? = nil
+
+  private func aspectRatioValue(for image: EmbedImagesViewItem) -> CGFloat {
+    guard let ar = image.aspectRatio, ar.width > 0 else { return 16.0 / 9.0 }
+    return min(max(CGFloat(ar.width) / CGFloat(ar.height), 0.5), 3.0)
+  }
+
+  private func gridHeight(count: Int, width: CGFloat) -> CGFloat {
+    switch count {
+    case 1: return min(width / aspectRatioValue(for: images[0]), 300)
+    case 2, 3: return 160
+    default: return 200
+    }
+  }
 
   var body: some View {
     let count = min(images.count, 4)
-    switch count {
-    case 1:
-      SingleImageView(image: images[0])
-    case 2:
-      HStack(spacing: 2) {
-        ForEach(0..<2, id: \.self) { i in
-          ThumbView(url: images[i].thumbUrl)
+    GeometryReader { geo in
+      let w = geo.size.width
+      let h = gridHeight(count: count, width: w)
+      Group {
+        switch count {
+        case 1:
+          tappableThumb(index: 0)
+            .frame(width: w, height: h)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+        case 2:
+          HStack(spacing: 2) {
+            tappableThumb(index: 0)
+            tappableThumb(index: 1)
+          }
+          .frame(width: w, height: h)
+          .clipShape(RoundedRectangle(cornerRadius: 8))
+        case 3:
+          HStack(spacing: 2) {
+            tappableThumb(index: 0)
+            VStack(spacing: 2) {
+              tappableThumb(index: 1)
+              tappableThumb(index: 2)
+            }
+          }
+          .frame(width: w, height: h)
+          .clipShape(RoundedRectangle(cornerRadius: 8))
+        default:
+          VStack(spacing: 2) {
+            HStack(spacing: 2) {
+              tappableThumb(index: 0)
+              tappableThumb(index: 1)
+            }
+            HStack(spacing: 2) {
+              tappableThumb(index: 2)
+              tappableThumb(index: 3)
+            }
+          }
+          .frame(width: w, height: h)
+          .clipShape(RoundedRectangle(cornerRadius: 8))
         }
       }
-      .frame(height: 160)
-      .clipShape(RoundedRectangle(cornerRadius: 8))
-    case 3:
-      HStack(spacing: 2) {
-        ThumbView(url: images[0].thumbUrl)
-        VStack(spacing: 2) {
-          ThumbView(url: images[1].thumbUrl)
-          ThumbView(url: images[2].thumbUrl)
-        }
+      .fullScreenCover(isPresented: Binding(
+        get: { viewingIndex != nil },
+        set: { if !$0 { viewingIndex = nil } }
+      )) {
+        FullScreenImageView(images: images, initialIndex: viewingIndex ?? 0)
       }
-      .frame(height: 160)
-      .clipShape(RoundedRectangle(cornerRadius: 8))
-    default:
-      VStack(spacing: 2) {
-        HStack(spacing: 2) {
-          ThumbView(url: images[0].thumbUrl)
-          ThumbView(url: images[1].thumbUrl)
-        }
-        HStack(spacing: 2) {
-          ThumbView(url: images[2].thumbUrl)
-          ThumbView(url: images[3].thumbUrl)
-        }
-      }
-      .frame(height: 200)
-      .clipShape(RoundedRectangle(cornerRadius: 8))
     }
+    .frame(maxWidth: .infinity, minHeight: gridHeight(count: count, width: UIScreen.main.bounds.width - 32))
+  }
+
+  @ViewBuilder
+  private func tappableThumb(index: Int) -> some View {
+    Button { viewingIndex = index } label: {
+      ThumbView(url: images[index].thumbUrl)
+    }
+    .buttonStyle(.plain)
   }
 }
 
 private struct SingleImageView: View {
   let image: EmbedImagesViewItem
+  let onTap: () -> Void
+  @State private var containerWidth: CGFloat = UIScreen.main.bounds.width - 32
 
-  private var aspectRatio: CGFloat {
+  private var aspectRatioValue: CGFloat {
     guard let ar = image.aspectRatio, ar.width > 0 else { return 16 / 9 }
     let ratio = CGFloat(ar.width) / CGFloat(ar.height)
     return min(max(ratio, 0.5), 3.0)
   }
 
+  private var imageHeight: CGFloat { min(containerWidth / aspectRatioValue, 300) }
+
   var body: some View {
-    ThumbView(url: image.thumbUrl)
-      .aspectRatio(aspectRatio, contentMode: .fill)
-      .frame(maxWidth: .infinity)
-      .frame(maxHeight: 300)
+    Button(action: onTap) {
+      CachedAsyncImage(url: image.thumbUrl) { img in
+        img.resizable().scaledToFill()
+      } placeholder: {
+        Color(.systemGray6).overlay(ProgressView().tint(.secondary))
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
       .clipped()
-      .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+    .buttonStyle(.plain)
+    .frame(maxWidth: .infinity)
+    .frame(height: imageHeight)
+    .clipShape(RoundedRectangle(cornerRadius: 8))
+    .background(
+      GeometryReader { geo in
+        Color.clear.onAppear { containerWidth = geo.size.width }
+      }
+    )
   }
 }
 
@@ -443,16 +495,11 @@ private struct ThumbView: View {
   let url: URL?
 
   var body: some View {
-    AsyncImage(url: url) { phase in
-      switch phase {
-      case .success(let image):
-        image.resizable().scaledToFill()
-      case .failure:
-        Color(.systemGray5)
-          .overlay(Image(systemName: "photo").foregroundColor(.secondary))
-      default:
-        Color(.systemGray6)
-      }
+    CachedAsyncImage(url: url) { image in
+      image.resizable().scaledToFill()
+    } placeholder: {
+      Color(.systemGray6)
+        .overlay(ProgressView().tint(.secondary))
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .clipped()

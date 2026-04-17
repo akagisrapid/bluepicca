@@ -109,13 +109,10 @@ struct ContentView: View {
     if let post = feedItem.post {
       let cardVM = TimelineCardViewModel(post: post, reason: feedItem.reason, reply: feedItem.reply)
       let detailVM = PostDetailViewModel(post: post)
-      ZStack {
-        NavigationLink(destination: PostDetailView(viewModel: detailVM)) {
-          EmptyView()
-        }
-        .opacity(0)
+      NavigationLink(destination: PostDetailView(viewModel: detailVM)) {
         TimelineCardView(viewModel: cardVM)
       }
+      .buttonStyle(.plain)
       .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
       .id(post.uri ?? feedItem.id)
       .onAppear {

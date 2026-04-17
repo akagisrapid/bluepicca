@@ -1,59 +1,59 @@
-//
-//  ReplyItemView.swift
-//  bskyapp
-//
-//  Created by shuya on 2025/09/17.
-//
-
 import SwiftUI
 
 struct ReplyItemView: View {
     let threadViewPost: ThreadViewPost
-    
+    @ObservedObject private var post: Post
+    @State private var isLiking = false
+    @State private var isReposting = false
+    @State private var hashtagSearchItem: HashtagSearchItem? = nil
+
+    init(threadViewPost: ThreadViewPost) {
+        self.threadViewPost = threadViewPost
+        self._post = ObservedObject(wrappedValue: threadViewPost.post)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top, spacing: 12) {
-                // プロフィール画像
                 ProfileImageView(
                     viewModel: AsyncImageViewModel(
-                        url: threadViewPost.post.author?.avatarUrl,
+                        url: post.author?.avatarUrl,
                         imageSize: .timeline,
-                        alt: threadViewPost.post.author?.displayName ?? threadViewPost.post.author?.handle ?? ""
+                        alt: post.author?.displayName ?? post.author?.handle ?? ""
                     ),
-                    actor: threadViewPost.post.author?.did ?? ""
+                    actor: post.author?.did ?? ""
                 )
                 .frame(width: 32, height: 32)
-                
+
                 VStack(alignment: .leading, spacing: 4) {
                     // ユーザー情報
                     HStack {
-                        Text(threadViewPost.post.author?.displayName ?? threadViewPost.post.author?.handle ?? "")
+                        Text(post.author?.displayName ?? post.author?.handle ?? "")
                             .font(.subheadline)
                             .fontWeight(.medium)
-                        
-                        Text("@\(threadViewPost.post.author?.handle ?? "")")
+                        Text("@\(post.author?.handle ?? "")")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        
                         Spacer()
-                        
-                        if let indexedAt = threadViewPost.post.indexedAt,
+                        if let indexedAt = post.indexedAt,
                            let date = indexedAt.parseToDateRemovingMilliseconds {
                             Text(date.formatted(.dateTime.hour().minute()))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
-                    
-                    // リプライ内容
-                    if let text = threadViewPost.post.record?.text {
-                        Text(text)
-                            .font(.body)
-                            .fixedSize(horizontal: false, vertical: true)
+
+                    // 本文
+                    if let text = post.record?.text, !text.isEmpty {
+                        PostTextView(text: text) { tag in
+                            hashtagSearchItem = HashtagSearchItem(query: tag)
+                        }
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
                     }
-                    
-                    // 画像がある場合
-                    if let images = threadViewPost.post.embed?.images, !images.isEmpty {
+
+                    // 画像
+                    if let images = post.embed?.images, !images.isEmpty {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
                                 ForEach(images, id: \.thumb) { image in
@@ -72,45 +72,65 @@ struct ReplyItemView: View {
                             .padding(.vertical, 4)
                         }
                     }
-                    
-                    // アクションボタン
-                    HStack(spacing: 16) {
-                        // いいねボタン
-                        HStack(spacing: 4) {
-                            Image(systemName: threadViewPost.post.viewer?.like != nil ? "star.fill" : "star")
-                                .foregroundColor(threadViewPost.post.viewer?.like != nil ? .yellow : .gray)
-                                .font(.caption)
-                            Text("\(threadViewPost.post.likeCount ?? 0)")
-                                .font(.caption)
-                                .foregroundColor(.gray)
+
+                    // アクション
+                    HStack(spacing: 20) {
+                        Button(action: {
+                            Task {
+                                isLiking = true
+                                await PostInteractionHelper.toggleLike(post: post)
+                                isLiking = false
+                            }
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: post.viewer?.like != nil ? "star.fill" : "star")
+                                    .foregroundColor(post.viewer?.like != nil ? .yellow : .secondary)
+                                    .font(.caption)
+                                Text("\(post.likeCount ?? 0)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
                         }
-                        
-                        // リポストボタン
-                        HStack(spacing: 4) {
-                            Image(systemName: "arrow.rectanglepath")
-                                .foregroundColor(threadViewPost.post.viewer?.repost != nil ? .red : .gray)
-                                .font(.caption)
-                            Text("\(threadViewPost.post.repostCount ?? 0)")
-                                .font(.caption)
-                                .foregroundColor(.gray)
+                        .buttonStyle(.plain)
+                        .disabled(isLiking)
+                        .opacity(isLiking ? 0.5 : 1.0)
+
+                        Button(action: {
+                            Task {
+                                isReposting = true
+                                await PostInteractionHelper.toggleRepost(post: post)
+                                isReposting = false
+                            }
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "arrow.rectanglepath")
+                                    .foregroundColor(post.viewer?.repost != nil ? .green : .secondary)
+                                    .font(.caption)
+                                Text("\(post.repostCount ?? 0)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
                         }
-                        
+                        .buttonStyle(.plain)
+                        .disabled(isReposting)
+                        .opacity(isReposting ? 0.5 : 1.0)
+
                         Spacer()
                     }
                     .padding(.top, 4)
                 }
             }
-            
-            // ネストしたリプライがある場合
+
+            // ネストしたリプライ（最大3件）
             if let nestedReplies = threadViewPost.replies, !nestedReplies.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(nestedReplies.prefix(3)) { nestedReply in
-                        HStack {
+                        HStack(alignment: .top, spacing: 0) {
                             Rectangle()
-                                .fill(Color.gray.opacity(0.3))
+                                .fill(Color(.systemGray4))
                                 .frame(width: 2)
-                                .padding(.leading, 20)
-                            
+                                .padding(.leading, 15)
+                                .padding(.trailing, 12)
                             NavigationLink(
                                 destination: PostDetailView(
                                     viewModel: PostDetailViewModel(post: nestedReply.post)
@@ -118,22 +138,19 @@ struct ReplyItemView: View {
                             ) {
                                 ReplyItemView(threadViewPost: nestedReply)
                             }
-                            .buttonStyle(PlainButtonStyle())
+                            .buttonStyle(.plain)
                         }
                     }
-                    
                     if nestedReplies.count > 3 {
                         HStack {
                             Rectangle()
-                                .fill(Color.gray.opacity(0.3))
+                                .fill(Color(.systemGray4))
                                 .frame(width: 2)
-                                .padding(.leading, 20)
-                            
+                                .padding(.leading, 15)
+                                .padding(.trailing, 12)
                             Text("他 \(nestedReplies.count - 3) 件のリプライ")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                                .padding(.leading, 8)
-                            
                             Spacer()
                         }
                     }
@@ -141,6 +158,8 @@ struct ReplyItemView: View {
             }
         }
         .padding(.vertical, 8)
-        .background(Color.clear)
+        .sheet(item: $hashtagSearchItem) { item in
+            SearchView(initialQuery: item.query)
+        }
     }
 }
