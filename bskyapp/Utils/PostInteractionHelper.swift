@@ -34,8 +34,6 @@ struct PostInteractionHelper {
     static func toggleLike(post: Post) async {
         guard let postUri = post.uri else { return }
 
-        post.objectWillChange.send()
-
         let isLiked = post.viewer?.like != nil
 
         if isLiked {
@@ -62,7 +60,6 @@ struct PostInteractionHelper {
                 } catch {
                     print("いいね取り消し失敗: \(error)")
                     await MainActor.run {
-                        post.objectWillChange.send()
                         post.viewer = originalViewer
                         post.likeCount = originalLikeCount
                         PostStateManager.shared.setLiked(postUri: postUri, likeUri: likeUri)
@@ -94,7 +91,6 @@ struct PostInteractionHelper {
 
                     await MainActor.run {
                         if post.viewer?.like != nil {
-                            post.objectWillChange.send()
                             post.viewer = Viewer(
                                 repost: post.viewer?.repost,
                                 like: newLikeUri,
@@ -106,7 +102,6 @@ struct PostInteractionHelper {
                 } catch {
                     print("いいね失敗: \(error)")
                     await MainActor.run {
-                        post.objectWillChange.send()
                         post.viewer = originalViewer
                         post.likeCount = originalLikeCount
                         PostStateManager.shared.removeLiked(postUri: postUri)
@@ -121,8 +116,6 @@ struct PostInteractionHelper {
     @MainActor
     static func toggleRepost(post: Post) async {
         guard let postUri = post.uri else { return }
-
-        post.objectWillChange.send()
 
         let isReposted = post.viewer?.repost != nil
 
@@ -150,7 +143,6 @@ struct PostInteractionHelper {
                 } catch {
                     print("リポスト取り消し失敗: \(error)")
                     await MainActor.run {
-                        post.objectWillChange.send()
                         post.viewer = originalViewer
                         post.repostCount = originalRepostCount
                         PostStateManager.shared.setReposted(postUri: postUri, repostUri: repostUri)
@@ -182,7 +174,6 @@ struct PostInteractionHelper {
 
                     await MainActor.run {
                         if post.viewer?.repost != nil {
-                            post.objectWillChange.send()
                             post.viewer = Viewer(
                                 repost: newRepostUri,
                                 like: post.viewer?.like,
@@ -194,7 +185,6 @@ struct PostInteractionHelper {
                 } catch {
                     print("リポスト失敗: \(error)")
                     await MainActor.run {
-                        post.objectWillChange.send()
                         post.viewer = originalViewer
                         post.repostCount = originalRepostCount
                         PostStateManager.shared.removeReposted(postUri: postUri)

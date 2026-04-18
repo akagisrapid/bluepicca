@@ -7,12 +7,48 @@ class Post: Codable, ObservableObject {
     let record: PostRecord?
     let embed: Embed?
     let replyCount: Int?
-    var repostCount: Int?
-    var likeCount: Int?
+    @Published var repostCount: Int?
+    @Published var likeCount: Int?
     let indexedAt: String?
-    var viewer: Viewer?
+    @Published var viewer: Viewer?
     let labels: [Label]?
     let threadgate: Threadgate?
+
+    enum CodingKeys: String, CodingKey {
+        case uri, cid, author, record, embed, replyCount, repostCount, likeCount, indexedAt, viewer, labels, threadgate
+    }
+
+    required init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        uri = try c.decodeIfPresent(String.self, forKey: .uri)
+        cid = try c.decodeIfPresent(String.self, forKey: .cid)
+        author = try c.decodeIfPresent(Author.self, forKey: .author)
+        record = try c.decodeIfPresent(PostRecord.self, forKey: .record)
+        embed = try c.decodeIfPresent(Embed.self, forKey: .embed)
+        replyCount = try c.decodeIfPresent(Int.self, forKey: .replyCount)
+        repostCount = try c.decodeIfPresent(Int.self, forKey: .repostCount)
+        likeCount = try c.decodeIfPresent(Int.self, forKey: .likeCount)
+        indexedAt = try c.decodeIfPresent(String.self, forKey: .indexedAt)
+        viewer = try c.decodeIfPresent(Viewer.self, forKey: .viewer)
+        labels = try c.decodeIfPresent([Label].self, forKey: .labels)
+        threadgate = try c.decodeIfPresent(Threadgate.self, forKey: .threadgate)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encodeIfPresent(uri, forKey: .uri)
+        try c.encodeIfPresent(cid, forKey: .cid)
+        try c.encodeIfPresent(author, forKey: .author)
+        try c.encodeIfPresent(record, forKey: .record)
+        try c.encodeIfPresent(embed, forKey: .embed)
+        try c.encodeIfPresent(replyCount, forKey: .replyCount)
+        try c.encodeIfPresent(repostCount, forKey: .repostCount)
+        try c.encodeIfPresent(likeCount, forKey: .likeCount)
+        try c.encodeIfPresent(indexedAt, forKey: .indexedAt)
+        try c.encodeIfPresent(viewer, forKey: .viewer)
+        try c.encodeIfPresent(labels, forKey: .labels)
+        try c.encodeIfPresent(threadgate, forKey: .threadgate)
+    }
 
     init(uri: String?, cid: String?, author: Author?, record: PostRecord?,
          embed: Embed? = nil, replyCount: Int? = nil, repostCount: Int? = nil,
