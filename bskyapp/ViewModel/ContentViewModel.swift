@@ -22,6 +22,7 @@ class ContentViewModel: ObservableObject {
 
     private let lastReadUriKey = "lastReadPostUri"
     private var currentFetchTask: Task<Void, any Error>?
+    private var postCreatedObserver: NSObjectProtocol?
 
     var timelineCursor: String?
 
@@ -44,10 +45,16 @@ class ContentViewModel: ObservableObject {
             await loadFeedTabs()
             try await fetchTimeline()
         }
-        NotificationCenter.default.addObserver(forName: .postCreated, object: nil, queue: .main) { [weak self] _ in
+        postCreatedObserver = NotificationCenter.default.addObserver(forName: .postCreated, object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor [weak self] in
                 try? await self?.fetchTimeline()
             }
+        }
+    }
+
+    deinit {
+        if let observer = postCreatedObserver {
+            NotificationCenter.default.removeObserver(observer)
         }
     }
 
