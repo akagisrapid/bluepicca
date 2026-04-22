@@ -75,31 +75,60 @@ struct SearchView: View {
                     Spacer()
                 } else if viewModel.posts.isEmpty {
                     // 空状態：ハッシュタグ検索の導線
-                    VStack(alignment: .leading, spacing: 20) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("ハッシュタグ検索")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.secondary)
-                            HStack(spacing: 8) {
-                                HashtagShortcutButton(tag: "Bluesky") {
-                                    startHashtagSearch("Bluesky")
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 20) {
+                            // 検索履歴
+                            if !viewModel.searchHistory.isEmpty {
+                                VStack(alignment: .leading, spacing: 10) {
+                                    HStack {
+                                        Text("最近の検索")
+                                            .font(.subheadline)
+                                            .fontWeight(.semibold)
+                                            .foregroundColor(.secondary)
+                                        Spacer()
+                                        Button("クリア") {
+                                            viewModel.clearHistory()
+                                        }
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    }
+                                    FlowLayout(spacing: 8) {
+                                        ForEach(viewModel.searchHistory, id: \.self) { tag in
+                                            HistoryChip(tag: tag) {
+                                                viewModel.query = tag
+                                                Task { await viewModel.search() }
+                                            } onDelete: {
+                                                viewModel.removeFromHistory(tag)
+                                            }
+                                        }
+                                    }
                                 }
-                                HashtagShortcutButton(tag: "日本語") {
-                                    startHashtagSearch("日本語")
-                                }
-                                HashtagShortcutButton(tag: "写真") {
-                                    startHashtagSearch("写真")
-                                }
-                                HashtagShortcutButton(tag: "nowplaying") {
-                                    startHashtagSearch("nowplaying")
+                            }
+
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("ハッシュタグ検索")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.secondary)
+                                HStack(spacing: 8) {
+                                    HashtagShortcutButton(tag: "Bluesky") {
+                                        startHashtagSearch("Bluesky")
+                                    }
+                                    HashtagShortcutButton(tag: "日本語") {
+                                        startHashtagSearch("日本語")
+                                    }
+                                    HashtagShortcutButton(tag: "写真") {
+                                        startHashtagSearch("写真")
+                                    }
+                                    HashtagShortcutButton(tag: "nowplaying") {
+                                        startHashtagSearch("nowplaying")
+                                    }
                                 }
                             }
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 20)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 20)
-                    Spacer()
                 } else {
                     List {
                         ForEach(viewModel.posts, id: \.uri) { post in
@@ -185,5 +214,73 @@ private struct HashtagShortcutButton: View {
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+    }
+}
+
+private struct HistoryChip: View {
+    let tag: String
+    let onTap: () -> Void
+    let onDelete: () -> Void
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Button(action: onTap) {
+                Text(tag)
+                    .font(.caption)
+                    .foregroundColor(.accentColor)
+            }
+            .buttonStyle(.plain)
+            Button(action: onDelete) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.leading, 10)
+        .padding(.trailing, 6)
+        .padding(.vertical, 6)
+        .background(Color.accentColor.opacity(0.1))
+        .clipShape(Capsule())
+    }
+}
+
+private struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? 0
+        var height: CGFloat = 0
+        var x: CGFloat = 0
+        var rowHeight: CGFloat = 0
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x + size.width > width, x > 0 {
+                height += rowHeight + spacing
+                x = 0
+                rowHeight = 0
+            }
+            x += size.width + spacing
+            rowHeight = max(rowHeight, size.height)
+        }
+        height += rowHeight
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var x = bounds.minX
+        var y = bounds.minY
+        var rowHeight: CGFloat = 0
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x + size.width > bounds.maxX, x > bounds.minX {
+                y += rowHeight + spacing
+                x = bounds.minX
+                rowHeight = 0
+            }
+            subview.place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
+            x += size.width + spacing
+            rowHeight = max(rowHeight, size.height)
+        }
     }
 }
