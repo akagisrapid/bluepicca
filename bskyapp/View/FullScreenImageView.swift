@@ -5,6 +5,7 @@ struct FullScreenImageView: View {
     let initialIndex: Int
     @Environment(\.dismiss) private var dismiss
     @State private var currentIndex: Int
+    @State private var dismissOffset: CGSize = .zero
 
     init(images: [EmbedImagesViewItem], initialIndex: Int = 0) {
         self.images = images
@@ -12,15 +13,23 @@ struct FullScreenImageView: View {
         _currentIndex = State(initialValue: initialIndex)
     }
 
+    private var backgroundOpacity: Double {
+        max(0, 1.0 - dismissOffset.height / 250)
+    }
+
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color.black
+                .opacity(backgroundOpacity)
+                .ignoresSafeArea()
 
             TabView(selection: $currentIndex) {
                 ForEach(images.indices, id: \.self) { index in
                     ZoomableImageView(
                         url: images[index].fullsizeUrl ?? images[index].thumbUrl,
-                        alt: images[index].alt
+                        alt: images[index].alt,
+                        dismissOffset: $dismissOffset,
+                        onDismiss: { dismiss() }
                     )
                     .tag(index)
                 }
@@ -42,22 +51,8 @@ struct FullScreenImageView: View {
                 }
             }
 
-            // 閉じるボタン
-            VStack {
-                HStack {
-                    Spacer()
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
-                            .foregroundColor(.white)
-                            .background(Color.black.opacity(0.5).clipShape(Circle()))
-                    }
-                    .padding(.top, 8)
-                    .padding(.trailing, 12)
-                }
-                Spacer()
-            }
         }
+        .offset(y: dismissOffset.height)
     }
 }
 
@@ -66,6 +61,8 @@ struct FullScreenImageView: View {
 private struct ZoomableImageView: View {
     let url: URL?
     let alt: String
+    @Binding var dismissOffset: CGSize
+    var onDismiss: () -> Void
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
@@ -94,14 +91,32 @@ private struct ZoomableImageView: View {
                     },
                 DragGesture()
                     .onChanged { value in
-                        guard scale > 1 else { return }
-                        offset = CGSize(
-                            width: lastOffset.width + value.translation.width,
-                            height: lastOffset.height + value.translation.height
-                        )
+                        if scale > 1 {
+                            offset = CGSize(
+                                width: lastOffset.width + value.translation.width,
+                                height: lastOffset.height + value.translation.height
+                            )
+                        } else {
+                            // 下スワイプのみ dismiss に使用（横スワイプは TabView に任せる）
+                            let dy = value.translation.height
+                            let dx = value.translation.width
+                            if dy > 0 && dy > abs(dx) {
+                                dismissOffset = CGSize(width: 0, height: dy)
+                            }
+                        }
                     }
-                    .onEnded { _ in
-                        lastOffset = offset
+                    .onEnded { value in
+                        if scale > 1 {
+                            lastOffset = offset
+                        } else {
+                            let dy = value.translation.height
+                            let predictedDy = value.predictedEndTranslation.height
+                            if dy > 120 || predictedDy > 300 {
+                                onDismiss()
+                            } else {
+                                withAnimation(.spring()) { dismissOffset = .zero }
+                            }
+                        }
                     }
             )
         )
