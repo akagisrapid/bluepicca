@@ -271,6 +271,10 @@ struct QuotePostCard: View {
     Post(uri: quoted.uri, cid: nil, author: quoted.author, record: quoted.value)
   }
 
+  private var quotedImages: [EmbedImagesViewItem] {
+    quoted.embeds?.compactMap { $0.images }.first ?? []
+  }
+
   var body: some View {
     NavigationLink(destination: PostDetailView(viewModel: PostDetailViewModel(post: quotedAsPost))) {
       VStack(alignment: .leading, spacing: 4) {
@@ -300,6 +304,22 @@ struct QuotePostCard: View {
             .font(.caption)
             .foregroundColor(.primary)
             .lineLimit(4)
+        }
+
+        if !quotedImages.isEmpty {
+          ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 4) {
+              ForEach(quotedImages.prefix(4).indices, id: \.self) { index in
+                CachedAsyncImage(url: quotedImages[index].thumbUrl) { image in
+                  image.resizable().scaledToFill()
+                } placeholder: {
+                  Color(.systemGray5).overlay(ProgressView().tint(.secondary))
+                }
+                .frame(width: 72, height: 72)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+              }
+            }
+          }
         }
       }
       .padding(10)
