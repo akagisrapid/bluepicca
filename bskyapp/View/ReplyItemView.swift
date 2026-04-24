@@ -53,7 +53,7 @@ struct ReplyItemView: View {
                     }
 
                     // 画像
-                    if let images = post.embed?.images, !images.isEmpty {
+                    if let images = post.embed?.resolvedImages, !images.isEmpty {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
                                 ForEach(images, id: \.thumb) { image in

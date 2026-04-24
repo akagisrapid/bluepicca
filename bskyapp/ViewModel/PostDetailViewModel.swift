@@ -23,6 +23,7 @@ class PostDetailViewModel: ObservableObject {
         isLoadingThread = true
         do {
             let response = try await GetPostThreadApi().getPostThread(uri: uri)
+            post = response.thread.post
             replies = response.thread.replies ?? []
             parentChain = extractParentChain(from: response.thread)
         } catch {
@@ -52,12 +53,12 @@ class PostDetailViewModel: ObservableObject {
     var displayName: String { post.author?.displayName ?? "" }
     var text: String { post.record?.text ?? "" }
     var quotedPost: EmbeddedRecordViewItem? { post.embed?.record }
-    var embeddedImages: [EmbedImagesViewItem] { post.embed?.images ?? [] }
+    var embeddedImages: [EmbedImagesViewItem] { post.embed?.resolvedImages ?? [] }
     var embeddedVideo: EmbedVideoViewItem? { post.embed?.video }
 
     var linkCards: [EmbeddedExternalViewItem] {
         var cards: [EmbeddedExternalViewItem] = []
-        if let external = post.embed?.external { cards.append(external) }
+        if let external = post.embed?.resolvedExternal { cards.append(external) }
         for facet in post.record?.facets ?? [] {
             for feature in facet.features ?? [] {
                 if let uri = feature.uri, !uri.isEmpty, !cards.contains(where: { $0.uri == uri }) {
