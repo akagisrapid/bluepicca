@@ -23,6 +23,7 @@ class PostDetailViewModel: ObservableObject {
         isLoadingThread = true
         do {
             let response = try await GetPostThreadApi().getPostThread(uri: uri)
+            post = response.thread.post
             replies = response.thread.replies ?? []
             parentChain = extractParentChain(from: response.thread)
         } catch {
