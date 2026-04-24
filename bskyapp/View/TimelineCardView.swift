@@ -395,11 +395,10 @@ struct HashtagSearchItem: Identifiable {
   let query: String
 }
 
-// MARK: - 画像グリッド（1〜4枚対応、タップでフルスクリーン）
+// MARK: - 画像グリッド（1〜4枚対応、タイムラインではタップで詳細画面へ遷移）
 
 private struct ImageGridView: View {
   let images: [EmbedImagesViewItem]
-  @State private var viewingIndex: Int? = nil
 
   private func aspectRatioValue(for image: EmbedImagesViewItem) -> CGFloat {
     guard let ar = image.aspectRatio, ar.width > 0 else { return 16.0 / 9.0 }
@@ -422,22 +421,22 @@ private struct ImageGridView: View {
       Group {
         switch count {
         case 1:
-          tappableThumb(index: 0)
+          ThumbView(url: images[0].thumbUrl)
             .frame(width: w, height: h)
             .clipShape(RoundedRectangle(cornerRadius: 8))
         case 2:
           HStack(spacing: 2) {
-            tappableThumb(index: 0)
-            tappableThumb(index: 1)
+            ThumbView(url: images[0].thumbUrl)
+            ThumbView(url: images[1].thumbUrl)
           }
           .frame(width: w, height: h)
           .clipShape(RoundedRectangle(cornerRadius: 8))
         case 3:
           HStack(spacing: 2) {
-            tappableThumb(index: 0)
+            ThumbView(url: images[0].thumbUrl)
             VStack(spacing: 2) {
-              tappableThumb(index: 1)
-              tappableThumb(index: 2)
+              ThumbView(url: images[1].thumbUrl)
+              ThumbView(url: images[2].thumbUrl)
             }
           }
           .frame(width: w, height: h)
@@ -445,34 +444,20 @@ private struct ImageGridView: View {
         default:
           VStack(spacing: 2) {
             HStack(spacing: 2) {
-              tappableThumb(index: 0)
-              tappableThumb(index: 1)
+              ThumbView(url: images[0].thumbUrl)
+              ThumbView(url: images[1].thumbUrl)
             }
             HStack(spacing: 2) {
-              tappableThumb(index: 2)
-              tappableThumb(index: 3)
+              ThumbView(url: images[2].thumbUrl)
+              ThumbView(url: images[3].thumbUrl)
             }
           }
           .frame(width: w, height: h)
           .clipShape(RoundedRectangle(cornerRadius: 8))
         }
       }
-      .fullScreenCover(isPresented: Binding(
-        get: { viewingIndex != nil },
-        set: { if !$0 { viewingIndex = nil } }
-      )) {
-        FullScreenImageView(images: images, initialIndex: viewingIndex ?? 0)
-      }
     }
     .frame(maxWidth: .infinity, minHeight: gridHeight(count: count, width: UIScreen.main.bounds.width - 32))
-  }
-
-  @ViewBuilder
-  private func tappableThumb(index: Int) -> some View {
-    Button { viewingIndex = index } label: {
-      ThumbView(url: images[index].thumbUrl)
-    }
-    .buttonStyle(.plain)
   }
 }
 
