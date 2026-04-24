@@ -86,15 +86,15 @@ struct TimelineCardViewModel {
   // MARK: - 添付情報
 
   var imageCount: Int {
-    return post.embed?.images?.count ?? 0
+    return post.embed?.resolvedImages?.count ?? 0
   }
 
   var externalUrl: String? {
-    return post.embed?.external?.uri
+    return post.embed?.resolvedExternal?.uri
   }
 
   var externalLink: EmbeddedExternalViewItem? {
-    return post.embed?.external
+    return post.embed?.resolvedExternal
   }
 
   var quotedPost: EmbeddedRecordViewItem? {
