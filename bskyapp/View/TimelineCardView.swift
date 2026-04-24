@@ -120,7 +120,7 @@ struct TimelineCardView: View {
       }
 
       // 添付画像サムネイル
-      if let images = viewModel.post.embed?.images, !images.isEmpty {
+      if let images = viewModel.post.embed?.resolvedImages, !images.isEmpty {
         ImageGridView(images: images)
           .padding(.horizontal, 16)
           .padding(.bottom, 8)
