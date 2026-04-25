@@ -71,7 +71,8 @@ class PostCardViewModel: ObservableObject {
     }
 
     func checkTextCount() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             self.isTextValid = 0 < self.text.count && self.text.count <= self.maxTextCount
         }
     }
@@ -81,7 +82,8 @@ class PostCardViewModel: ObservableObject {
     }
 
     func loadImage(from item: PhotosPickerItem) {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 let data = try await item.loadTransferable(type: Data.self)
 

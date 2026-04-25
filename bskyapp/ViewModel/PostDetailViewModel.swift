@@ -14,7 +14,7 @@ class PostDetailViewModel: ObservableObject {
         self.post = post
         self.reason = reason
         PostInteractionHelper.restorePersistedStates(for: post)
-        Task { await fetchThread() }
+        Task { [weak self] in await self?.fetchThread() }
     }
 
     @MainActor

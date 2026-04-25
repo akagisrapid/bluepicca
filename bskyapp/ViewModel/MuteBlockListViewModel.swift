@@ -16,9 +16,9 @@ class MuteBlockListViewModel: ObservableObject {
     @Published var isFetchingBlocked = false
 
     init() {
-        Task {
-            await fetchMuted()
-            await fetchBlocked()
+        Task { [weak self] in
+            await self?.fetchMuted()
+            await self?.fetchBlocked()
         }
     }
 

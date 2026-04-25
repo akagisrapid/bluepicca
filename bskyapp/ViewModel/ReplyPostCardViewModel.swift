@@ -110,7 +110,8 @@ class ReplyPostCardViewModel: ObservableObject {
     }
 
     func checkTextCount() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             self.isTextValid = 0 < self.text.count && self.text.count <= self.maxTextCount
         }
     }
@@ -120,7 +121,8 @@ class ReplyPostCardViewModel: ObservableObject {
     }
 
     func loadImage(from item: PhotosPickerItem) {
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
                 let data = try await item.loadTransferable(type: Data.self)
 
@@ -128,11 +130,11 @@ class ReplyPostCardViewModel: ObservableObject {
                 guard let image = UIImage(data: imageData) else { return }
 
                 await MainActor.run {
-                    if selectedImages.count < maxImageCount {
-                        selectedImages.append(image)
-                        objectWillChange.send()
+                    if self.selectedImages.count < self.maxImageCount {
+                        self.selectedImages.append(image)
+                        self.objectWillChange.send()
                     } else {
-                        errorMessage = "最大\(maxImageCount)枚まで選択できます"
+                        self.errorMessage = "最大\(self.maxImageCount)枚まで選択できます"
                     }
                 }
             } catch {
