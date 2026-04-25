@@ -44,12 +44,14 @@ class SessionManager {
         }
 
         let task = Task<CreateSessionResponse, Error> {
+            defer {
+                Task { @MainActor in self.ongoingSessionTask = nil }
+            }
             let newSession = try await createSession(identifier: identifier, password: password)
             await MainActor.run {
                 self.currentSession = newSession
                 self.lastSessionTime = Date()
                 self.userDefaults.set(self.lastSessionTime, forKey: self.lastSessionTimeKey)
-                self.ongoingSessionTask = nil
             }
             return newSession
         }

@@ -7,6 +7,8 @@ class PostStateManager {
     private let userDefaults = UserDefaults.standard
     private let likedPostsKey = "likedPosts"
     private let repostedPostsKey = "repostedPosts"
+    /// UserDefaults に保持するエントリの上限数。タイムラインから消えた古い投稿が際限なく蓄積されないようにする。
+    private let maxEntryCount = 500
 
     private init() {}
 
@@ -43,7 +45,10 @@ class PostStateManager {
     }
 
     private func saveLikedPosts(_ likedPosts: [String: String]) {
-        userDefaults.set(likedPosts, forKey: likedPostsKey)
+        let trimmed = likedPosts.count > maxEntryCount
+            ? Dictionary(uniqueKeysWithValues: Array(likedPosts.prefix(maxEntryCount)))
+            : likedPosts
+        userDefaults.set(trimmed, forKey: likedPostsKey)
     }
 
     // MARK: - リポスト状態の管理
@@ -79,7 +84,10 @@ class PostStateManager {
     }
 
     private func saveRepostedPosts(_ repostedPosts: [String: String]) {
-        userDefaults.set(repostedPosts, forKey: repostedPostsKey)
+        let trimmed = repostedPosts.count > maxEntryCount
+            ? Dictionary(uniqueKeysWithValues: Array(repostedPosts.prefix(maxEntryCount)))
+            : repostedPosts
+        userDefaults.set(trimmed, forKey: repostedPostsKey)
     }
 
     // MARK: - サーバー状態との同期

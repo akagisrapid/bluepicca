@@ -41,9 +41,9 @@ class ContentViewModel: ObservableObject {
     }
 
     init() {
-        Task { @MainActor in
-            await loadFeedTabs()
-            try await fetchTimeline()
+        Task { @MainActor [weak self] in
+            await self?.loadFeedTabs()
+            try await self?.fetchTimeline()
         }
         postCreatedObserver = NotificationCenter.default.addObserver(forName: .postCreated, object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor [weak self] in

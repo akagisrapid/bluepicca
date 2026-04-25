@@ -30,6 +30,11 @@ struct bskyappApp: App {
     init() {
         // Check if user is already logged in
         _isLoggedIn = State(initialValue: SessionManager.shared.isLoggedIn())
+        // Limit URLCache to prevent unbounded memory/disk growth from timeline images
+        URLCache.shared = URLCache(
+            memoryCapacity: 50 * 1024 * 1024,   // 50 MB
+            diskCapacity: 200 * 1024 * 1024      // 200 MB
+        )
     }
 
     @MainActor
