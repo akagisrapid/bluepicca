@@ -77,48 +77,50 @@ private struct ZoomableImageView: View {
         .scaleEffect(scale)
         .offset(offset)
         .accessibilityLabel(alt.isEmpty ? "画像" : alt)
-        .gesture(
-            SimultaneousGesture(
-                MagnificationGesture()
-                    .onChanged { value in
-                        scale = max(1.0, min(lastScale * value, 5.0))
+        // .simultaneousGesture を使うことで TabView のページスワイプと共存させる
+        .simultaneousGesture(
+            MagnificationGesture()
+                .onChanged { value in
+                    scale = max(1.0, min(lastScale * value, 5.0))
+                }
+                .onEnded { _ in
+                    lastScale = scale
+                    if scale < 1 {
+                        withAnimation(.spring()) { scale = 1; lastScale = 1; offset = .zero; lastOffset = .zero }
                     }
-                    .onEnded { _ in
-                        lastScale = scale
-                        if scale < 1 {
-                            withAnimation(.spring()) { scale = 1; lastScale = 1; offset = .zero; lastOffset = .zero }
+                }
+        )
+        .simultaneousGesture(
+            DragGesture()
+                .onChanged { value in
+                    if scale > 1 {
+                        // ズーム中はパン操作
+                        offset = CGSize(
+                            width: lastOffset.width + value.translation.width,
+                            height: lastOffset.height + value.translation.height
+                        )
+                    } else {
+                        // 下スワイプのみ dismiss に使用（横スワイプは TabView に任せる）
+                        let dy = value.translation.height
+                        let dx = value.translation.width
+                        if dy > 0 && dy > abs(dx) {
+                            dismissOffset = CGSize(width: 0, height: dy)
                         }
-                    },
-                DragGesture()
-                    .onChanged { value in
-                        if scale > 1 {
-                            offset = CGSize(
-                                width: lastOffset.width + value.translation.width,
-                                height: lastOffset.height + value.translation.height
-                            )
+                    }
+                }
+                .onEnded { value in
+                    if scale > 1 {
+                        lastOffset = offset
+                    } else {
+                        let dy = value.translation.height
+                        let predictedDy = value.predictedEndTranslation.height
+                        if dy > 120 || predictedDy > 300 {
+                            onDismiss()
                         } else {
-                            // 下スワイプのみ dismiss に使用（横スワイプは TabView に任せる）
-                            let dy = value.translation.height
-                            let dx = value.translation.width
-                            if dy > 0 && dy > abs(dx) {
-                                dismissOffset = CGSize(width: 0, height: dy)
-                            }
+                            withAnimation(.spring()) { dismissOffset = .zero }
                         }
                     }
-                    .onEnded { value in
-                        if scale > 1 {
-                            lastOffset = offset
-                        } else {
-                            let dy = value.translation.height
-                            let predictedDy = value.predictedEndTranslation.height
-                            if dy > 120 || predictedDy > 300 {
-                                onDismiss()
-                            } else {
-                                withAnimation(.spring()) { dismissOffset = .zero }
-                            }
-                        }
-                    }
-            )
+                }
         )
         .onTapGesture(count: 2) {
             withAnimation(.spring()) {
