@@ -85,7 +85,7 @@ class InteractionService {
 
     switch response.result {
     case .success(let value):
-        return value.uri!
+        return value.uri ?? ""  // URIが存在しない場合は空文字を返す
     case .failure(let error):
       print("InteractionService createRecord error: \(error)")
       if let data = response.data, let responseString = String(data: data, encoding: .utf8) {
