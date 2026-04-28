@@ -301,63 +301,141 @@ struct QuotePostCard: View {
   }
 
   var body: some View {
-    NavigationLink(destination: PostDetailView(viewModel: PostDetailViewModel(post: quotedAsPost)))
-    {
-      VStack(alignment: .leading, spacing: 4) {
-        HStack(spacing: 6) {
-          AsyncImage(url: quoted.author?.avatarUrl) { image in
-            image.resizable()
-          } placeholder: {
-            Circle().fill(Color(.systemGray5))
+    if quoted.isFeedGenerator {
+      FeedGeneratorCard(quoted: quoted)
+    } else {
+      NavigationLink(
+        destination: PostDetailView(viewModel: PostDetailViewModel(post: quotedAsPost))
+      ) {
+        VStack(alignment: .leading, spacing: 4) {
+          HStack(spacing: 6) {
+            AsyncImage(url: quoted.author?.avatarUrl) { image in
+              image.resizable()
+            } placeholder: {
+              Circle().fill(Color(.systemGray5))
+            }
+            .frame(width: 16, height: 16)
+            .clipShape(Circle())
+
+            Text(quoted.author?.displayName ?? quoted.author?.handle ?? "")
+              .font(.caption)
+              .fontWeight(.semibold)
+              .foregroundColor(.primary)
+              .lineLimit(1)
+
+            Text("@\(quoted.author?.handle ?? "")")
+              .font(.caption2)
+              .foregroundColor(.secondary)
+              .lineLimit(1)
           }
-          .frame(width: 16, height: 16)
-          .clipShape(Circle())
 
-          Text(quoted.author?.displayName ?? quoted.author?.handle ?? "")
-            .font(.caption)
-            .fontWeight(.semibold)
-            .foregroundColor(.primary)
-            .lineLimit(1)
+          if let text = quoted.value?.text, !text.isEmpty {
+            Text(text)
+              .font(.caption)
+              .foregroundColor(.primary)
+              .lineLimit(4)
+          }
 
-          Text("@\(quoted.author?.handle ?? "")")
-            .font(.caption2)
-            .foregroundColor(.secondary)
-            .lineLimit(1)
-        }
-
-        if let text = quoted.value?.text, !text.isEmpty {
-          Text(text)
-            .font(.caption)
-            .foregroundColor(.primary)
-            .lineLimit(4)
-        }
-
-        if !quotedImages.isEmpty {
-          ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 4) {
-              ForEach(quotedImages.prefix(4).indices, id: \.self) { index in
-                CachedAsyncImage(url: quotedImages[index].thumbUrl) { image in
-                  image.resizable().scaledToFill()
-                } placeholder: {
-                  Color(.systemGray5).overlay(ProgressView().tint(.secondary))
+          if !quotedImages.isEmpty {
+            ScrollView(.horizontal, showsIndicators: false) {
+              HStack(spacing: 4) {
+                ForEach(quotedImages.prefix(4).indices, id: \.self) { index in
+                  CachedAsyncImage(url: quotedImages[index].thumbUrl) { image in
+                    image.resizable().scaledToFill()
+                  } placeholder: {
+                    Color(.systemGray5).overlay(ProgressView().tint(.secondary))
+                  }
+                  .frame(width: 72, height: 72)
+                  .clipShape(RoundedRectangle(cornerRadius: 6))
                 }
-                .frame(width: 72, height: 72)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
               }
             }
           }
         }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay(
+          RoundedRectangle(cornerRadius: 8)
+            .stroke(Color(.systemGray4), lineWidth: 0.5)
+        )
       }
-      .padding(10)
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .background(Color(.systemGray6))
-      .clipShape(RoundedRectangle(cornerRadius: 8))
-      .overlay(
-        RoundedRectangle(cornerRadius: 8)
-          .stroke(Color(.systemGray4), lineWidth: 0.5)
+      .buttonStyle(.plain)
+    }
+  }
+}
+
+// MARK: - フィードジェネレーターカード
+
+private struct FeedGeneratorCard: View {
+  let quoted: EmbeddedRecordViewItem
+
+  var body: some View {
+    NavigationLink(
+      destination: FeedGeneratorTimelineView(
+        feedUri: quoted.uri ?? "",
+        feedName: quoted.displayName ?? "フィード"
       )
+    ) {
+      cardContent
     }
     .buttonStyle(.plain)
+  }
+
+  private var cardContent: some View {
+    HStack(spacing: 10) {
+      AsyncImage(url: quoted.avatarUrl) { image in
+        image.resizable().scaledToFill()
+      } placeholder: {
+        RoundedRectangle(cornerRadius: 6).fill(Color(.systemGray5))
+          .overlay(Image(systemName: "list.star").font(.caption).foregroundColor(.secondary))
+      }
+      .frame(width: 36, height: 36)
+      .clipShape(RoundedRectangle(cornerRadius: 6))
+
+      VStack(alignment: .leading, spacing: 2) {
+        HStack(spacing: 4) {
+          Image(systemName: "list.star")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+          Text("フィード")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+        }
+        Text(quoted.displayName ?? "")
+          .font(.caption)
+          .fontWeight(.semibold)
+          .foregroundColor(.primary)
+          .lineLimit(1)
+        if let description = quoted.description, !description.isEmpty {
+          Text(description)
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .lineLimit(2)
+        }
+        if let creator = quoted.creator {
+          Text("by \(creator.displayName ?? creator.handle ?? "")")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .lineLimit(1)
+        }
+      }
+
+      Spacer()
+
+      Image(systemName: "chevron.right")
+        .font(.caption2)
+        .foregroundColor(.secondary)
+    }
+    .padding(10)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(Color(.systemGray6))
+    .clipShape(RoundedRectangle(cornerRadius: 8))
+    .overlay(
+      RoundedRectangle(cornerRadius: 8)
+        .stroke(Color(.systemGray4), lineWidth: 0.5)
+    )
   }
 }
 
