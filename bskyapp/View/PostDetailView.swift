@@ -4,6 +4,7 @@ struct PostDetailView: View {
   @StateObject var viewModel: PostDetailViewModel
   @State private var isShowingReplySheet = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
+  @State private var isSensitiveRevealed = false
 
   var body: some View {
     ScrollView {
@@ -84,43 +85,69 @@ struct PostDetailView: View {
       .padding(.top, 12)
       .padding(.bottom, 10)
 
-      // 本文
-      if !viewModel.text.isEmpty {
-        PostTextView(text: viewModel.text) { tag in
-          hashtagSearchItem = HashtagSearchItem(query: tag)
+      // センシティブコンテンツ警告またはコンテンツ本体
+      if viewModel.post.isSensitive && !isSensitiveRevealed {
+        Button(action: { isSensitiveRevealed = true }) {
+          HStack(spacing: 10) {
+            Image(systemName: "eye.slash")
+              .font(.subheadline)
+            VStack(alignment: .leading, spacing: 2) {
+              Text("センシティブなコンテンツ")
+                .font(.subheadline)
+                .fontWeight(.medium)
+              Text("タップして表示")
+                .font(.caption)
+            }
+            Spacer()
+          }
+          .foregroundColor(.secondary)
+          .padding(16)
+          .frame(maxWidth: .infinity)
+          .background(Color(.systemGray6))
+          .clipShape(RoundedRectangle(cornerRadius: 10))
         }
-        .font(.title3)
-        .fixedSize(horizontal: false, vertical: true)
+        .buttonStyle(.plain)
         .padding(.horizontal, 16)
         .padding(.bottom, 12)
-      }
-
-      // 引用ポスト
-      if let quoted = viewModel.quotedPost {
-        QuotePostCard(quoted: quoted)
+      } else {
+        // 本文
+        if !viewModel.text.isEmpty {
+          PostTextView(text: viewModel.text) { tag in
+            hashtagSearchItem = HashtagSearchItem(query: tag)
+          }
+          .font(.title3)
+          .fixedSize(horizontal: false, vertical: true)
           .padding(.horizontal, 16)
           .padding(.bottom, 12)
-      }
+        }
 
-      // 画像
-      if !viewModel.embeddedImages.isEmpty {
-        PostDetailImageGrid(images: viewModel.embeddedImages)
-          .padding(.horizontal, 16)
-          .padding(.bottom, 12)
-      }
+        // 引用ポスト
+        if let quoted = viewModel.quotedPost {
+          QuotePostCard(quoted: quoted)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
+        }
 
-      // 動画
-      if let video = viewModel.embeddedVideo {
-        VideoPlayerView(video: video)
-          .padding(.horizontal, 16)
-          .padding(.bottom, 12)
-      }
+        // 画像
+        if !viewModel.embeddedImages.isEmpty {
+          PostDetailImageGrid(images: viewModel.embeddedImages)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
+        }
 
-      // リンクカード
-      ForEach(viewModel.linkCards, id: \.uri) { externalLink in
-        LinkCardView(externalLink: externalLink)
-          .padding(.horizontal, 16)
-          .padding(.bottom, 8)
+        // 動画
+        if let video = viewModel.embeddedVideo {
+          VideoPlayerView(video: video)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
+        }
+
+        // リンクカード
+        ForEach(viewModel.linkCards, id: \.uri) { externalLink in
+          LinkCardView(externalLink: externalLink)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+        }
       }
 
       // 投稿日時
@@ -200,28 +227,144 @@ struct PostDetailView: View {
         .padding(.vertical, 20)
     } else {
       VStack(alignment: .leading, spacing: 0) {
-        Text("リプライ \(viewModel.replies.count)件")
-          .font(.subheadline)
-          .fontWeight(.medium)
-          .foregroundColor(.secondary)
-          .padding(.horizontal, 16)
-          .padding(.vertical, 12)
 
-        ForEach(viewModel.replies) { reply in
+        // メインスレッドチェーン（最初の返信の直系、最大5階層）
+        ForEach(Array(viewModel.mainChain.enumerated()), id: \.offset) { index, chainPost in
           Divider().padding(.horizontal, 16)
           NavigationLink(
-            destination: PostDetailView(
-              viewModel: PostDetailViewModel(post: reply.post)
-            )
+            destination: PostDetailView(viewModel: PostDetailViewModel(post: chainPost))
           ) {
-            ReplyItemView(threadViewPost: reply)
-              .padding(.horizontal, 16)
+            MainChainRow(
+              post: chainPost,
+              isLast: index == viewModel.mainChain.count - 1
+            )
           }
           .buttonStyle(.plain)
+        }
+
+        // 分岐返信（2番目以降の直接返信）
+        if !viewModel.branchReplies.isEmpty {
+          HStack {
+            Text("他の返信 \(viewModel.branchReplies.count)件")
+              .font(.caption)
+              .fontWeight(.medium)
+              .foregroundColor(.secondary)
+            Spacer()
+          }
+          .padding(.horizontal, 16)
+          .padding(.top, 16)
+          .padding(.bottom, 8)
+
+          ForEach(viewModel.branchReplies) { reply in
+            Divider().padding(.horizontal, 16)
+            NavigationLink(
+              destination: PostDetailView(viewModel: PostDetailViewModel(post: reply.post))
+            ) {
+              ReplyItemView(threadViewPost: reply)
+                .padding(.horizontal, 16)
+            }
+            .buttonStyle(.plain)
+          }
         }
       }
       .padding(.bottom, 40)
     }
+  }
+}
+
+// MARK: - スレッドチェーン返信行（下方向コネクター付き）
+
+private struct MainChainRow: View {
+  let post: Post
+  let isLast: Bool
+
+  var body: some View {
+    HStack(alignment: .top, spacing: 10) {
+      VStack(spacing: 0) {
+        ProfileImageView(
+          viewModel: AsyncImageViewModel(
+            url: post.author?.avatarUrl,
+            imageSize: .timeline,
+            alt: post.author?.displayName ?? post.author?.handle ?? ""
+          ),
+          actor: post.author?.did ?? ""
+        )
+        if !isLast {
+          Rectangle()
+            .fill(Color(.systemGray4))
+            .frame(width: 2)
+            .frame(maxHeight: .infinity)
+            .padding(.top, 4)
+        }
+      }
+      .frame(width: 36)
+
+      VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: 4) {
+          Text(post.author?.displayName ?? post.author?.handle ?? "")
+            .font(.subheadline)
+            .fontWeight(.semibold)
+            .foregroundColor(.primary)
+            .lineLimit(1)
+          Text("@\(post.author?.handle ?? "")")
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .lineLimit(1)
+          Spacer()
+          if let indexedAt = post.indexedAt,
+            let date = indexedAt.parseToDateRemovingMilliseconds
+          {
+            Text(date, style: .relative)
+              .font(.caption)
+              .foregroundColor(.secondary)
+          }
+        }
+
+        if let text = post.record?.text, !text.isEmpty {
+          Text(text)
+            .font(.body)
+            .foregroundColor(.primary)
+            .lineLimit(8)
+        }
+
+        if let images = post.embed?.resolvedImages, !images.isEmpty {
+          ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 4) {
+              ForEach(images.prefix(4).indices, id: \.self) { i in
+                CachedAsyncImage(url: images[i].thumbUrl) { img in
+                  img.resizable().scaledToFill()
+                } placeholder: {
+                  Color(.systemGray5).overlay(ProgressView().tint(.secondary))
+                }
+                .frame(width: 72, height: 72)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+              }
+            }
+          }
+        }
+
+        HStack(spacing: 16) {
+          if let replyCount = post.replyCount, replyCount > 0 {
+            HStack(spacing: 4) {
+              Image(systemName: "bubble.left").font(.caption)
+              Text("\(replyCount)").font(.caption)
+            }
+            .foregroundColor(.secondary)
+          }
+          if let likeCount = post.likeCount, likeCount > 0 {
+            HStack(spacing: 4) {
+              Image(systemName: "star").font(.caption)
+              Text("\(likeCount)").font(.caption)
+            }
+            .foregroundColor(.secondary)
+          }
+        }
+        .padding(.top, 2)
+      }
+      .padding(.bottom, 12)
+    }
+    .padding(.horizontal, 16)
+    .padding(.top, 10)
   }
 }
 
