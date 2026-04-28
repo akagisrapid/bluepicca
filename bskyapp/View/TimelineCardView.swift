@@ -1,11 +1,12 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct TimelineCardView: View {
   let viewModel: TimelineCardViewModel
   @ObservedObject var post: Post
   @State private var isShowingReplySheet = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
+  @State private var isSensitiveRevealed = false
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
 
@@ -107,47 +108,71 @@ struct TimelineCardView: View {
       .padding(.top, (viewModel.isRepost || viewModel.isReply) ? 0 : 10)
       .padding(.bottom, 6)
 
-      // 本文テキスト（メイン）
-      if !viewModel.text.isEmpty {
-        PostTextView(text: viewModel.text) { tag in
-          hashtagSearchItem = HashtagSearchItem(query: tag)
+      // センシティブコンテンツ警告または本文・メディア
+      if viewModel.post.isSensitive && !isSensitiveRevealed {
+        Button(action: { isSensitiveRevealed = true }) {
+          HStack(spacing: 8) {
+            Image(systemName: "eye.slash")
+              .font(.caption)
+            Text("センシティブなコンテンツ")
+              .font(.caption)
+              .fontWeight(.medium)
+            Spacer()
+            Text("タップして表示")
+              .font(.caption2)
+          }
+          .foregroundColor(.secondary)
+          .padding(12)
+          .frame(maxWidth: .infinity)
+          .background(Color(.systemGray6))
+          .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .font(.body)
-        .foregroundColor(.primary)
-        .fixedSize(horizontal: false, vertical: true)
+        .buttonStyle(.plain)
         .padding(.horizontal, 16)
         .padding(.bottom, 8)
-      }
-
-      // 添付画像サムネイル
-      if let images = viewModel.post.embed?.resolvedImages, !images.isEmpty {
-        ImageGridView(images: images)
+      } else {
+        // 本文テキスト（メイン）
+        if !viewModel.text.isEmpty {
+          PostTextView(text: viewModel.text) { tag in
+            hashtagSearchItem = HashtagSearchItem(query: tag)
+          }
+          .font(.body)
+          .foregroundColor(.primary)
+          .fixedSize(horizontal: false, vertical: true)
           .padding(.horizontal, 16)
           .padding(.bottom, 8)
-      }
-
-      // 動画バッジ（サムネイルなし）
-      if viewModel.videoCount > 0 {
-        HStack(spacing: 6) {
-          MediaBadge(icon: "play.rectangle", label: "動画")
-          Spacer()
         }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-      }
 
-      // 引用ポスト（存在する場合のみ）
-      if let quoted = viewModel.quotedPost {
-        QuotePostCard(quoted: quoted)
+        // 添付画像サムネイル
+        if let images = viewModel.post.embed?.resolvedImages, !images.isEmpty {
+          ImageGridView(images: images)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+        }
+
+        // 動画バッジ（サムネイルなし）
+        if viewModel.videoCount > 0 {
+          HStack(spacing: 6) {
+            MediaBadge(icon: "play.rectangle", label: "動画")
+            Spacer()
+          }
           .padding(.horizontal, 16)
           .padding(.bottom, 8)
-      }
+        }
 
-      // リンクカード（外部リンク埋め込みがある場合のみ）
-      if let externalLink = viewModel.externalLink {
-        CompactLinkCard(externalLink: externalLink)
-          .padding(.horizontal, 16)
-          .padding(.bottom, 8)
+        // 引用ポスト（存在する場合のみ）
+        if let quoted = viewModel.quotedPost {
+          QuotePostCard(quoted: quoted)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+        }
+
+        // リンクカード（外部リンク埋め込みがある場合のみ）
+        if let externalLink = viewModel.externalLink {
+          CompactLinkCard(externalLink: externalLink)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+        }
       }
 
       // アクションバー: リプライ・リポスト・いいね
@@ -276,7 +301,8 @@ struct QuotePostCard: View {
   }
 
   var body: some View {
-    NavigationLink(destination: PostDetailView(viewModel: PostDetailViewModel(post: quotedAsPost))) {
+    NavigationLink(destination: PostDetailView(viewModel: PostDetailViewModel(post: quotedAsPost)))
+    {
       VStack(alignment: .leading, spacing: 4) {
         HStack(spacing: 6) {
           AsyncImage(url: quoted.author?.avatarUrl) { image in
@@ -457,7 +483,9 @@ private struct ImageGridView: View {
         }
       }
     }
-    .frame(maxWidth: .infinity, minHeight: gridHeight(count: count, width: UIScreen.main.bounds.width - 32))
+    .frame(
+      maxWidth: .infinity,
+      minHeight: gridHeight(count: count, width: UIScreen.main.bounds.width - 32))
   }
 }
 
