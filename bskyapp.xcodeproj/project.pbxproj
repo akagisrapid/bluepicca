@@ -25,6 +25,8 @@
 		FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F600001007FFFFF /* PostTextView.swift */; };
 		CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */; };
 		CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00022F600001007CCCCC /* FullScreenImageView.swift */; };
+		CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */; };
+		CCCC00072F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00062F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift */; };
 		98289CC82BF76B09007EA3C5 /* TimelineCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */; };
 		983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C132BB27216004E20F3 /* GetTimelineApi.swift */; };
 		983B2C1B2BB29583004E20F3 /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983B2C1A2BB29583004E20F3 /* FeedItem.swift */; };
@@ -140,6 +142,8 @@
 		FFFF00002F600001007FFFFF /* PostTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTextView.swift; sourceTree = "<group>"; };
 		CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
 		CCCC00022F600001007CCCCC /* FullScreenImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageView.swift; sourceTree = "<group>"; };
+		CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedGeneratorTimelineView.swift; sourceTree = "<group>"; };
+		CCCC00062F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedGeneratorTimelineViewModel.swift; sourceTree = "<group>"; };
 		98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineCardViewModel.swift; sourceTree = "<group>"; };
 		983B2C132BB27216004E20F3 /* GetTimelineApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTimelineApi.swift; sourceTree = "<group>"; };
 		983B2C1A2BB29583004E20F3 /* FeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
@@ -312,6 +316,7 @@
 			isa = PBXGroup;
 			children = (
 				987153512C29ADBD00E08633 /* PostDetailViewModel.swift */,
+				CCCC00062F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift */,
 				980FD2082E7AFB0400AE29EF /* RepliesViewModel.swift */,
 				EEEE00082F600001007EEEEE /* SearchViewModel.swift */,
 				9874EC6C2E7C5DD700F116D0 /* FollowListViewModel.swift */,
@@ -434,6 +439,7 @@
 				FFFF00002F600001007FFFFF /* PostTextView.swift */,
 				CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */,
 				CCCC00022F600001007CCCCC /* FullScreenImageView.swift */,
+				CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */,
 				987153532C29ADF300E08633 /* PostDetailView.swift */,
 				98C636352F33B6300064F497 /* SettingsView.swift */,
 				980FD1E12E77B95300AE29EF /* LinkCardView.swift */,
@@ -660,6 +666,8 @@
 				FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */,
 				CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */,
 				CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */,
+				CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */,
+				CCCC00072F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift in Sources */,
 				980FD2092E7AFB0400AE29EF /* RepliesViewModel.swift in Sources */,
 				98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */,
 				980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */,
