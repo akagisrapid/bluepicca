@@ -11,6 +11,7 @@ struct ContentView: View {
   @State private var isShowSettings = false
   @State private var isShowBookmarks = false
   @State private var isShowSearch = false
+  @State private var isShowMyProfile = false
   @State private var selectedPostForLikes: Post?
   @State private var scrollProxy: ScrollViewProxy? = nil
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
@@ -37,6 +38,13 @@ struct ContentView: View {
         .sheet(isPresented: $isShowBookmarks) { BookmarksView() }
         .sheet(isPresented: $isShowSettings) { SettingsView(isLoggedIn: $isLoggedIn) }
         .sheet(isPresented: $isShowSearch) { SearchView() }
+        .sheet(isPresented: $isShowMyProfile) {
+          if let did = SessionManager.shared.currentDid {
+            ProfileView(
+              viewModel: ProfileViewModel(
+                actor: did, profile: .init(did: "", handle: "", labels: [])))
+          }
+        }
         .onChange(of: viewModel.targetScrollUri) { _, uri in
           guard let uri else { return }
           DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -49,10 +57,13 @@ struct ContentView: View {
             viewModel.saveReadPosition(uri: viewModel.validFeeds.first?.post?.uri)
           }
         }
-        .alert("エラー", isPresented: Binding(
-          get: { viewModel.feedError != nil },
-          set: { if !$0 { viewModel.feedError = nil } }
-        )) {
+        .alert(
+          "エラー",
+          isPresented: Binding(
+            get: { viewModel.feedError != nil },
+            set: { if !$0 { viewModel.feedError = nil } }
+          )
+        ) {
           Button("OK") { viewModel.feedError = nil }
         } message: {
           Text(viewModel.feedError ?? "")
@@ -87,10 +98,11 @@ struct ContentView: View {
           }
           .listStyle(.plain)
           .onAppear { scrollProxy = proxy }
-          .modifier(FeedTabStripModifier(
-            show: feedSelectorStyle == "tabs" && viewModel.feedTabs.count > 1,
-            strip: feedTabStrip
-          ))
+          .modifier(
+            FeedTabStripModifier(
+              show: feedSelectorStyle == "tabs" && viewModel.feedTabs.count > 1,
+              strip: feedTabStrip
+            ))
         }
         if viewModel.isFetchingTimeline {
           VStack {
@@ -153,14 +165,16 @@ struct ContentView: View {
   private var leadingToolbarItem: some ToolbarContent {
     ToolbarItem(placement: .navigationBarLeading) {
       if feedSelectorStyle == "dropdown" && viewModel.feedTabs.count > 1 {
-        Picker(selection: Binding(
-          get: { viewModel.selectedTab.id },
-          set: { id in
-            if let tab = viewModel.feedTabs.first(where: { $0.id == id }) {
-              viewModel.selectTab(tab)
+        Picker(
+          selection: Binding(
+            get: { viewModel.selectedTab.id },
+            set: { id in
+              if let tab = viewModel.feedTabs.first(where: { $0.id == id }) {
+                viewModel.selectTab(tab)
+              }
             }
-          }
-        ), label: Image(systemName: "list.bullet")) {
+          ), label: Image(systemName: "list.bullet")
+        ) {
           ForEach(viewModel.feedTabs) { tab in
             Text(tab.name).tag(tab.id)
           }
@@ -178,6 +192,10 @@ struct ContentView: View {
   private var trailingToolbarItem: some ToolbarContent {
     ToolbarItem(placement: .navigationBarTrailing) {
       HStack(spacing: 16) {
+        Button(action: { isShowMyProfile = true }) {
+          Image(systemName: "person.circle")
+        }
+        .buttonStyle(.plain)
         Button(action: { isShowSearch = true }) {
           Image(systemName: "magnifyingglass")
         }
