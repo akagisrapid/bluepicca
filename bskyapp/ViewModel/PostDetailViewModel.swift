@@ -11,6 +11,8 @@ class PostDetailViewModel: ObservableObject {
   @Published var isLoadingThread: Bool = false
   @Published var isReposting: Bool = false
   @Published var isLiking: Bool = false
+  @Published var isDeleting: Bool = false
+  @Published var isDeleted: Bool = false
 
   init(post: Post, reason: Reason? = nil) {
     self.post = post
@@ -102,6 +104,8 @@ class PostDetailViewModel: ObservableObject {
   var isRepost: Bool { reason != nil }
   var repostAuthorName: String { reason?.by?.displayName ?? reason?.by?.handle ?? "" }
 
+  var isOwnPost: Bool { post.author?.did == SessionManager.shared.currentDid }
+
   var isLiked: Bool { post.viewer?.like != nil }
   var likeCount: Int { post.likeCount ?? 0 }
   var isReposted: Bool { post.viewer?.repost != nil }
@@ -121,5 +125,18 @@ class PostDetailViewModel: ObservableObject {
     isReposting = true
     await PostInteractionHelper.toggleRepost(post: post)
     isReposting = false
+  }
+
+  @MainActor
+  func deletePost() async {
+    guard let uri = post.uri else { return }
+    isDeleting = true
+    do {
+      try await InteractionService.shared.deletePost(uri: uri)
+      isDeleted = true
+    } catch {
+      print("Delete post error: \(error)")
+    }
+    isDeleting = false
   }
 }
