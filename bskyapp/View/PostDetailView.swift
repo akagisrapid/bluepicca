@@ -5,6 +5,8 @@ struct PostDetailView: View {
   @State private var isShowingReplySheet = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
+  @State private var showDeleteConfirm = false
+  @Environment(\.dismiss) private var dismiss
 
   var body: some View {
     ScrollView {
@@ -29,6 +31,30 @@ struct PostDetailView: View {
       }
     }
     .navigationBarTitleDisplayMode(.inline)
+    .toolbar {
+      if viewModel.isOwnPost {
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button(role: .destructive) {
+            showDeleteConfirm = true
+          } label: {
+            Image(systemName: "trash")
+              .foregroundColor(.red)
+          }
+          .disabled(viewModel.isDeleting)
+        }
+      }
+    }
+    .alert("ポストを削除しますか？", isPresented: $showDeleteConfirm) {
+      Button("削除", role: .destructive) {
+        Task {
+          await viewModel.deletePost()
+          if viewModel.isDeleted { dismiss() }
+        }
+      }
+      Button("キャンセル", role: .cancel) {}
+    } message: {
+      Text("この操作は取り消せません。")
+    }
     .sheet(isPresented: $isShowingReplySheet) {
       ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
     }
