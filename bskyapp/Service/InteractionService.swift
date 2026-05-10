@@ -58,6 +58,12 @@ class InteractionService {
     try await deleteRecord(collection: "app.bsky.feed.repost", rkey: getRKey(from: repostUri))
   }
 
+  // MARK: - Delete Post
+
+  func deletePost(uri: String) async throws {
+    try await deleteRecord(collection: "app.bsky.feed.post", rkey: getRKey(from: uri))
+  }
+
   // MARK: - Private Helpers
 
   private func createRecord(collection: String, record: [String: Any]) async throws -> String {
