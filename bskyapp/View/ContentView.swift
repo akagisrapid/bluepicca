@@ -84,8 +84,15 @@ struct ContentView: View {
         ScrollViewReader { proxy in
           List {
             Color.clear.frame(height: 0).id("top")
-            ForEach(viewModel.validFeeds) { feedItem in
-              feedRow(feedItem)
+            ForEach(viewModel.validFeeds.indices, id: \.self) { index in
+              let feedItem = viewModel.validFeeds[index]
+              let prevItem = index > 0 ? viewModel.validFeeds[index - 1] : nil
+              let nextItem =
+                index + 1 < viewModel.validFeeds.count ? viewModel.validFeeds[index + 1] : nil
+              let connectsAbove = prevItem.map { areThreadConnected($0, feedItem) } ?? false
+              let connectsBelow = nextItem.map { areThreadConnected(feedItem, $0) } ?? false
+              feedRow(
+                feedItem, connectsToCardAbove: connectsAbove, connectsToCardBelow: connectsBelow)
             }
             if viewModel.isLoadingMore {
               HStack {
@@ -117,9 +124,13 @@ struct ContentView: View {
   }
 
   @ViewBuilder
-  private func feedRow(_ feedItem: FeedItem) -> some View {
+  private func feedRow(
+    _ feedItem: FeedItem, connectsToCardAbove: Bool = false, connectsToCardBelow: Bool = false
+  ) -> some View {
     if let post = feedItem.post {
-      let cardVM = TimelineCardViewModel(post: post, reason: feedItem.reason, reply: feedItem.reply)
+      let cardVM = TimelineCardViewModel(
+        post: post, reason: feedItem.reason, reply: feedItem.reply,
+        connectsToCardAbove: connectsToCardAbove, connectsToCardBelow: connectsToCardBelow)
       let detailVM = PostDetailViewModel(post: post)
       NavigationLink(destination: PostDetailView(viewModel: detailVM)) {
         TimelineCardView(viewModel: cardVM)
@@ -133,6 +144,14 @@ struct ContentView: View {
         }
       }
     }
+  }
+
+  private func areThreadConnected(_ a: FeedItem, _ b: FeedItem) -> Bool {
+    guard a.reason == nil, b.reason == nil,
+      let rootA = a.reply?.root?.uri,
+      let rootB = b.reply?.root?.uri
+    else { return false }
+    return rootA == rootB
   }
 
   // MARK: - Tab strip
