@@ -7,6 +7,8 @@ struct TimelineCardView: View {
   @State private var isShowingReplySheet = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
+  @State private var likeScale: CGFloat = 1.0
+  @State private var repostScale: CGFloat = 1.0
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
 
@@ -18,6 +20,16 @@ struct TimelineCardView: View {
   private var isBookmarked: Bool {
     guard let uri = viewModel.post.uri else { return false }
     return bookmarks.contains { $0.postUri == uri }
+  }
+
+  private func triggerLikeAnimation() {
+    likeScale = 1.5
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { likeScale = 1.0 }
+  }
+
+  private func triggerRepostAnimation() {
+    repostScale = 1.5
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { repostScale = 1.0 }
   }
 
   private func toggleBookmark() {
@@ -177,13 +189,20 @@ struct TimelineCardView: View {
 
       // アクションバー: リプライ・リポスト・いいね
       HStack(spacing: 0) {
-        // リプライボタン（Threadgateで制限中はグレーアウト）
+        // リプライボタン（Threadgateで制限中はグレーアウト＋ロックバッジ）
         Button(action: {
           isShowingReplySheet = true
         }) {
           HStack(spacing: 4) {
-            Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
-              .font(.caption)
+            ZStack(alignment: .topTrailing) {
+              Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
+                .font(.caption)
+              if viewModel.isReplyDisabled {
+                Image(systemName: "lock.fill")
+                  .font(.system(size: 7))
+                  .offset(x: 5, y: -5)
+              }
+            }
             Text("\(viewModel.post.replyCount ?? 0)")
               .font(.caption)
           }
@@ -198,14 +217,18 @@ struct TimelineCardView: View {
         // リポストボタン
         Button(action: {
           Task { await viewModel.toggleRepost() }
+          triggerRepostAnimation()
         }) {
           HStack(spacing: 4) {
             Image(systemName: "arrow.rectanglepath")
               .font(.caption)
+              .scaleEffect(repostScale)
+              .animation(.spring(response: 0.3, dampingFraction: 0.4), value: repostScale)
             Text("\(viewModel.repostCount)")
               .font(.caption)
           }
           .foregroundColor(viewModel.isReposted ? .green : .secondary)
+          .animation(.easeInOut(duration: 0.2), value: viewModel.isReposted)
           .frame(minWidth: 44, minHeight: 36)
         }
         .buttonStyle(.plain)
@@ -215,14 +238,18 @@ struct TimelineCardView: View {
         // いいねボタン
         Button(action: {
           Task { await viewModel.toggleLike() }
+          triggerLikeAnimation()
         }) {
           HStack(spacing: 4) {
             Image(systemName: viewModel.isLiked ? "star.fill" : "star")
               .font(.caption)
+              .scaleEffect(likeScale)
+              .animation(.spring(response: 0.3, dampingFraction: 0.4), value: likeScale)
             Text("\(viewModel.likeCount)")
               .font(.caption)
           }
           .foregroundColor(viewModel.isLiked ? .yellow : .secondary)
+          .animation(.easeInOut(duration: 0.2), value: viewModel.isLiked)
           .frame(minWidth: 44, minHeight: 36)
         }
         .buttonStyle(.plain)
@@ -241,9 +268,20 @@ struct TimelineCardView: View {
       .padding(.horizontal, 8)
       .padding(.bottom, 4)
     }
+    .overlay {
+      if viewModel.connectsToCardAbove || viewModel.connectsToCardBelow {
+        HStack(spacing: 0) {
+          Color.clear.frame(width: 30)
+          Color.accentColor.opacity(0.35)
+            .frame(width: 2)
+          Spacer()
+        }
+      }
+    }
     .swipeActions(edge: .leading, allowsFullSwipe: true) {
       Button {
         Task { await viewModel.toggleLike() }
+        triggerLikeAnimation()
       } label: {
         Image(systemName: viewModel.isLiked ? "star.slash.fill" : "star.fill")
       }
@@ -252,6 +290,7 @@ struct TimelineCardView: View {
     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
       Button {
         Task { await viewModel.toggleRepost() }
+        triggerRepostAnimation()
       } label: {
         Image(systemName: "arrow.rectanglepath")
       }

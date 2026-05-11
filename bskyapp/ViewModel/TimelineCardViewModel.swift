@@ -4,13 +4,18 @@ struct TimelineCardViewModel {
   let post: Post
   let reason: Reason?
   let reply: Reply?
+  let connectsToCardAbove: Bool
+  let connectsToCardBelow: Bool
 
-  init(post: Post, reason: Reason? = nil, reply: Reply? = nil) {
+  init(
+    post: Post, reason: Reason? = nil, reply: Reply? = nil,
+    connectsToCardAbove: Bool = false, connectsToCardBelow: Bool = false
+  ) {
     self.post = post
     self.reason = reason
     self.reply = reply
-
-    // 永続化された状態を復元
+    self.connectsToCardAbove = connectsToCardAbove
+    self.connectsToCardBelow = connectsToCardBelow
     PostInteractionHelper.restorePersistedStates(for: post)
   }
   var authorName: String {
