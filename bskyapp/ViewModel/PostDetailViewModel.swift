@@ -17,8 +17,11 @@ class PostDetailViewModel: ObservableObject {
   init(post: Post, reason: Reason? = nil) {
     self.post = post
     self.reason = reason
-    PostInteractionHelper.restorePersistedStates(for: post)
-    Task { [weak self] in await self?.fetchThread() }
+    Task { [weak self] in
+      guard let self else { return }
+      await MainActor.run { PostInteractionHelper.restorePersistedStates(for: self.post) }
+      await self.fetchThread()
+    }
   }
 
   @MainActor
