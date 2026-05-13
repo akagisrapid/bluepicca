@@ -42,27 +42,12 @@ struct ProfileView: View {
         }
       }
 
-      VStack {
-        Spacer()
-        HStack {
-          Spacer()
-          Button(action: { dismiss() }) {
-            Image(systemName: "xmark.circle.fill")
-              .font(.largeTitle)
-              .foregroundColor(.white)
-              .background(Color.black.opacity(0.7))
-              .clipShape(Circle())
-              .shadow(radius: 5)
-          }
-          .padding(.trailing, 20)
-          .padding(.bottom, 20)
-          .scaleEffect(1.2)
-        }
-      }
     }
     .sheet(isPresented: $showingPostDetail) {
       if let post = selectedPost {
-        PostDetailView(viewModel: PostDetailViewModel(post: post))
+        NavigationStack {
+          PostDetailView(viewModel: PostDetailViewModel(post: post))
+        }
       }
     }
     .sheet(item: $selectedFollowItem) { item in
