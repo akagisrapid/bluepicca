@@ -4,7 +4,6 @@ struct ProfileView: View {
   @StateObject var viewModel: ProfileViewModel
   @State private var selectedTab = 0
   @State private var selectedPost: Post?
-  @State private var showingPostDetail = false
   @State private var showingMuteConfirm = false
   @State private var showingBlockConfirm = false
   @State private var selectedFollowItem: FollowDisplayItem?
@@ -43,11 +42,9 @@ struct ProfileView: View {
       }
 
     }
-    .sheet(isPresented: $showingPostDetail) {
-      if let post = selectedPost {
-        NavigationStack {
-          PostDetailView(viewModel: PostDetailViewModel(post: post))
-        }
+    .sheet(item: $selectedPost) { post in
+      NavigationStack {
+        PostDetailView(viewModel: PostDetailViewModel(post: post))
       }
     }
     .sheet(item: $selectedFollowItem) { item in
@@ -331,7 +328,6 @@ struct ProfileView: View {
               )
               .onTapGesture {
                 selectedPost = post
-                showingPostDetail = true
               }
               .background(Color.clear)
               .contentShape(Rectangle())
