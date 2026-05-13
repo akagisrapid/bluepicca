@@ -1,6 +1,7 @@
 import Foundation
 
-class Post: Codable, ObservableObject {
+class Post: Codable, ObservableObject, Identifiable {
+  var id: String { uri ?? cid ?? ObjectIdentifier(self).debugDescription }
   let uri: String?
   let cid: String?
   let author: Author?
