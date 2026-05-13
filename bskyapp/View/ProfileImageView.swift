@@ -2,26 +2,35 @@ import SwiftUI
 
 struct ProfileImageView: View {
   let viewModel: AsyncImageViewModel
-  @State var actor: String
-  @State var isProfileView = false
+  let actor: String
+  @State private var navigateToProfile = false
+
   var body: some View {
-    ZStack {
-      // サムネ色
+    Button {
+      navigateToProfile = true
+    } label: {
       AsyncImage(url: viewModel.url) { image in
         image.image?
           .resizable()
           .aspectRatio(contentMode: .fit)
           .frame(maxWidth: viewModel.imageSize.maxWidth, maxHeight: viewModel.imageSize.maxHeight)
       }
-      .gesture(
-        TapGesture().onEnded {
-          isProfileView = true
-        }
-      )
-
-      .sheet(isPresented: $isProfileView) {
-        ProfileView(viewModel: .init(actor: actor, profile: .init(did: "", handle: "", labels: [])))
-      }
     }
+    .buttonStyle(.plain)
+    .background(
+      NavigationLink(
+        isActive: $navigateToProfile,
+        destination: {
+          ProfileView(
+            viewModel: ProfileViewModel(
+              actor: actor,
+              profile: .init(did: "", handle: "", labels: [])
+            )
+          )
+        },
+        label: { EmptyView() }
+      )
+      .hidden()
+    )
   }
 }
