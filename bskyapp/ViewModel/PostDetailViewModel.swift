@@ -2,19 +2,23 @@ import Foundation
 import SwiftUI
 
 class PostDetailViewModel: ObservableObject {
+  let isRoot: Bool
   @Published var post: Post
   @Published var reason: Reason?
-  @Published var parentChain: [Post] = []  // oldest → newest 順
+  @Published var parentChain: [Post] = []
   @Published var replies: [ThreadViewPost] = []
+  @Published var mainChain: [Post] = []
+  @Published var branchReplies: [ThreadViewPost] = []
   @Published var isLoadingThread: Bool = false
   @Published var isReposting: Bool = false
   @Published var isLiking: Bool = false
   @Published var isDeleting: Bool = false
   @Published var isDeleted: Bool = false
 
-  init(post: Post, reason: Reason? = nil) {
+  init(post: Post, reason: Reason? = nil, isRoot: Bool = true) {
     self.post = post
     self.reason = reason
+    self.isRoot = isRoot
     PostInteractionHelper.restorePersistedStates(for: post)
   }
 
@@ -27,6 +31,13 @@ class PostDetailViewModel: ObservableObject {
       post = response.thread.post
       replies = response.thread.replies ?? []
       parentChain = extractParentChain(from: response.thread)
+      if !isRoot, let firstReply = replies.first {
+        mainChain = extractFirstChildChain(from: firstReply)
+        branchReplies = Array(replies.dropFirst())
+      } else {
+        mainChain = []
+        branchReplies = []
+      }
     } catch {
       print("Thread fetch error: \(error)")
     }
@@ -38,8 +49,17 @@ class PostDetailViewModel: ObservableObject {
     await fetchThread()
   }
 
+  // isRoot: 直接リプライを時系列順
   var allThreadPosts: [Post] {
     replies.map { $0.post }.sorted { ($0.indexedAt ?? "") < ($1.indexedAt ?? "") }
+  }
+
+  private func extractFirstChildChain(from tvp: ThreadViewPost, depth: Int = 0) -> [Post] {
+    var chain = [tvp.post]
+    if depth < 12, let firstChild = tvp.replies?.first {
+      chain += extractFirstChildChain(from: firstChild, depth: depth + 1)
+    }
+    return chain
   }
 
   private func extractParentChain(from thread: ThreadViewPost) -> [Post] {
