@@ -242,8 +242,28 @@ struct ContentView: View {
         isShowBookmarks = true
       }
       Spacer()
-      Button("Top", systemImage: "arrow.up.to.line") {
+      Button {
+        viewModel.clearUnreadCount()
         withAnimation { scrollProxy?.scrollTo("top", anchor: .top) }
+      } label: {
+        SwiftUI.Label(
+          title: { Text("Top") },
+          icon: {
+            ZStack(alignment: .topTrailing) {
+              Image(systemName: "arrow.up.to.line")
+              if viewModel.unreadCount > 0 {
+                Text(viewModel.unreadCount > 99 ? "99+" : "\(viewModel.unreadCount)")
+                  .font(.system(size: 8, weight: .bold))
+                  .foregroundColor(.white)
+                  .padding(.horizontal, 3)
+                  .padding(.vertical, 1)
+                  .background(Color.accentColor)
+                  .clipShape(Capsule())
+                  .offset(x: 10, y: -8)
+              }
+            }
+          }
+        )
       }
       Button("Refresh", systemImage: "arrow.clockwise") {
         Task {
