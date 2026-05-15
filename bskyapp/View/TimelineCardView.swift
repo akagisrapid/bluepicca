@@ -87,197 +87,208 @@ struct TimelineCardView: View {
         .padding(.horizontal, 16)
         .padding(.top, viewModel.isRepost ? 0 : 8)
         .padding(.bottom, 4)
+        .overlay {
+          // 上のカードとスレッド接続しているときだけバナー部分にも縦線を引く
+          if viewModel.connectsToCardAbove {
+            HStack(spacing: 0) {
+              Color.clear.frame(width: 30)
+              Color.accentColor.opacity(0.35).frame(width: 2)
+              Spacer()
+            }
+          }
+        }
       }
 
-      // ヘッダー: アバター + 著者情報 + 時刻
-      HStack(alignment: .top, spacing: 10) {
-        ProfileImageView(
-          viewModel: AsyncImageViewModel(
-            url: viewModel.post.author?.avatarUrl,
-            imageSize: .timeline,
-            alt: viewModel.authorName),
-          actor: viewModel.post.author?.did ?? "")
+      VStack(alignment: .leading, spacing: 0) {
+        // ヘッダー: アバター + 著者情報 + 時刻
+        HStack(alignment: .top, spacing: 10) {
+          ProfileImageView(
+            viewModel: AsyncImageViewModel(
+              url: viewModel.post.author?.avatarUrl,
+              imageSize: .timeline,
+              alt: viewModel.authorName),
+            actor: viewModel.post.author?.did ?? "")
 
-        VStack(alignment: .leading, spacing: 1) {
-          Text(viewModel.authorName)
-            .font(.subheadline)
-            .fontWeight(.semibold)
-            .foregroundColor(.primary)
-            .lineLimit(1)
-          Text(viewModel.authorHandle)
+          VStack(alignment: .leading, spacing: 1) {
+            Text(viewModel.authorName)
+              .font(.subheadline)
+              .fontWeight(.semibold)
+              .foregroundColor(.primary)
+              .lineLimit(1)
+            Text(viewModel.authorHandle)
+              .font(.caption)
+              .foregroundColor(.secondary)
+              .lineLimit(1)
+          }
+
+          Spacer()
+
+          Text(viewModel.postedTimeRelative)
             .font(.caption)
             .foregroundColor(.secondary)
-            .lineLimit(1)
         }
-
-        Spacer()
-
-        Text(viewModel.postedTimeRelative)
-          .font(.caption)
-          .foregroundColor(.secondary)
-      }
-      .padding(.horizontal, 16)
-      .padding(.top, (viewModel.isRepost || viewModel.isReply) ? 0 : 10)
-      .padding(.bottom, 6)
-
-      // センシティブコンテンツ警告または本文・メディア
-      if viewModel.post.isSensitive && !isSensitiveRevealed {
-        Button(action: { isSensitiveRevealed = true }) {
-          HStack(spacing: 8) {
-            Image(systemName: "eye.slash")
-              .font(.caption)
-            Text("センシティブなコンテンツ")
-              .font(.caption)
-              .fontWeight(.medium)
-            Spacer()
-            Text("タップして表示")
-              .font(.caption2)
-          }
-          .foregroundColor(.secondary)
-          .padding(12)
-          .frame(maxWidth: .infinity)
-          .background(Color(.systemGray6))
-          .clipShape(RoundedRectangle(cornerRadius: 8))
-        }
-        .buttonStyle(.plain)
         .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-      } else {
-        // 本文テキスト（メイン）
-        if !viewModel.text.isEmpty {
-          PostTextView(text: viewModel.text) { tag in
-            hashtagSearchItem = HashtagSearchItem(query: tag)
+        .padding(.top, (viewModel.isRepost || viewModel.isReply) ? 0 : 10)
+        .padding(.bottom, 6)
+
+        // センシティブコンテンツ警告または本文・メディア
+        if viewModel.post.isSensitive && !isSensitiveRevealed {
+          Button(action: { isSensitiveRevealed = true }) {
+            HStack(spacing: 8) {
+              Image(systemName: "eye.slash")
+                .font(.caption)
+              Text("センシティブなコンテンツ")
+                .font(.caption)
+                .fontWeight(.medium)
+              Spacer()
+              Text("タップして表示")
+                .font(.caption2)
+            }
+            .foregroundColor(.secondary)
+            .padding(12)
+            .frame(maxWidth: .infinity)
+            .background(Color(.systemGray6))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
           }
-          .font(.body)
-          .foregroundColor(.primary)
-          .fixedSize(horizontal: false, vertical: true)
+          .buttonStyle(.plain)
           .padding(.horizontal, 16)
           .padding(.bottom, 8)
-        }
-
-        // 添付画像サムネイル
-        if let images = viewModel.post.embed?.resolvedImages, !images.isEmpty {
-          ImageGridView(images: images)
+        } else {
+          // 本文テキスト（メイン）
+          if !viewModel.text.isEmpty {
+            PostTextView(text: viewModel.text) { tag in
+              hashtagSearchItem = HashtagSearchItem(query: tag)
+            }
+            .font(.body)
+            .foregroundColor(.primary)
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
+          }
+
+          // 添付画像サムネイル
+          if let images = viewModel.post.embed?.resolvedImages, !images.isEmpty {
+            ImageGridView(images: images)
+              .padding(.horizontal, 16)
+              .padding(.bottom, 8)
+          }
+
+          // 動画バッジ（サムネイルなし）
+          if viewModel.videoCount > 0 {
+            HStack(spacing: 6) {
+              MediaBadge(icon: "play.rectangle", label: "動画")
+              Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+          }
+
+          // 引用ポスト（存在する場合のみ）
+          if let quoted = viewModel.quotedPost {
+            QuotePostCard(quoted: quoted)
+              .padding(.horizontal, 16)
+              .padding(.bottom, 8)
+          }
+
+          // リンクカード（外部リンク埋め込みがある場合のみ）
+          if let externalLink = viewModel.externalLink {
+            CompactLinkCard(externalLink: externalLink)
+              .padding(.horizontal, 16)
+              .padding(.bottom, 8)
+          }
         }
 
-        // 動画バッジ（サムネイルなし）
-        if viewModel.videoCount > 0 {
-          HStack(spacing: 6) {
-            MediaBadge(icon: "play.rectangle", label: "動画")
+        // アクションバー: リプライ・リポスト・いいね
+        HStack(spacing: 0) {
+          // リプライボタン（Threadgateで制限中はグレーアウト＋ロックバッジ）
+          Button(action: {
+            isShowingReplySheet = true
+          }) {
+            HStack(spacing: 4) {
+              ZStack(alignment: .topTrailing) {
+                Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
+                  .font(.caption)
+                if viewModel.isReplyDisabled {
+                  Image(systemName: "lock.fill")
+                    .font(.system(size: 7))
+                    .offset(x: 5, y: -5)
+                }
+              }
+              Text("\(viewModel.post.replyCount ?? 0)")
+                .font(.caption)
+            }
+            .foregroundColor(viewModel.isReplyDisabled ? .secondary.opacity(0.4) : .secondary)
+            .frame(minWidth: 44, minHeight: 36)
+          }
+          .buttonStyle(.plain)
+          .disabled(viewModel.isReplyDisabled)
+
+          Spacer()
+
+          // リポストボタン
+          Button(action: {
+            Task { await viewModel.toggleRepost() }
+            triggerRepostAnimation()
+          }) {
+            HStack(spacing: 4) {
+              Image(systemName: "arrow.rectanglepath")
+                .font(.caption)
+                .scaleEffect(repostScale)
+                .animation(.spring(response: 0.3, dampingFraction: 0.4), value: repostScale)
+              Text("\(viewModel.repostCount)")
+                .font(.caption)
+            }
+            .foregroundColor(viewModel.isReposted ? .green : .secondary)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.isReposted)
+            .frame(minWidth: 44, minHeight: 36)
+          }
+          .buttonStyle(.plain)
+
+          Spacer()
+
+          // いいねボタン
+          Button(action: {
+            Task { await viewModel.toggleLike() }
+            triggerLikeAnimation()
+          }) {
+            HStack(spacing: 4) {
+              Image(systemName: viewModel.isLiked ? "star.fill" : "star")
+                .font(.caption)
+                .scaleEffect(likeScale)
+                .animation(.spring(response: 0.3, dampingFraction: 0.4), value: likeScale)
+              Text("\(viewModel.likeCount)")
+                .font(.caption)
+            }
+            .foregroundColor(viewModel.isLiked ? .yellow : .secondary)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.isLiked)
+            .frame(minWidth: 44, minHeight: 36)
+          }
+          .buttonStyle(.plain)
+
+          Spacer()
+
+          // ブックマークボタン
+          Button(action: { toggleBookmark() }) {
+            Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
+              .font(.caption)
+              .foregroundColor(isBookmarked ? .blue : .secondary)
+              .frame(minWidth: 44, minHeight: 36)
+          }
+          .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 8)
+        .padding(.bottom, 4)
+      }  // body VStack
+      .overlay {
+        if viewModel.connectsToCardAbove || viewModel.connectsToCardBelow {
+          HStack(spacing: 0) {
+            Color.clear.frame(width: 30)
+            Color.accentColor.opacity(0.35).frame(width: 2)
             Spacer()
           }
-          .padding(.horizontal, 16)
-          .padding(.bottom, 8)
-        }
-
-        // 引用ポスト（存在する場合のみ）
-        if let quoted = viewModel.quotedPost {
-          QuotePostCard(quoted: quoted)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 8)
-        }
-
-        // リンクカード（外部リンク埋め込みがある場合のみ）
-        if let externalLink = viewModel.externalLink {
-          CompactLinkCard(externalLink: externalLink)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 8)
         }
       }
-
-      // アクションバー: リプライ・リポスト・いいね
-      HStack(spacing: 0) {
-        // リプライボタン（Threadgateで制限中はグレーアウト＋ロックバッジ）
-        Button(action: {
-          isShowingReplySheet = true
-        }) {
-          HStack(spacing: 4) {
-            ZStack(alignment: .topTrailing) {
-              Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
-                .font(.caption)
-              if viewModel.isReplyDisabled {
-                Image(systemName: "lock.fill")
-                  .font(.system(size: 7))
-                  .offset(x: 5, y: -5)
-              }
-            }
-            Text("\(viewModel.post.replyCount ?? 0)")
-              .font(.caption)
-          }
-          .foregroundColor(viewModel.isReplyDisabled ? .secondary.opacity(0.4) : .secondary)
-          .frame(minWidth: 44, minHeight: 36)
-        }
-        .buttonStyle(.plain)
-        .disabled(viewModel.isReplyDisabled)
-
-        Spacer()
-
-        // リポストボタン
-        Button(action: {
-          Task { await viewModel.toggleRepost() }
-          triggerRepostAnimation()
-        }) {
-          HStack(spacing: 4) {
-            Image(systemName: "arrow.rectanglepath")
-              .font(.caption)
-              .scaleEffect(repostScale)
-              .animation(.spring(response: 0.3, dampingFraction: 0.4), value: repostScale)
-            Text("\(viewModel.repostCount)")
-              .font(.caption)
-          }
-          .foregroundColor(viewModel.isReposted ? .green : .secondary)
-          .animation(.easeInOut(duration: 0.2), value: viewModel.isReposted)
-          .frame(minWidth: 44, minHeight: 36)
-        }
-        .buttonStyle(.plain)
-
-        Spacer()
-
-        // いいねボタン
-        Button(action: {
-          Task { await viewModel.toggleLike() }
-          triggerLikeAnimation()
-        }) {
-          HStack(spacing: 4) {
-            Image(systemName: viewModel.isLiked ? "star.fill" : "star")
-              .font(.caption)
-              .scaleEffect(likeScale)
-              .animation(.spring(response: 0.3, dampingFraction: 0.4), value: likeScale)
-            Text("\(viewModel.likeCount)")
-              .font(.caption)
-          }
-          .foregroundColor(viewModel.isLiked ? .yellow : .secondary)
-          .animation(.easeInOut(duration: 0.2), value: viewModel.isLiked)
-          .frame(minWidth: 44, minHeight: 36)
-        }
-        .buttonStyle(.plain)
-
-        Spacer()
-
-        // ブックマークボタン
-        Button(action: { toggleBookmark() }) {
-          Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
-            .font(.caption)
-            .foregroundColor(isBookmarked ? .blue : .secondary)
-            .frame(minWidth: 44, minHeight: 36)
-        }
-        .buttonStyle(.plain)
-      }
-      .padding(.horizontal, 8)
-      .padding(.bottom, 4)
-    }
-    .overlay {
-      if viewModel.connectsToCardAbove || viewModel.connectsToCardBelow {
-        HStack(spacing: 0) {
-          Color.clear.frame(width: 30)
-          Color.accentColor.opacity(0.35)
-            .frame(width: 2)
-          Spacer()
-        }
-      }
-    }
+    }  // root VStack
     .swipeActions(edge: .leading, allowsFullSwipe: true) {
       Button {
         Task { await viewModel.toggleLike() }
