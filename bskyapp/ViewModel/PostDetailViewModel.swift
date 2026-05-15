@@ -18,7 +18,6 @@ class PostDetailViewModel: ObservableObject {
     self.post = post
     self.reason = reason
     PostInteractionHelper.restorePersistedStates(for: post)
-    Task { [weak self] in await self?.fetchThread() }
   }
 
   @MainActor
@@ -51,10 +50,24 @@ class PostDetailViewModel: ObservableObject {
 
   private func extractFirstChildChain(from tvp: ThreadViewPost, depth: Int = 0) -> [Post] {
     var chain = [tvp.post]
-    if depth < 4, let firstChild = tvp.replies?.first {
+    if depth < 12, let firstChild = tvp.replies?.first {
       chain += extractFirstChildChain(from: firstChild, depth: depth + 1)
     }
     return chain
+  }
+
+  var allThreadPosts: [Post] {
+    var result: [Post] = []
+    func collect(_ tvp: ThreadViewPost) {
+      result.append(tvp.post)
+      for child in tvp.replies ?? [] {
+        collect(child)
+      }
+    }
+    for reply in replies {
+      collect(reply)
+    }
+    return result.sorted { ($0.indexedAt ?? "") < ($1.indexedAt ?? "") }
   }
 
   private func extractParentChain(from thread: ThreadViewPost) -> [Post] {

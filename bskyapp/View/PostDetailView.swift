@@ -6,6 +6,7 @@ struct PostDetailView: View {
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
   @State private var showDeleteConfirm = false
+  @State private var showChronological = false
   @Environment(\.dismiss) private var dismiss
 
   var body: some View {
@@ -31,6 +32,9 @@ struct PostDetailView: View {
       }
     }
     .navigationBarTitleDisplayMode(.inline)
+    .task {
+      await viewModel.fetchThread()
+    }
     .toolbar {
       if viewModel.isOwnPost {
         ToolbarItem(placement: .navigationBarTrailing) {
@@ -254,42 +258,71 @@ struct PostDetailView: View {
     } else {
       VStack(alignment: .leading, spacing: 0) {
 
-        // メインスレッドチェーン（最初の返信の直系、最大5階層）
-        ForEach(Array(viewModel.mainChain.enumerated()), id: \.offset) { index, chainPost in
-          Divider().padding(.horizontal, 16)
-          NavigationLink(
-            destination: PostDetailView(viewModel: PostDetailViewModel(post: chainPost))
-          ) {
-            MainChainRow(
-              post: chainPost,
-              isLast: index == viewModel.mainChain.count - 1
-            )
+        // 表示モード切り替えボタン
+        Button {
+          withAnimation(.easeInOut(duration: 0.2)) { showChronological.toggle() }
+        } label: {
+          HStack(spacing: 6) {
+            Image(systemName: showChronological ? "list.bullet" : "clock.arrow.circlepath")
+            Text(showChronological ? "ツリー表示" : "時系列で展開")
           }
-          .buttonStyle(.plain)
-        }
-
-        // 分岐返信（2番目以降の直接返信）
-        if !viewModel.branchReplies.isEmpty {
-          HStack {
-            Text("他の返信 \(viewModel.branchReplies.count)件")
-              .font(.caption)
-              .fontWeight(.medium)
-              .foregroundColor(.secondary)
-            Spacer()
-          }
+          .font(.caption)
+          .fontWeight(.medium)
+          .foregroundColor(.accentColor)
           .padding(.horizontal, 16)
-          .padding(.top, 16)
-          .padding(.bottom, 8)
+          .padding(.vertical, 10)
+          .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .buttonStyle(.plain)
 
-          ForEach(viewModel.branchReplies) { reply in
+        if showChronological {
+          // 時系列フラット表示（全ブランチを投稿日時順）
+          ForEach(Array(viewModel.allThreadPosts.enumerated()), id: \.offset) { _, post in
             Divider().padding(.horizontal, 16)
             NavigationLink(
-              destination: PostDetailView(viewModel: PostDetailViewModel(post: reply.post))
+              destination: PostDetailView(viewModel: PostDetailViewModel(post: post))
             ) {
-              ReplyItemView(threadViewPost: reply)
-                .padding(.horizontal, 16)
+              MainChainRow(post: post, isLast: true)
             }
             .buttonStyle(.plain)
+          }
+        } else {
+          // ツリー表示（メインチェーン + 分岐返信）
+          ForEach(Array(viewModel.mainChain.enumerated()), id: \.offset) { index, chainPost in
+            Divider().padding(.horizontal, 16)
+            NavigationLink(
+              destination: PostDetailView(viewModel: PostDetailViewModel(post: chainPost))
+            ) {
+              MainChainRow(
+                post: chainPost,
+                isLast: index == viewModel.mainChain.count - 1
+              )
+            }
+            .buttonStyle(.plain)
+          }
+
+          if !viewModel.branchReplies.isEmpty {
+            HStack {
+              Text("他の返信 \(viewModel.branchReplies.count)件")
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundColor(.secondary)
+              Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 8)
+
+            ForEach(viewModel.branchReplies) { reply in
+              Divider().padding(.horizontal, 16)
+              NavigationLink(
+                destination: PostDetailView(viewModel: PostDetailViewModel(post: reply.post))
+              ) {
+                ReplyItemView(threadViewPost: reply)
+                  .padding(.horizontal, 16)
+              }
+              .buttonStyle(.plain)
+            }
           }
         }
       }

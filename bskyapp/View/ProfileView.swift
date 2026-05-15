@@ -74,6 +74,10 @@ struct ProfileView: View {
     .onChange(of: selectedTab) { _, tab in
       lazyLoadTab(tab)
     }
+    .task {
+      await viewModel.fetchProfile()
+      await viewModel.fetchPosts()
+    }
   }
 
   // MARK: - Profile header
