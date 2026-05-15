@@ -2,23 +2,24 @@ import Foundation
 import SwiftUI
 
 class PostDetailViewModel: ObservableObject {
+  let isRoot: Bool
   @Published var post: Post
   @Published var reason: Reason?
-  @Published var parentChain: [Post] = []  // oldest → newest 順
+  @Published var parentChain: [Post] = []
   @Published var replies: [ThreadViewPost] = []
-  @Published var mainChain: [Post] = []  // 最初の返信の直系チェーン
-  @Published var branchReplies: [ThreadViewPost] = []  // 2番目以降の返信（分岐）
+  @Published var mainChain: [Post] = []
+  @Published var branchReplies: [ThreadViewPost] = []
   @Published var isLoadingThread: Bool = false
   @Published var isReposting: Bool = false
   @Published var isLiking: Bool = false
   @Published var isDeleting: Bool = false
   @Published var isDeleted: Bool = false
 
-  init(post: Post, reason: Reason? = nil) {
+  init(post: Post, reason: Reason? = nil, isRoot: Bool = true) {
     self.post = post
     self.reason = reason
+    self.isRoot = isRoot
     PostInteractionHelper.restorePersistedStates(for: post)
-    Task { [weak self] in await self?.fetchThread() }
   }
 
   @MainActor
@@ -30,8 +31,7 @@ class PostDetailViewModel: ObservableObject {
       post = response.thread.post
       replies = response.thread.replies ?? []
       parentChain = extractParentChain(from: response.thread)
-      // スレッドチェーン展開: 最初の返信の直系を mainChain、残りを branchReplies に分離
-      if let firstReply = replies.first {
+      if !isRoot, let firstReply = replies.first {
         mainChain = extractFirstChildChain(from: firstReply)
         branchReplies = Array(replies.dropFirst())
       } else {
@@ -49,9 +49,14 @@ class PostDetailViewModel: ObservableObject {
     await fetchThread()
   }
 
+  // isRoot: 直接リプライを時系列順
+  var allThreadPosts: [Post] {
+    replies.map { $0.post }.sorted { ($0.indexedAt ?? "") < ($1.indexedAt ?? "") }
+  }
+
   private func extractFirstChildChain(from tvp: ThreadViewPost, depth: Int = 0) -> [Post] {
     var chain = [tvp.post]
-    if depth < 4, let firstChild = tvp.replies?.first {
+    if depth < 12, let firstChild = tvp.replies?.first {
       chain += extractFirstChildChain(from: firstChild, depth: depth + 1)
     }
     return chain
