@@ -6,7 +6,6 @@ struct PostDetailView: View {
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
   @State private var showDeleteConfirm = false
-  @State private var showChronological = false
   @Environment(\.dismiss) private var dismiss
 
   var body: some View {
@@ -257,73 +256,14 @@ struct PostDetailView: View {
         .padding(.vertical, 20)
     } else {
       VStack(alignment: .leading, spacing: 0) {
-
-        // 表示モード切り替えボタン
-        Button {
-          withAnimation(.easeInOut(duration: 0.2)) { showChronological.toggle() }
-        } label: {
-          HStack(spacing: 6) {
-            Image(systemName: showChronological ? "list.bullet" : "clock.arrow.circlepath")
-            Text(showChronological ? "ツリー表示" : "時系列で展開")
+        ForEach(Array(viewModel.allThreadPosts.enumerated()), id: \.offset) { _, post in
+          Divider().padding(.horizontal, 16)
+          NavigationLink(
+            destination: PostDetailView(viewModel: PostDetailViewModel(post: post))
+          ) {
+            MainChainRow(post: post, isLast: true)
           }
-          .font(.caption)
-          .fontWeight(.medium)
-          .foregroundColor(.accentColor)
-          .padding(.horizontal, 16)
-          .padding(.vertical, 10)
-          .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .buttonStyle(.plain)
-
-        if showChronological {
-          // 時系列フラット表示（全ブランチを投稿日時順）
-          ForEach(Array(viewModel.allThreadPosts.enumerated()), id: \.offset) { _, post in
-            Divider().padding(.horizontal, 16)
-            NavigationLink(
-              destination: PostDetailView(viewModel: PostDetailViewModel(post: post))
-            ) {
-              MainChainRow(post: post, isLast: true)
-            }
-            .buttonStyle(.plain)
-          }
-        } else {
-          // ツリー表示（メインチェーン + 分岐返信）
-          ForEach(Array(viewModel.mainChain.enumerated()), id: \.offset) { index, chainPost in
-            Divider().padding(.horizontal, 16)
-            NavigationLink(
-              destination: PostDetailView(viewModel: PostDetailViewModel(post: chainPost))
-            ) {
-              MainChainRow(
-                post: chainPost,
-                isLast: index == viewModel.mainChain.count - 1
-              )
-            }
-            .buttonStyle(.plain)
-          }
-
-          if !viewModel.branchReplies.isEmpty {
-            HStack {
-              Text("他の返信 \(viewModel.branchReplies.count)件")
-                .font(.caption)
-                .fontWeight(.medium)
-                .foregroundColor(.secondary)
-              Spacer()
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 8)
-
-            ForEach(viewModel.branchReplies) { reply in
-              Divider().padding(.horizontal, 16)
-              NavigationLink(
-                destination: PostDetailView(viewModel: PostDetailViewModel(post: reply.post))
-              ) {
-                ReplyItemView(threadViewPost: reply)
-                  .padding(.horizontal, 16)
-              }
-              .buttonStyle(.plain)
-            }
-          }
+          .buttonStyle(.plain)
         }
       }
       .padding(.bottom, 40)

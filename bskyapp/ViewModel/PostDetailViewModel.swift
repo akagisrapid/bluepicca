@@ -6,8 +6,6 @@ class PostDetailViewModel: ObservableObject {
   @Published var reason: Reason?
   @Published var parentChain: [Post] = []  // oldest → newest 順
   @Published var replies: [ThreadViewPost] = []
-  @Published var mainChain: [Post] = []  // 最初の返信の直系チェーン
-  @Published var branchReplies: [ThreadViewPost] = []  // 2番目以降の返信（分岐）
   @Published var isLoadingThread: Bool = false
   @Published var isReposting: Bool = false
   @Published var isLiking: Bool = false
@@ -29,14 +27,6 @@ class PostDetailViewModel: ObservableObject {
       post = response.thread.post
       replies = response.thread.replies ?? []
       parentChain = extractParentChain(from: response.thread)
-      // スレッドチェーン展開: 最初の返信の直系を mainChain、残りを branchReplies に分離
-      if let firstReply = replies.first {
-        mainChain = extractFirstChildChain(from: firstReply)
-        branchReplies = Array(replies.dropFirst())
-      } else {
-        mainChain = []
-        branchReplies = []
-      }
     } catch {
       print("Thread fetch error: \(error)")
     }
@@ -46,14 +36,6 @@ class PostDetailViewModel: ObservableObject {
   @MainActor
   func refreshAfterReply() async {
     await fetchThread()
-  }
-
-  private func extractFirstChildChain(from tvp: ThreadViewPost, depth: Int = 0) -> [Post] {
-    var chain = [tvp.post]
-    if depth < 12, let firstChild = tvp.replies?.first {
-      chain += extractFirstChildChain(from: firstChild, depth: depth + 1)
-    }
-    return chain
   }
 
   var allThreadPosts: [Post] {
