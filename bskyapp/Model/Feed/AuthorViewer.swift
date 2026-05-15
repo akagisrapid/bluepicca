@@ -6,12 +6,13 @@
 //
 
 import Foundation
+
 struct AuthorViewer: Codable {
-    let muted: Bool
-    let mutedByList: MutedByList?
-    let blockedBy: Bool
-    let blocking: String?
-    let blockingByList: BlockingByList?
-    var following: String?
-    let followedBy: String?
+  let muted: Bool?
+  let mutedByList: MutedByList?
+  let blockedBy: Bool?
+  let blocking: String?
+  let blockingByList: BlockingByList?
+  var following: String?
+  let followedBy: String?
 }
