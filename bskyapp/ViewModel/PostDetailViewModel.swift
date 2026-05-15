@@ -39,17 +39,7 @@ class PostDetailViewModel: ObservableObject {
   }
 
   var allThreadPosts: [Post] {
-    var result: [Post] = []
-    func collect(_ tvp: ThreadViewPost) {
-      result.append(tvp.post)
-      for child in tvp.replies ?? [] {
-        collect(child)
-      }
-    }
-    for reply in replies {
-      collect(reply)
-    }
-    return result.sorted { ($0.indexedAt ?? "") < ($1.indexedAt ?? "") }
+    replies.map { $0.post }.sorted { ($0.indexedAt ?? "") < ($1.indexedAt ?? "") }
   }
 
   private func extractParentChain(from thread: ThreadViewPost) -> [Post] {
