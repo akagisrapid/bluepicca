@@ -159,7 +159,8 @@ struct ProfileView: View {
             .background(viewModel.isFollowing ? Color.red : Color.blue)
             .cornerRadius(10)
         }
-        .disabled(viewModel.isProcessingFollow)
+        .disabled(viewModel.isProcessingFollow || viewModel.isBlocked)
+        .opacity(viewModel.isBlocked ? 0.4 : 1)
       }
     }
     .padding(.horizontal, 16)

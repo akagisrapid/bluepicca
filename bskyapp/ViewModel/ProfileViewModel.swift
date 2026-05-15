@@ -65,20 +65,20 @@ class ProfileViewModel: ObservableObject {
   func toggleFollow() async {
     guard !isProcessingFollow else { return }
     isProcessingFollow = true
-    defer { isProcessingFollow = false }
-    if isFollowing {
-      if let uri = followUri {
-        self.isFollowing = false
-        self.followUri = nil
-        var updatedProfile = self.profile
-        updatedProfile.viewer?.following = nil
-        print("Queued unfollow for \(profile.handle)")
+    do {
+      if isFollowing, let uri = followUri {
+        try await DeleteRecordApi.deleteRecord(uri: uri)
+        isFollowing = false
+        followUri = nil
+      } else {
+        let res = try await CreateFollowApi.createFollow(actorDid: profile.did)
+        isFollowing = true
+        followUri = res.uri
       }
-    } else {
-      self.isFollowing = true
-      self.followUri = "pending_follow_\(profile.did)"
-      print("Queued follow for \(profile.handle)")
+    } catch {
+      print("toggleFollow error: \(error)")
     }
+    isProcessingFollow = false
   }
 
   @MainActor
