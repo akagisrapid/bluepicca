@@ -1,191 +1,288 @@
-import Foundation
 import Alamofire
+import Foundation
 
 class PostCreationService {
-    static let shared = PostCreationService()
+  static let shared = PostCreationService()
 
-    private let endPoint = "https://bsky.social/xrpc/"
+  private let endPoint = "https://bsky.social/xrpc/"
 
-    private init() {}
+  private init() {}
 
-    // MARK: - Image Upload
+  // MARK: - Image Upload
 
-    func uploadImages(
-        _ images: [ImageToUpload],
-        onProgress: @escaping (Double) -> Void
-    ) async throws -> [UploadedImage] {
-        var uploadedImages: [UploadedImage] = []
-        let totalImages = images.count
+  func uploadImages(
+    _ images: [ImageToUpload],
+    onProgress: @escaping (Double) -> Void
+  ) async throws -> [UploadedImage] {
+    var uploadedImages: [UploadedImage] = []
+    let totalImages = images.count
 
-        for (index, imageToUpload) in images.enumerated() {
-            onProgress(Double(index) / Double(totalImages))
+    for (index, imageToUpload) in images.enumerated() {
+      onProgress(Double(index) / Double(totalImages))
 
-            guard let imageData = ImageCompressionHelper.compressImage(imageToUpload.image) else {
-                print("画像[\(index)]の圧縮に失敗")
-                continue
-            }
+      guard let imageData = ImageCompressionHelper.compressImage(imageToUpload.image) else {
+        print("画像[\(index)]の圧縮に失敗")
+        continue
+      }
 
-            if ImageCompressionHelper.isFileSizeExceeded(imageData) {
-                let fileSizeString = ImageCompressionHelper.formatFileSize(imageData.count)
-                print("画像[\(index)]がファイルサイズ制限を超えています: \(fileSizeString)")
-                continue
-            }
+      if ImageCompressionHelper.isFileSizeExceeded(imageData) {
+        let fileSizeString = ImageCompressionHelper.formatFileSize(imageData.count)
+        print("画像[\(index)]がファイルサイズ制限を超えています: \(fileSizeString)")
+        continue
+      }
 
-            do {
-                let blobResponse = try await uploadBlob(imageData: imageData)
+      do {
+        let blobResponse = try await uploadBlob(imageData: imageData)
 
-                let uploadedImage = UploadedImage(
-                    blobReference: blobResponse.blob,
-                    alt: imageToUpload.alt,
-                    imageData: imageData
-                )
-                uploadedImages.append(uploadedImage)
+        let uploadedImage = UploadedImage(
+          blobReference: blobResponse.blob,
+          alt: imageToUpload.alt,
+          imageData: imageData
+        )
+        uploadedImages.append(uploadedImage)
 
-                onProgress(Double(index + 1) / Double(totalImages))
-            } catch {
-                print("画像[\(index)]のアップロード失敗: \(error)")
-            }
-        }
-
-        return uploadedImages
+        onProgress(Double(index + 1) / Double(totalImages))
+      } catch {
+        print("画像[\(index)]のアップロード失敗: \(error)")
+      }
     }
 
-    // MARK: - Post Creation
+    return uploadedImages
+  }
 
-    func createPost(text: String, images: [UploadedImage]?) async throws {
-        let session = try await SessionManager.shared.getSession()
+  // MARK: - Post Creation
 
-        var recordDict: [String: Any] = [
-            "$type": "app.bsky.feed.post",
-            "text": text,
-            "createdAt": Date().ISO8601Format()
-        ]
+  func createPost(
+    text: String,
+    images: [UploadedImage]?,
+    threadgateRules: Set<ThreadgateRule> = [],
+    replyDisabled: Bool = false,
+    quotingDisabled: Bool = false
+  ) async throws {
+    let session = try await SessionManager.shared.getSession()
 
-        if let images = images, !images.isEmpty {
-            recordDict["embed"] = buildImageEmbed(images)
-        }
+    var recordDict: [String: Any] = [
+      "$type": "app.bsky.feed.post",
+      "text": text,
+      "createdAt": Date().ISO8601Format(),
+    ]
 
-        let paramDict: [String: Any] = [
-            "repo": session.did,
-            "collection": "app.bsky.feed.post",
-            "record": recordDict
-        ]
-
-        try await sendCreateRecord(paramDict: paramDict, session: session)
+    if let images = images, !images.isEmpty {
+      recordDict["embed"] = buildImageEmbed(images)
     }
 
-    // MARK: - Reply Creation
+    let paramDict: [String: Any] = [
+      "repo": session.did,
+      "collection": "app.bsky.feed.post",
+      "record": recordDict,
+    ]
 
-    func createReply(
-        text: String,
-        images: [UploadedImage]?,
-        parentUri: String,
-        parentCid: String
-    ) async throws {
-        let session = try await SessionManager.shared.getSession()
+    let response = try await sendCreateRecord(paramDict: paramDict, session: session)
 
-        let replyRef: [String: Any] = [
-            "root": ["uri": parentUri, "cid": parentCid],
-            "parent": ["uri": parentUri, "cid": parentCid]
-        ]
+    if let postUri = response.uri {
+      if replyDisabled {
+        try await createThreadgate(postUri: postUri, allowArray: [], session: session)
+      } else if !threadgateRules.isEmpty {
+        try await createThreadgate(
+          postUri: postUri, allowArray: threadgateRules.map { $0.allowDict }, session: session)
+      }
+      if quotingDisabled {
+        try await createPostgate(postUri: postUri, session: session)
+      }
+    }
+  }
 
-        var recordDict: [String: Any] = [
-            "$type": "app.bsky.feed.post",
-            "text": text,
-            "createdAt": Date().ISO8601Format(),
-            "reply": replyRef
-        ]
+  // MARK: - Reply Creation
 
-        if let images = images, !images.isEmpty {
-            recordDict["embed"] = buildImageEmbed(images)
-        }
+  func createReply(
+    text: String,
+    images: [UploadedImage]?,
+    parentUri: String,
+    parentCid: String
+  ) async throws {
+    let session = try await SessionManager.shared.getSession()
 
-        let paramDict: [String: Any] = [
-            "repo": session.did,
-            "collection": "app.bsky.feed.post",
-            "record": recordDict
-        ]
+    let replyRef: [String: Any] = [
+      "root": ["uri": parentUri, "cid": parentCid],
+      "parent": ["uri": parentUri, "cid": parentCid],
+    ]
 
-        try await sendCreateRecord(paramDict: paramDict, session: session)
+    var recordDict: [String: Any] = [
+      "$type": "app.bsky.feed.post",
+      "text": text,
+      "createdAt": Date().ISO8601Format(),
+      "reply": replyRef,
+    ]
+
+    if let images = images, !images.isEmpty {
+      recordDict["embed"] = buildImageEmbed(images)
     }
 
-    // MARK: - Private Helpers
+    let paramDict: [String: Any] = [
+      "repo": session.did,
+      "collection": "app.bsky.feed.post",
+      "record": recordDict,
+    ]
 
-    private func uploadBlob(imageData: Data) async throws -> UploadBlobResponse {
-        let urlString = endPoint + "com.atproto.repo.uploadBlob"
-        let session = try await SessionManager.shared.getSession()
+    try await sendCreateRecord(paramDict: paramDict, session: session)
+  }
 
-        let headers: HTTPHeaders = [
-            "Content-Type": "image/jpeg",
-            "Authorization": "Bearer \(session.accessJwt)"
-        ]
+  // MARK: - Private Helpers
 
-        let response = await AF.upload(imageData, to: urlString, method: .post, headers: headers)
-            .validate()
-            .serializingDecodable(UploadBlobResponse.self)
-            .response
+  private func uploadBlob(imageData: Data) async throws -> UploadBlobResponse {
+    let urlString = endPoint + "com.atproto.repo.uploadBlob"
+    let session = try await SessionManager.shared.getSession()
 
-        switch response.result {
-        case .success(let value):
-            return value
-        case .failure(let error):
-            throw error
-        }
+    let headers: HTTPHeaders = [
+      "Content-Type": "image/jpeg",
+      "Authorization": "Bearer \(session.accessJwt)",
+    ]
+
+    let response = await AF.upload(imageData, to: urlString, method: .post, headers: headers)
+      .validate()
+      .serializingDecodable(UploadBlobResponse.self)
+      .response
+
+    switch response.result {
+    case .success(let value):
+      return value
+    case .failure(let error):
+      throw error
+    }
+  }
+
+  private func buildImageEmbed(_ images: [UploadedImage]) -> [String: Any] {
+    let imagesArray: [[String: Any]] = images.map { image in
+      [
+        "alt": image.alt,
+        "image": [
+          "$type": "blob",
+          "ref": ["$link": image.blobReference.cid],
+          "mimeType": image.blobReference.mimeType,
+          "size": image.imageData.count,
+        ],
+      ]
     }
 
-    private func buildImageEmbed(_ images: [UploadedImage]) -> [String: Any] {
-        let imagesArray: [[String: Any]] = images.map { image in
-            [
-                "alt": image.alt,
-                "image": [
-                    "$type": "blob",
-                    "ref": ["$link": image.blobReference.cid],
-                    "mimeType": image.blobReference.mimeType,
-                    "size": image.imageData.count
-                ]
-            ]
-        }
+    return [
+      "$type": "app.bsky.embed.images",
+      "images": imagesArray,
+    ]
+  }
 
-        return [
-            "$type": "app.bsky.embed.images",
-            "images": imagesArray
-        ]
+  // MARK: - Threadgate Creation
+
+  private func createThreadgate(
+    postUri: String, allowArray: [[String: Any]], session: CreateSessionResponse
+  ) async throws {
+    guard let rkey = postUri.components(separatedBy: "/").last else { return }
+
+    let recordDict: [String: Any] = [
+      "$type": "app.bsky.feed.threadgate",
+      "post": postUri,
+      "allow": allowArray,
+      "createdAt": Date().ISO8601Format(),
+    ]
+
+    let paramDict: [String: Any] = [
+      "repo": session.did,
+      "collection": "app.bsky.feed.threadgate",
+      "rkey": rkey,
+      "record": recordDict,
+    ]
+
+    _ = try await sendCreateRecord(paramDict: paramDict, session: session)
+  }
+
+  private func createPostgate(postUri: String, session: CreateSessionResponse) async throws {
+    guard let rkey = postUri.components(separatedBy: "/").last else { return }
+
+    let recordDict: [String: Any] = [
+      "$type": "app.bsky.feed.postgate",
+      "post": postUri,
+      "embeddingRules": [["$type": "app.bsky.feed.postgate#disableRule"]],
+      "createdAt": Date().ISO8601Format(),
+    ]
+
+    let paramDict: [String: Any] = [
+      "repo": session.did,
+      "collection": "app.bsky.feed.postgate",
+      "rkey": rkey,
+      "record": recordDict,
+    ]
+
+    _ = try await sendCreateRecord(paramDict: paramDict, session: session)
+  }
+
+  @discardableResult
+  private func sendCreateRecord(paramDict: [String: Any], session: CreateSessionResponse)
+    async throws -> CreateRecordResponse
+  {
+    let urlString = endPoint + "com.atproto.repo.createRecord"
+
+    let headers: HTTPHeaders = [
+      "Content-Type": "application/json",
+      "Authorization": "Bearer \(session.accessJwt)",
+    ]
+
+    let jsonData = try JSONSerialization.data(withJSONObject: paramDict, options: [])
+
+    var request = URLRequest(url: URL(string: urlString)!)
+    request.httpMethod = "POST"
+    request.httpBody = jsonData
+
+    headers.forEach { header in
+      request.setValue(header.value, forHTTPHeaderField: header.name)
     }
 
-    private func sendCreateRecord(paramDict: [String: Any], session: CreateSessionResponse) async throws {
-        let urlString = endPoint + "com.atproto.repo.createRecord"
+    let response = await AF.request(request)
+      .validate()
+      .serializingDecodable(CreateRecordResponse.self)
+      .response
 
-        let headers: HTTPHeaders = [
-            "Content-Type": "application/json",
-            "Authorization": "Bearer \(session.accessJwt)"
-        ]
-
-        let jsonData = try JSONSerialization.data(withJSONObject: paramDict, options: [])
-
-        var request = URLRequest(url: URL(string: urlString)!)
-        request.httpMethod = "POST"
-        request.httpBody = jsonData
-
-        headers.forEach { header in
-            request.setValue(header.value, forHTTPHeaderField: header.name)
-        }
-
-        let response = await AF.request(request)
-            .validate()
-            .serializingDecodable(CreateRecordResponse.self)
-            .response
-
-        switch response.result {
-        case .success:
-            return
-        case .failure(let error):
-            throw error
-        }
+    switch response.result {
+    case .success(let value):
+      return value
+    case .failure(let error):
+      throw error
     }
+  }
+}
+
+// MARK: - ThreadgateRule
+
+enum ThreadgateRule: String, CaseIterable, Hashable {
+  case mentioned
+  case followed
+  case follower
+
+  var allowDict: [String: Any] {
+    switch self {
+    case .mentioned: return ["$type": "app.bsky.feed.threadgate#mentionRule"]
+    case .followed: return ["$type": "app.bsky.feed.threadgate#followingRule"]
+    case .follower: return ["$type": "app.bsky.feed.threadgate#followerRule"]
+    }
+  }
+
+  var label: String {
+    switch self {
+    case .mentioned: return "メンションした人"
+    case .followed: return "フォロー中"
+    case .follower: return "フォロワー"
+    }
+  }
+
+  var icon: String {
+    switch self {
+    case .mentioned: return "at"
+    case .followed: return "person.badge.plus"
+    case .follower: return "person.2.fill"
+    }
+  }
 }
 
 /// Input model for images to be uploaded
 struct ImageToUpload {
-    let image: UIImage
-    let alt: String
+  let image: UIImage
+  let alt: String
 }

@@ -111,6 +111,7 @@ class PostDetailViewModel: ObservableObject {
 
   var isOwnPost: Bool { post.author?.did == SessionManager.shared.currentDid }
 
+  var isReplyDisabled: Bool { post.viewer?.replyDisabled == true }
   var isLiked: Bool { post.viewer?.like != nil }
   var likeCount: Int { post.likeCount ?? 0 }
   var isReposted: Bool { post.viewer?.repost != nil }
