@@ -47,7 +47,7 @@ class FeedGeneratorTimelineViewModel: ObservableObject {
       } catch {
         if !(error is CancellationError) {
           self.fetchError = "フィードの読み込みに失敗しました"
-          print("FeedGeneratorTimelineViewModel: fetchFeed error: \(error)")
+          dlog("FeedGeneratorTimelineViewModel: fetchFeed error: \(error)")
         }
       }
       self.isFetching = false
@@ -66,7 +66,7 @@ class FeedGeneratorTimelineViewModel: ObservableObject {
       self.cursor = response.cursor
       PostStateManager.shared.syncWithServerState(posts: feeds.compactMap { $0.post })
     } catch {
-      print("FeedGeneratorTimelineViewModel: loadMore error: \(error)")
+      dlog("FeedGeneratorTimelineViewModel: loadMore error: \(error)")
     }
     isLoadingMore = false
   }

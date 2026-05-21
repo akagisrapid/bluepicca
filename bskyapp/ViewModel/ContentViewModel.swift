@@ -76,7 +76,7 @@ class ContentViewModel: ObservableObject {
     do {
       feedTabs = try await GetUserFeedsApi().getUserFeeds()
     } catch {
-      print("ContentViewModel: loadFeedTabs error: \(error)")
+      dlog("ContentViewModel: loadFeedTabs error: \(error)")
       feedTabs = [.home]
     }
     isLoadingFeedTabs = false
@@ -91,7 +91,7 @@ class ContentViewModel: ObservableObject {
 
     let task = Task { @MainActor [weak self] in
       guard let self else { return }
-      print("ContentViewModel: fetchTimeline called (tab: \(self.selectedTab.name))")
+      dlog("ContentViewModel: fetchTimeline called (tab: \(self.selectedTab.name))")
       self.isFetchingTimeline = true
       self.timelineCursor = nil
 
@@ -117,7 +117,7 @@ class ContentViewModel: ObservableObject {
       } catch {
         self.isFetchingTimeline = false
         if !(error is CancellationError) {
-          print("ContentViewModel: fetchTimeline error: \(error)")
+          dlog("ContentViewModel: fetchTimeline error: \(error)")
         }
         throw error
       }
@@ -148,7 +148,7 @@ class ContentViewModel: ObservableObject {
       timelineCursor = response.cursor
       PostStateManager.shared.syncWithServerState(posts: posts)
     } catch {
-      print("ContentViewModel: loadMore error: \(error)")
+      dlog("ContentViewModel: loadMore error: \(error)")
     }
     isLoadingMore = false
   }
@@ -171,7 +171,7 @@ class ContentViewModel: ObservableObject {
           (error as? AFError)?.responseCode == 429
           ? error.userFacingMessage
           : "フィードの読み込みに失敗しました: \(error.localizedDescription)"
-        print("ContentViewModel: selectTab fetchTimeline error: \(error)")
+        dlog("ContentViewModel: selectTab fetchTimeline error: \(error)")
       }
     }
   }

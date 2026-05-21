@@ -21,13 +21,13 @@ class PostCreationService {
       onProgress(Double(index) / Double(totalImages))
 
       guard let imageData = ImageCompressionHelper.compressImage(imageToUpload.image) else {
-        print("画像[\(index)]の圧縮に失敗")
+        dlog("画像[\(index)]の圧縮に失敗")
         continue
       }
 
       if ImageCompressionHelper.isFileSizeExceeded(imageData) {
         let fileSizeString = ImageCompressionHelper.formatFileSize(imageData.count)
-        print("画像[\(index)]がファイルサイズ制限を超えています: \(fileSizeString)")
+        dlog("画像[\(index)]がファイルサイズ制限を超えています: \(fileSizeString)")
         continue
       }
 
@@ -43,7 +43,7 @@ class PostCreationService {
 
         onProgress(Double(index + 1) / Double(totalImages))
       } catch {
-        print("画像[\(index)]のアップロード失敗: \(error)")
+        dlog("画像[\(index)]のアップロード失敗: \(error)")
       }
     }
 

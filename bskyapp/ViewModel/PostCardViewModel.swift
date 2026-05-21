@@ -12,7 +12,7 @@ class PostCardViewModel: ObservableObject {
   @Published var selectedImages: [UIImage] = []
   @Published var selectedPhotoItems: [PhotosPickerItem] = [] {
     didSet {
-      print("selectedPhotoItems didSet: \(selectedPhotoItems.count)個")
+      dlog("selectedPhotoItems didSet: \(selectedPhotoItems.count)個")
     }
   }
   @Published var isUploading: Bool = false
@@ -125,7 +125,7 @@ class PostCardViewModel: ObservableObject {
           }
         }
       } catch {
-        print("画像の読み込みエラー: \(error.localizedDescription)")
+        dlog("画像の読み込みエラー: \(error.localizedDescription)")
       }
     }
   }
