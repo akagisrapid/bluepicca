@@ -28,9 +28,10 @@ class ContentViewModel: ObservableObject {
 
   var timelineCursor: String?
 
-  // ミュート・ブロック済みアカウント・ミュートワードに該当する投稿を除外する
+  // ミュート・ブロック済みアカウント・ミュートワード・RTフィルタに該当する投稿を除外する
   var validFeeds: [FeedItem] {
     let muteWordManager = MuteWordManager.shared
+    let rtFilterManager = RTFilterManager.shared
     return feeds.filter { feedItem in
       guard let post = feedItem.post else { return false }
       let viewer = post.author?.viewer
@@ -38,6 +39,11 @@ class ContentViewModel: ObservableObject {
       if viewer?.blocking != nil { return false }
       let text = post.record?.text ?? ""
       if muteWordManager.matches(text) { return false }
+      if let repostDid = feedItem.reason?.by?.did,
+        rtFilterManager.isFiltered(repostDid)
+      {
+        return false
+      }
       return true
     }
   }

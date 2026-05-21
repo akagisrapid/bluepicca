@@ -50,6 +50,14 @@ struct TimelineCardViewModel {
     return reason?.by?.handle ?? ""
   }
 
+  var repostAuthorDid: String? {
+    return reason?.by?.did
+  }
+
+  var repostAuthorAvatarUrl: URL? {
+    return reason?.by?.avatarUrl
+  }
+
   // MARK: - リプライ情報関連のプロパティ
 
   /// リプライかどうかを判定

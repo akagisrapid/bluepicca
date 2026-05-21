@@ -11,6 +11,7 @@ struct TimelineCardView: View {
   @State private var repostScale: CGFloat = 1.0
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
+  @ObservedObject private var rtFilterManager = RTFilterManager.shared
 
   init(viewModel: TimelineCardViewModel) {
     self.viewModel = viewModel
@@ -59,6 +60,27 @@ struct TimelineCardView: View {
           Text("\(viewModel.repostAuthorName)がリポスト")
             .font(.caption2)
           Spacer()
+          if let did = viewModel.repostAuthorDid {
+            let isFiltered = rtFilterManager.isFiltered(did)
+            Button {
+              if isFiltered {
+                rtFilterManager.remove(did: did)
+              } else {
+                rtFilterManager.add(
+                  did: did,
+                  displayName: viewModel.repostAuthorName,
+                  handle: viewModel.repostAuthorHandle,
+                  avatarUrl: viewModel.repostAuthorAvatarUrl
+                )
+              }
+            } label: {
+              Image(systemName: isFiltered ? "eye.slash.fill" : "eye.slash")
+                .font(.caption2)
+                .foregroundColor(isFiltered ? .orange : .secondary)
+            }
+            .buttonStyle(.plain)
+            .padding(.trailing, 4)
+          }
         }
         .foregroundColor(.secondary)
         .padding(.horizontal, 16)
