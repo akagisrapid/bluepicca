@@ -39,7 +39,7 @@ class PostDetailViewModel: ObservableObject {
         branchReplies = []
       }
     } catch {
-      print("Thread fetch error: \(error)")
+      dlog("Thread fetch error: \(error)")
     }
     isLoadingThread = false
   }
@@ -141,7 +141,7 @@ class PostDetailViewModel: ObservableObject {
       try await InteractionService.shared.deletePost(uri: uri)
       isDeleted = true
     } catch {
-      print("Delete post error: \(error)")
+      dlog("Delete post error: \(error)")
     }
     isDeleting = false
   }

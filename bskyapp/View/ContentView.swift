@@ -270,7 +270,7 @@ struct ContentView: View {
           do {
             try await viewModel.fetchTimeline()
           } catch {
-            print("Error fetching timeline: \(error)")
+            dlog("Error fetching timeline: \(error)")
           }
         }
       }

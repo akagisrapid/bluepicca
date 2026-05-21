@@ -91,11 +91,11 @@ class InteractionService {
 
     switch response.result {
     case .success(let value):
-        return value.uri ?? ""  // URIが存在しない場合は空文字を返す
+      return value.uri ?? ""  // URIが存在しない場合は空文字を返す
     case .failure(let error):
-      print("InteractionService createRecord error: \(error)")
+      dlog("InteractionService createRecord error: \(error)")
       if let data = response.data, let responseString = String(data: data, encoding: .utf8) {
-        print("Server response: \(responseString)")
+        dlog("Server response: \(responseString)")
       }
       throw error
     }
@@ -127,9 +127,9 @@ class InteractionService {
     case .success:
       return
     case .failure(let error):
-      print("InteractionService deleteRecord error: \(error)")
+      dlog("InteractionService deleteRecord error: \(error)")
       if let data = response.data, let responseString = String(data: data, encoding: .utf8) {
-        print("Server response: \(responseString)")
+        dlog("Server response: \(responseString)")
       }
       throw error
     }

@@ -29,13 +29,13 @@ struct bskyappApp: App {
   }
 
   init() {
-    // Check if user is already logged in
     _isLoggedIn = State(initialValue: SessionManager.shared.isLoggedIn())
-    // Limit URLCache to prevent unbounded memory/disk growth from timeline images
     URLCache.shared = URLCache(
-      memoryCapacity: 50 * 1024 * 1024,  // 50 MB
-      diskCapacity: 200 * 1024 * 1024  // 200 MB
+      memoryCapacity: 50 * 1024 * 1024,
+      diskCapacity: 200 * 1024 * 1024
     )
+    // TODO: pod install 後にコメントを外す
+    // FirebaseApp.configure()
   }
 
   @MainActor
