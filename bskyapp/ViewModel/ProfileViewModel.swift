@@ -57,7 +57,7 @@ class ProfileViewModel: ObservableObject {
       self.isFetching = false
     } catch {
       self.isFetching = false
-      print(error)
+      dlog(error)
     }
   }
 
@@ -76,7 +76,7 @@ class ProfileViewModel: ObservableObject {
         followUri = res.uri
       }
     } catch {
-      print("toggleFollow error: \(error)")
+      dlog("toggleFollow error: \(error)")
     }
     isProcessingFollow = false
   }
@@ -101,7 +101,7 @@ class ProfileViewModel: ObservableObject {
         isMuted = true
       }
     } catch {
-      print("toggleMute error: \(error)")
+      dlog("toggleMute error: \(error)")
     }
     isProcessingMuteBlock = false
   }
@@ -123,7 +123,7 @@ class ProfileViewModel: ObservableObject {
         blockUri = uri
       }
     } catch {
-      print("toggleBlock error: \(error)")
+      dlog("toggleBlock error: \(error)")
     }
     isProcessingMuteBlock = false
   }
@@ -146,7 +146,7 @@ class ProfileViewModel: ObservableObject {
       }
       postsCursor = res.cursor
     } catch {
-      print("fetchPosts error: \(error)")
+      dlog("fetchPosts error: \(error)")
     }
   }
 
@@ -175,7 +175,7 @@ class ProfileViewModel: ObservableObject {
       }
       followersCursor = res.cursor
     } catch {
-      print("fetchFollowers error: \(error)")
+      dlog("fetchFollowers error: \(error)")
     }
   }
 
@@ -197,7 +197,7 @@ class ProfileViewModel: ObservableObject {
       }
       followingCursor = res.cursor
     } catch {
-      print("fetchFollowing error: \(error)")
+      dlog("fetchFollowing error: \(error)")
     }
   }
 
@@ -219,7 +219,7 @@ class ProfileViewModel: ObservableObject {
       }
       likesCursor = res.cursor
     } catch {
-      print("fetchLikedPosts error: \(error)")
+      dlog("fetchLikedPosts error: \(error)")
     }
   }
 }

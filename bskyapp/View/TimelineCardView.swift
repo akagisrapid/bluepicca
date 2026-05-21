@@ -222,6 +222,8 @@ struct TimelineCardView: View {
           }
           .buttonStyle(.plain)
           .disabled(viewModel.isReplyDisabled)
+          .accessibilityLabel(
+            viewModel.isReplyDisabled ? "返信不可" : "返信 \(viewModel.post.replyCount ?? 0)件")
 
           Spacer()
 
@@ -243,6 +245,9 @@ struct TimelineCardView: View {
             .frame(minWidth: 44, minHeight: 36)
           }
           .buttonStyle(.plain)
+          .accessibilityLabel(
+            viewModel.isReposted
+              ? "リポスト済み \(viewModel.repostCount)件" : "リポスト \(viewModel.repostCount)件")
 
           Spacer()
 
@@ -264,6 +269,8 @@ struct TimelineCardView: View {
             .frame(minWidth: 44, minHeight: 36)
           }
           .buttonStyle(.plain)
+          .accessibilityLabel(
+            viewModel.isLiked ? "いいね済み \(viewModel.likeCount)件" : "いいね \(viewModel.likeCount)件")
 
           Spacer()
 
@@ -275,6 +282,7 @@ struct TimelineCardView: View {
               .frame(minWidth: 44, minHeight: 36)
           }
           .buttonStyle(.plain)
+          .accessibilityLabel(isBookmarked ? "ブックマーク済み" : "ブックマーク")
         }
         .padding(.horizontal, 8)
         .padding(.bottom, 4)
