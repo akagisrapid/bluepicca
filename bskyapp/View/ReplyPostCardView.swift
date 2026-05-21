@@ -151,7 +151,7 @@ struct ReplyPostCardView: View {
                   isShowReplyCard = false
                 }
               } catch {
-                print("リプライ送信エラー: \(error)")
+                dlog("リプライ送信エラー: \(error)")
               }
             }
           }) {
