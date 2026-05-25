@@ -28,19 +28,19 @@ struct ProfileView: View {
   }
 
   var body: some View {
-    ZStack {
+    VStack(spacing: 0) {
+      profileHeader
+      tabStrip
+      tabContent
+    }
+    .overlay {
       if viewModel.isFetching {
         ProgressView()
           .progressViewStyle(CircularProgressViewStyle())
           .padding()
-      } else {
-        VStack(spacing: 0) {
-          profileHeader
-          tabStrip
-          tabContent
-        }
+          .frame(maxWidth: .infinity, maxHeight: .infinity)
+          .background(Color(.systemBackground))
       }
-
     }
     .sheet(item: $selectedPost) { post in
       NavigationStack {
