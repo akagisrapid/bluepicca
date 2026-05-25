@@ -30,7 +30,8 @@ struct MuteBlockListView: View {
       .navigationBarTitleDisplayMode(.inline)
       .overlay(alignment: .bottomTrailing) {
         Button(action: { dismiss() }) {
-          Image(systemName: "xmark.circle.fill")
+          SwiftUI.Label("閉じる", systemImage: "xmark.circle.fill")
+            .labelStyle(.iconOnly)
             .font(.largeTitle)
             .foregroundColor(.white)
             .background(Color.black.opacity(0.7))

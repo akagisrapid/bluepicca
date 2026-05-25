@@ -1,130 +1,142 @@
 import SwiftUI
 
 struct FollowListView: View {
-    @StateObject var viewModel: FollowListViewModel
-    let title: String
-    @Environment(\.dismiss) private var dismiss
-    
-    init(actor: String, listType: FollowListType) {
-        self._viewModel = StateObject(wrappedValue: FollowListViewModel(actor: actor, listType: listType))
-        self.title = listType == .follows ? "フォロー中" : "フォロワー"
-    }
-    
-    var body: some View {
-        NavigationStack {
-            ZStack {
-                List {
-                    if viewModel.listType == .follows {
-                        ForEach(viewModel.followItems, id: \.did) { item in
-                            NavigationLink(destination: ProfileView(viewModel: ProfileViewModel(actor: item.handle, profile: .init(did: "", handle: "", labels: [])))) {
-                                FollowItemRow(
-                                    handle: item.handle,
-                                    displayName: item.displayName,
-                                    avatar: item.avatar
-                                )
-                            }
-                            .onAppear {
-                                if item.did == viewModel.followItems.last?.did {
-                                    Task {
-                                        await viewModel.loadMore()
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        ForEach(viewModel.followerItems, id: \.did) { item in
-                            NavigationLink(destination: ProfileView(viewModel: ProfileViewModel(actor: item.handle, profile: .init(did: "", handle: "", labels: [])))) {
-                                FollowItemRow(
-                                    handle: item.handle,
-                                    displayName: item.displayName,
-                                    avatar: item.avatar
-                                )
-                            }
-                            .onAppear {
-                                if item.did == viewModel.followerItems.last?.did {
-                                    Task {
-                                        await viewModel.loadMore()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    if viewModel.isFetching {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                            Spacer()
-                        }
-                        .padding()
-                    }
-                }
-                .listStyle(.plain)
+  @StateObject var viewModel: FollowListViewModel
+  let title: String
+  @Environment(\.dismiss) private var dismiss
 
-                // 右下の戻るボタン
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .background(Color.black.opacity(0.7))
-                            .clipShape(Circle())
-                            .shadow(radius: 5)
-                    }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 20)
-                    .scaleEffect(1.2)
-                    }
+  init(actor: String, listType: FollowListType) {
+    self._viewModel = StateObject(
+      wrappedValue: FollowListViewModel(actor: actor, listType: listType))
+    self.title = listType == .follows ? "フォロー中" : "フォロワー"
+  }
+
+  var body: some View {
+    NavigationStack {
+      ZStack {
+        List {
+          if viewModel.listType == .follows {
+            ForEach(viewModel.followItems, id: \.did) { item in
+              NavigationLink(
+                destination: ProfileView(
+                  viewModel: ProfileViewModel(
+                    actor: item.handle, profile: .init(did: "", handle: "", labels: [])))
+              ) {
+                FollowItemRow(
+                  handle: item.handle,
+                  displayName: item.displayName,
+                  avatar: item.avatar
+                )
+              }
+              .onAppear {
+                if item.did == viewModel.followItems.last?.did {
+                  Task {
+                    await viewModel.loadMore()
+                  }
                 }
+              }
             }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-    
-    struct FollowItemRow: View {
-        let handle: String
-        let displayName: String?
-        let avatar: String?
-        
-        @StateObject private var asyncImageViewModel: AsyncImageViewModel
-        
-        init(handle: String, displayName: String?, avatar: String?) {
-            self.handle = handle
-            self.displayName = displayName
-            self.avatar = avatar
-            self._asyncImageViewModel = StateObject(wrappedValue: AsyncImageViewModel(url: avatar.flatMap(URL.init(string:)), imageSize: .avatar, alt: ""))
-        }
-        
-        var body: some View {
+          } else {
+            ForEach(viewModel.followerItems, id: \.did) { item in
+              NavigationLink(
+                destination: ProfileView(
+                  viewModel: ProfileViewModel(
+                    actor: item.handle, profile: .init(did: "", handle: "", labels: [])))
+              ) {
+                FollowItemRow(
+                  handle: item.handle,
+                  displayName: item.displayName,
+                  avatar: item.avatar
+                )
+              }
+              .onAppear {
+                if item.did == viewModel.followerItems.last?.did {
+                  Task {
+                    await viewModel.loadMore()
+                  }
+                }
+              }
+            }
+          }
+
+          if viewModel.isFetching {
             HStack {
-                AsyncImageView(viewModel: asyncImageViewModel)
-                    .frame(width: 50, height: 50)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    if let displayName = displayName, !displayName.isEmpty {
-                        Text(displayName)
-                            .font(.headline)
-                            .lineLimit(1)
-                    }
-                    Text("@\(handle)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-                }
-                
-                Spacer()
+              Spacer()
+              ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+              Spacer()
             }
-            .padding(.vertical, 4)
+            .padding()
+          }
         }
+        .listStyle(.plain)
+
+        // 右下の戻るボタン
+        VStack {
+          Spacer()
+          HStack {
+            Spacer()
+            Button(action: {
+              dismiss()
+            }) {
+              SwiftUI.Label("閉じる", systemImage: "xmark.circle.fill")
+                .labelStyle(.iconOnly)
+                .font(.largeTitle)
+                .foregroundColor(.white)
+                .background(Color.black.opacity(0.7))
+                .clipShape(Circle())
+                .shadow(radius: 5)
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 20)
+            .scaleEffect(1.2)
+          }
+        }
+      }
+      .navigationTitle(title)
+      .navigationBarTitleDisplayMode(.inline)
     }
+  }
+
+  struct FollowItemRow: View {
+    let handle: String
+    let displayName: String?
+    let avatar: String?
+
+    @StateObject private var asyncImageViewModel: AsyncImageViewModel
+
+    init(handle: String, displayName: String?, avatar: String?) {
+      self.handle = handle
+      self.displayName = displayName
+      self.avatar = avatar
+      self._asyncImageViewModel = StateObject(
+        wrappedValue: AsyncImageViewModel(
+          url: avatar.flatMap(URL.init(string:)), imageSize: .avatar, alt: ""))
+    }
+
+    var body: some View {
+      HStack {
+        AsyncImageView(viewModel: asyncImageViewModel)
+          .frame(width: 50, height: 50)
+
+        VStack(alignment: .leading, spacing: 4) {
+          if let displayName = displayName, !displayName.isEmpty {
+            Text(displayName)
+              .font(.headline)
+              .lineLimit(1)
+          }
+          Text("@\(handle)")
+            .font(.subheadline)
+            .foregroundColor(.secondary)
+            .lineLimit(1)
+        }
+
+        Spacer()
+      }
+      .padding(.vertical, 4)
+    }
+  }
 }
 #Preview {
-    FollowListView(actor: "test.bsky.social", listType: .follows)
+  FollowListView(actor: "test.bsky.social", listType: .follows)
 }

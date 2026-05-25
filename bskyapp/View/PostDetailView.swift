@@ -40,7 +40,8 @@ struct PostDetailView: View {
           Button(role: .destructive) {
             showDeleteConfirm = true
           } label: {
-            Image(systemName: "trash")
+            SwiftUI.Label("削除", systemImage: "trash")
+              .labelStyle(.iconOnly)
               .foregroundColor(.red)
           }
           .disabled(viewModel.isDeleting)

@@ -27,12 +27,12 @@ struct PostCardView: View {
       .toolbar {
         ToolbarItem(placement: .navigationBarLeading) {
           Button(action: { isShowPostCard.toggle() }) {
-            Image(systemName: "xmark")
+            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
           }
         }
         ToolbarItem(placement: .navigationBarTrailing) {
           Button(action: { saveDraft() }) {
-            Image(systemName: "doc.badge.plus")
+            SwiftUI.Label("下書きに保存", systemImage: "doc.badge.plus").labelStyle(.iconOnly)
           }
           .disabled(viewModel.text.isEmpty)
         }
@@ -150,14 +150,16 @@ struct PostCardView: View {
       PhotosPicker(
         selection: $viewModel.selectedPhotoItems, maxSelectionCount: 1, matching: .images
       ) {
-        Image(systemName: "photo.badge.plus")
+        SwiftUI.Label("画像を追加", systemImage: "photo.badge.plus")
+          .labelStyle(.iconOnly)
           .font(.title2)
           .foregroundColor(viewModel.canAddMoreImages() ? .blue : .gray)
       }
       .disabled(!viewModel.canAddMoreImages())
 
       Button(action: { isShowDrafts = true }) {
-        Image(systemName: "tray.and.arrow.down")
+        SwiftUI.Label("下書き一覧", systemImage: "tray.and.arrow.down")
+          .labelStyle(.iconOnly)
           .font(.title2)
           .foregroundColor(.blue)
       }
@@ -210,7 +212,8 @@ struct PostCardView: View {
         }
       }
     }) {
-      Image(systemName: "paperplane.fill")
+      SwiftUI.Label("投稿", systemImage: "paperplane.fill")
+        .labelStyle(.iconOnly)
         .font(.title2)
         .foregroundColor(canPost ? .blue : .gray)
     }
