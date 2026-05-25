@@ -101,8 +101,8 @@ struct PostCardView: View {
     if !viewModel.selectedImages.isEmpty {
       ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 10) {
-          ForEach(viewModel.selectedImages.indices, id: \.self) { index in
-            imageCell(at: index)
+          ForEach(Array(viewModel.selectedImages.enumerated()), id: \.element.id) { index, item in
+            imageCell(item: item, at: index)
           }
         }
         .padding(.horizontal)
@@ -112,9 +112,9 @@ struct PostCardView: View {
   }
 
   @ViewBuilder
-  private func imageCell(at index: Int) -> some View {
+  private func imageCell(item: IdentifiableImage, at index: Int) -> some View {
     ZStack(alignment: .topTrailing) {
-      Image(uiImage: viewModel.selectedImages[index])
+      Image(uiImage: item.image)
         .resizable()
         .scaledToFill()
         .frame(width: 80, height: 80)
