@@ -148,10 +148,10 @@ struct ContentView: View {
 
   private func areThreadConnected(_ a: FeedItem, _ b: FeedItem) -> Bool {
     guard a.reason == nil, b.reason == nil,
-      let rootA = a.reply?.root?.uri,
-      let rootB = b.reply?.root?.uri
+      let uriA = a.post?.uri,
+      let parentUriB = b.reply?.parent?.uri
     else { return false }
-    return rootA == rootB
+    return uriA == parentUriB
   }
 
   // MARK: - Tab strip
