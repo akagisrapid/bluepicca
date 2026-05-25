@@ -173,7 +173,7 @@ struct ProfileView: View {
   private var tabStrip: some View {
     ScrollView(.horizontal, showsIndicators: false) {
       HStack(spacing: 0) {
-        ForEach(Array(tabs.enumerated()), id: \.offset) { index, name in
+        ForEach(Array(tabs.enumerated()), id: \.element) { index, name in
           ProfileTabButton(name: name, isSelected: selectedTab == index) {
             selectedTab = index
           }

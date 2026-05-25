@@ -14,7 +14,7 @@ struct PostDetailView: View {
 
         // MARK: 親チェーン（スレッドの文脈）
         if !viewModel.parentChain.isEmpty {
-          ForEach(Array(viewModel.parentChain.enumerated()), id: \.offset) { _, parentPost in
+          ForEach(viewModel.parentChain) { parentPost in
             ThreadAncestorRow(post: parentPost)
           }
         }
@@ -266,7 +266,7 @@ struct PostDetailView: View {
       VStack(alignment: .leading, spacing: 0) {
         if viewModel.isRoot {
           // 直接リプライを時系列順（フラット）
-          ForEach(Array(viewModel.allThreadPosts.enumerated()), id: \.offset) { _, post in
+          ForEach(viewModel.allThreadPosts) { post in
             Divider().padding(.horizontal, 16)
             NavigationLink(
               destination: PostDetailView(viewModel: PostDetailViewModel(post: post, isRoot: false))
@@ -277,7 +277,7 @@ struct PostDetailView: View {
           }
         } else {
           // メインスレッドチェーン（コネクター付き）
-          ForEach(Array(viewModel.mainChain.enumerated()), id: \.offset) { index, chainPost in
+          ForEach(Array(viewModel.mainChain.enumerated()), id: \.element.id) { index, chainPost in
             Divider().padding(.horizontal, 16)
             NavigationLink(
               destination: PostDetailView(
@@ -302,7 +302,7 @@ struct PostDetailView: View {
             .padding(.horizontal, 16)
             .padding(.top, 16)
             .padding(.bottom, 8)
-            ForEach(Array(viewModel.branchReplies.enumerated()), id: \.offset) { _, reply in
+            ForEach(viewModel.branchReplies) { reply in
               Divider().padding(.horizontal, 16)
               NavigationLink(
                 destination: PostDetailView(
@@ -378,8 +378,8 @@ private struct MainChainRow: View {
         if let images = post.embed?.resolvedImages, !images.isEmpty {
           ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 4) {
-              ForEach(images.prefix(4).indices, id: \.self) { i in
-                CachedAsyncImage(url: images[i].thumbUrl) { img in
+              ForEach(Array(images.prefix(4).enumerated()), id: \.element.thumb) { _, image in
+                CachedAsyncImage(url: image.thumbUrl) { img in
                   img.resizable().scaledToFill()
                 } placeholder: {
                   Color(.systemGray5).overlay(ProgressView().tint(.secondary))
