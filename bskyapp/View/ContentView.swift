@@ -211,15 +211,15 @@ struct ContentView: View {
     ToolbarItem(placement: .navigationBarTrailing) {
       HStack(spacing: 16) {
         Button(action: { isShowMyProfile = true }) {
-          Image(systemName: "person.circle")
+          SwiftUI.Label("プロフィール", systemImage: "person.circle").labelStyle(.iconOnly)
         }
         .buttonStyle(.plain)
         Button(action: { isShowSearch = true }) {
-          Image(systemName: "magnifyingglass")
+          SwiftUI.Label("検索", systemImage: "magnifyingglass").labelStyle(.iconOnly)
         }
         .buttonStyle(.plain)
         Button(action: { isShowSettings = true }) {
-          Image(systemName: "gearshape")
+          SwiftUI.Label("設定", systemImage: "gearshape").labelStyle(.iconOnly)
         }
         .buttonStyle(.plain)
       }
