@@ -90,9 +90,10 @@ struct ReplyPostCardView: View {
         if !viewModel.selectedImages.isEmpty {
           ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
-              ForEach(0..<viewModel.selectedImages.count, id: \.self) { index in
+              ForEach(Array(viewModel.selectedImages.enumerated()), id: \.element.id) {
+                index, item in
                 ZStack(alignment: .topTrailing) {
-                  Image(uiImage: viewModel.selectedImages[index])
+                  Image(uiImage: item.image)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 80, height: 80)

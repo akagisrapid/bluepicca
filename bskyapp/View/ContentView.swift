@@ -84,8 +84,7 @@ struct ContentView: View {
         ScrollViewReader { proxy in
           List {
             Color.clear.frame(height: 0).id("top")
-            ForEach(viewModel.validFeeds.indices, id: \.self) { index in
-              let feedItem = viewModel.validFeeds[index]
+            ForEach(Array(viewModel.validFeeds.enumerated()), id: \.element.id) { index, feedItem in
               let prevItem = index > 0 ? viewModel.validFeeds[index - 1] : nil
               let nextItem =
                 index + 1 < viewModel.validFeeds.count ? viewModel.validFeeds[index + 1] : nil

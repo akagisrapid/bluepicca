@@ -15,7 +15,7 @@ class ReplyPostCardViewModel: ObservableObject {
   @Published var isPostFailed: Bool = false
   @Published var isTextValid: Bool = false
   @Published var errorMessage: String = ""
-  @Published var selectedImages: [UIImage] = []
+  @Published var selectedImages: [IdentifiableImage] = []
   @Published var selectedPhotoItems: [PhotosPickerItem] = []
   @Published var isUploading: Bool = false
   @Published var uploadProgress: Double = 0.0
@@ -68,7 +68,7 @@ class ReplyPostCardViewModel: ObservableObject {
           uploadProgress = 0.0
         }
 
-        let imagesToUpload = selectedImages.map { ImageToUpload(image: $0, alt: "画像の説明") }
+        let imagesToUpload = selectedImages.map { ImageToUpload(image: $0.image, alt: "画像の説明") }
 
         uploadedImages = try await PostCreationService.shared.uploadImages(imagesToUpload) {
           [weak self] progress in
@@ -134,7 +134,7 @@ class ReplyPostCardViewModel: ObservableObject {
 
         await MainActor.run {
           if self.selectedImages.count < self.maxImageCount {
-            self.selectedImages.append(image)
+            self.selectedImages.append(IdentifiableImage(image: image))
             self.objectWillChange.send()
           } else {
             self.errorMessage = "最大\(self.maxImageCount)枚まで選択できます"

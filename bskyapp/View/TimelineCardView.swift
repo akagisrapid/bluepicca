@@ -419,9 +419,9 @@ struct QuotePostCard: View {
           if !quotedImages.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
               HStack(spacing: 4) {
-                ForEach(quotedImages.prefix(4).indices, id: \.self) { index in
-                  CachedAsyncImage(url: quotedImages[index].thumbUrl) { image in
-                    image.resizable().scaledToFill()
+                ForEach(quotedImages.prefix(4), id: \.thumb) { image in
+                  CachedAsyncImage(url: image.thumbUrl) { img in
+                    img.resizable().scaledToFill()
                   } placeholder: {
                     Color(.systemGray5).overlay(ProgressView().tint(.secondary))
                   }
