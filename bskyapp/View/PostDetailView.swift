@@ -326,6 +326,7 @@ struct PostDetailView: View {
 private struct MainChainRow: View {
   let post: Post
   let isLast: Bool
+  @ScaledMetric(relativeTo: .subheadline) private var avatarColumnWidth: CGFloat = 36
 
   var body: some View {
     HStack(alignment: .top, spacing: 10) {
@@ -346,7 +347,7 @@ private struct MainChainRow: View {
             .padding(.top, 4)
         }
       }
-      .frame(width: 36)
+      .frame(width: avatarColumnWidth)
 
       VStack(alignment: .leading, spacing: 4) {
         HStack(spacing: 4) {
@@ -421,6 +422,7 @@ private struct MainChainRow: View {
 
 private struct ThreadAncestorRow: View {
   let post: Post
+  @ScaledMetric(relativeTo: .subheadline) private var avatarColumnWidth: CGFloat = 36
 
   var body: some View {
     NavigationLink(
@@ -443,7 +445,7 @@ private struct ThreadAncestorRow: View {
             .frame(maxHeight: .infinity)
             .padding(.top, 4)
         }
-        .frame(width: 36)
+        .frame(width: avatarColumnWidth)
 
         VStack(alignment: .leading, spacing: 3) {
           HStack(spacing: 4) {
