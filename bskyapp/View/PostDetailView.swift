@@ -251,72 +251,66 @@ struct PostDetailView: View {
 
   @ViewBuilder
   private var repliesSection: some View {
-    if viewModel.isLoadingThread {
-      HStack {
-        Spacer()
-        ProgressView().padding(.vertical, 32)
-        Spacer()
-      }
-    } else if viewModel.replies.isEmpty {
-      Text("リプライはありません")
-        .font(.subheadline)
-        .foregroundColor(.secondary)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 20)
-    } else {
-      VStack(alignment: .leading, spacing: 0) {
-        if viewModel.isRoot {
-          // 直接リプライを時系列順（フラット）
-          ForEach(viewModel.allThreadPosts) { post in
-            Divider().padding(.horizontal, 16)
-            NavigationLink(
-              destination: PostDetailView(viewModel: PostDetailViewModel(post: post, isRoot: false))
-            ) {
-              MainChainRow(post: post, isLast: true)
-            }
-            .buttonStyle(.plain)
+    VStack(alignment: .leading, spacing: 0) {
+      if viewModel.isRoot {
+        // 直接リプライを時系列順（フラット）
+        ForEach(viewModel.allThreadPosts) { post in
+          Divider().padding(.horizontal, 16)
+          NavigationLink(
+            destination: PostDetailView(viewModel: PostDetailViewModel(post: post, isRoot: false))
+          ) {
+            MainChainRow(post: post, isLast: true)
           }
-        } else {
-          // メインスレッドチェーン（コネクター付き）
-          ForEach(Array(viewModel.mainChain.enumerated()), id: \.element.id) { index, chainPost in
+          .buttonStyle(.plain)
+        }
+      } else {
+        // メインスレッドチェーン（コネクター付き）
+        ForEach(Array(viewModel.mainChain.enumerated()), id: \.element.id) { index, chainPost in
+          Divider().padding(.horizontal, 16)
+          NavigationLink(
+            destination: PostDetailView(
+              viewModel: PostDetailViewModel(post: chainPost, isRoot: false))
+          ) {
+            MainChainRow(
+              post: chainPost,
+              isLast: index == viewModel.mainChain.count - 1
+            )
+          }
+          .buttonStyle(.plain)
+        }
+        // 分岐返信
+        if !viewModel.branchReplies.isEmpty {
+          HStack {
+            Text("他の返信 \(viewModel.branchReplies.count)件")
+              .font(.caption)
+              .fontWeight(.medium)
+              .foregroundColor(.secondary)
+            Spacer()
+          }
+          .padding(.horizontal, 16)
+          .padding(.top, 16)
+          .padding(.bottom, 8)
+          ForEach(viewModel.branchReplies) { reply in
             Divider().padding(.horizontal, 16)
             NavigationLink(
               destination: PostDetailView(
-                viewModel: PostDetailViewModel(post: chainPost, isRoot: false))
+                viewModel: PostDetailViewModel(post: reply.post, isRoot: false))
             ) {
-              MainChainRow(
-                post: chainPost,
-                isLast: index == viewModel.mainChain.count - 1
-              )
+              MainChainRow(post: reply.post, isLast: true)
             }
             .buttonStyle(.plain)
           }
-          // 分岐返信
-          if !viewModel.branchReplies.isEmpty {
-            HStack {
-              Text("他の返信 \(viewModel.branchReplies.count)件")
-                .font(.caption)
-                .fontWeight(.medium)
-                .foregroundColor(.secondary)
-              Spacer()
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 8)
-            ForEach(viewModel.branchReplies) { reply in
-              Divider().padding(.horizontal, 16)
-              NavigationLink(
-                destination: PostDetailView(
-                  viewModel: PostDetailViewModel(post: reply.post, isRoot: false))
-              ) {
-                MainChainRow(post: reply.post, isLast: true)
-              }
-              .buttonStyle(.plain)
-            }
-          }
         }
       }
-      .padding(.bottom, 40)
+    }
+    .padding(.bottom, viewModel.replies.isEmpty ? 0 : 40)
+    .frame(minHeight: viewModel.replies.isEmpty || viewModel.isLoadingThread ? 120 : nil)
+    .overlay {
+      if viewModel.isLoadingThread {
+        ProgressView()
+      } else if viewModel.replies.isEmpty {
+        ContentUnavailableView("リプライはありません", systemImage: "bubble.left")
+      }
     }
   }
 }
