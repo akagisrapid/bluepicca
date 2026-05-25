@@ -4,6 +4,16 @@ struct ProfileImageView: View {
   let viewModel: AsyncImageViewModel
   let actor: String
   @State private var navigateToProfile = false
+  @ScaledMetric(relativeTo: .subheadline) private var timelineSize: CGFloat = 30
+  @ScaledMetric(relativeTo: .title) private var avatarSize: CGFloat = 60
+
+  private var scaledMaxSize: CGFloat {
+    switch viewModel.imageSize {
+    case .timeline: return timelineSize
+    case .avatar: return avatarSize
+    case .thumbnail: return viewModel.imageSize.maxWidth
+    }
+  }
 
   var body: some View {
     Button {
@@ -13,7 +23,7 @@ struct ProfileImageView: View {
         image.image?
           .resizable()
           .aspectRatio(contentMode: .fit)
-          .frame(maxWidth: viewModel.imageSize.maxWidth, maxHeight: viewModel.imageSize.maxHeight)
+          .frame(maxWidth: scaledMaxSize, maxHeight: scaledMaxSize)
       }
     }
     .buttonStyle(.plain)

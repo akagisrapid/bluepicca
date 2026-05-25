@@ -12,6 +12,7 @@ struct TimelineCardView: View {
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
   @ObservedObject private var rtFilterManager = RTFilterManager.shared
+  @ScaledMetric(relativeTo: .subheadline) private var timelineAvatarSize: CGFloat = 30
 
   init(viewModel: TimelineCardViewModel) {
     self.viewModel = viewModel
@@ -113,7 +114,7 @@ struct TimelineCardView: View {
           // 上のカードとスレッド接続しているときだけバナー部分にも縦線を引く
           if viewModel.connectsToCardAbove {
             HStack(spacing: 0) {
-              Color.clear.frame(width: 30)
+              Color.clear.frame(width: timelineAvatarSize)
               Color.accentColor.opacity(0.35).frame(width: 2)
               Spacer()
             }
