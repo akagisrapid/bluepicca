@@ -86,7 +86,6 @@ struct PostDetailView: View {
           Spacer()
         }
         .foregroundColor(.secondary)
-        .padding(.horizontal, 16)
         .padding(.top, 8)
         .padding(.bottom, 4)
       }
@@ -111,7 +110,6 @@ struct PostDetailView: View {
         }
         Spacer()
       }
-      .padding(.horizontal, 16)
       .padding(.top, 12)
       .padding(.bottom, 10)
 
@@ -137,7 +135,6 @@ struct PostDetailView: View {
           .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .buttonStyle(.plain)
-        .padding(.horizontal, 16)
         .padding(.bottom, 12)
       } else {
         // 本文
@@ -147,35 +144,30 @@ struct PostDetailView: View {
           }
           .font(.title3)
           .fixedSize(horizontal: false, vertical: true)
-          .padding(.horizontal, 16)
           .padding(.bottom, 12)
         }
 
         // 引用ポスト
         if let quoted = viewModel.quotedPost {
           QuotePostCard(quoted: quoted)
-            .padding(.horizontal, 16)
             .padding(.bottom, 12)
         }
 
         // 画像
         if !viewModel.embeddedImages.isEmpty {
           PostDetailImageGrid(images: viewModel.embeddedImages)
-            .padding(.horizontal, 16)
             .padding(.bottom, 12)
         }
 
         // 動画
         if let video = viewModel.embeddedVideo {
           VideoPlayerView(video: video)
-            .padding(.horizontal, 16)
             .padding(.bottom, 12)
         }
 
         // リンクカード
         ForEach(viewModel.linkCards, id: \.uri) { externalLink in
           LinkCardView(externalLink: externalLink)
-            .padding(.horizontal, 16)
             .padding(.bottom, 8)
         }
       }
@@ -184,10 +176,9 @@ struct PostDetailView: View {
       Text(viewModel.indexedAt)
         .font(.caption)
         .foregroundColor(.secondary)
-        .padding(.horizontal, 16)
         .padding(.vertical, 8)
 
-      Divider().padding(.horizontal, 16)
+      Divider()
 
       // アクションバー
       HStack(spacing: 0) {
@@ -242,9 +233,9 @@ struct PostDetailView: View {
 
         Spacer()
       }
-      .padding(.horizontal, 16)
       .padding(.bottom, 4)
     }
+    .padding(.horizontal, 16)
   }
 
   // MARK: - リプライ一覧
