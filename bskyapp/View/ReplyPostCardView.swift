@@ -136,7 +136,8 @@ struct ReplyPostCardView: View {
           PhotosPicker(
             selection: $viewModel.selectedPhotoItems, maxSelectionCount: 1, matching: .images
           ) {
-            Image(systemName: "photo.badge.plus")
+            SwiftUI.Label("画像を追加", systemImage: "photo.badge.plus")
+              .labelStyle(.iconOnly)
               .font(.title2)
               .foregroundColor(viewModel.canAddMoreImages() ? .blue : .gray)
           }
@@ -156,7 +157,8 @@ struct ReplyPostCardView: View {
               }
             }
           }) {
-            Image(systemName: "paperplane.fill")
+            SwiftUI.Label("送信", systemImage: "paperplane.fill")
+              .labelStyle(.iconOnly)
               .font(.title2)
               .foregroundColor(viewModel.isTextValid && !viewModel.isUploading ? .blue : .gray)
           }
@@ -173,7 +175,7 @@ struct ReplyPostCardView: View {
           Button(action: {
             isShowReplyCard = false
           }) {
-            Image(systemName: "xmark")
+            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
           }
         }
       }
