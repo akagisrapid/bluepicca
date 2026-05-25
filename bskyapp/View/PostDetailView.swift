@@ -193,14 +193,14 @@ struct PostDetailView: View {
       HStack(spacing: 0) {
         Button(action: { isShowingReplySheet = true }) {
           HStack(spacing: 6) {
-            ZStack(alignment: .topTrailing) {
-              Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
-              if viewModel.isReplyDisabled {
-                Image(systemName: "lock.fill")
-                  .font(.system(size: 8))
-                  .offset(x: 6, y: -5)
+            Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
+              .overlay(alignment: .topTrailing) {
+                if viewModel.isReplyDisabled {
+                  Image(systemName: "lock.fill")
+                    .font(.system(size: 8))
+                    .offset(x: 6, y: -5)
+                }
               }
-            }
             Text("リプライ")
           }
           .font(.subheadline)

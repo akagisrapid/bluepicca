@@ -227,15 +227,15 @@ struct TimelineCardView: View {
             isShowingReplySheet = true
           }) {
             HStack(spacing: 4) {
-              ZStack(alignment: .topTrailing) {
-                Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
-                  .font(.caption)
-                if viewModel.isReplyDisabled {
-                  Image(systemName: "lock.fill")
-                    .font(.system(size: 7))
-                    .offset(x: 5, y: -5)
+              Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
+                .font(.caption)
+                .overlay(alignment: .topTrailing) {
+                  if viewModel.isReplyDisabled {
+                    Image(systemName: "lock.fill")
+                      .font(.system(size: 7))
+                      .offset(x: 5, y: -5)
+                  }
                 }
-              }
               Text("\(viewModel.post.replyCount ?? 0)")
                 .font(.caption)
             }
