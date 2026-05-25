@@ -7,16 +7,42 @@ struct LikesView: View {
   @Environment(\.dismiss) private var dismiss
 
   var body: some View {
-    ZStack {
-      NavigationStack {
-        VStack {
+    NavigationStack {
+      ZStack {
+        List {
+          if let targetPost = viewModel.targetPost {
+            Section {
+              TimelineCardView(viewModel: TimelineCardViewModel(post: targetPost))
+            } header: {
+              Text("対象ポスト")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.leading, -10)
+            }
+          }
+
+          Section {
+            ForEach(viewModel.likes, id: \.actor.did) { like in
+              LikeItemView(like: like)
+            }
+          } header: {
+            Text("いいねしたユーザー")
+              .font(.caption)
+              .foregroundColor(.secondary)
+              .padding(.leading, -10)
+          }
+        }
+        .listStyle(.plain)
+        .overlay {
           if viewModel.isLoading {
             ProgressView("いいね一覧を読み込み中...")
               .progressViewStyle(CircularProgressViewStyle())
               .scaleEffect(1.5)
               .padding()
+              .frame(maxWidth: .infinity, maxHeight: .infinity)
+              .background(Color(.systemBackground))
           } else if let errorMessage = viewModel.errorMessage {
-            VStack {
+            VStack(spacing: 12) {
               Image(systemName: "exclamationmark.triangle")
                 .font(.largeTitle)
                 .foregroundColor(.red)
@@ -34,46 +60,8 @@ struct LikesView: View {
             }
             .padding()
           } else if viewModel.likes.isEmpty {
-            VStack {
-              Image(systemName: "heart")
-                .font(.largeTitle)
-                .foregroundColor(.gray)
-              Text("まだいいねがありません")
-                .foregroundColor(.gray)
-                .padding()
-            }
-          } else {
-            List {
-              if let targetPost = viewModel.targetPost {
-                Section {
-                  TimelineCardView(viewModel: TimelineCardViewModel(post: targetPost))
-                } header: {
-                  Text("対象ポスト")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .padding(.leading, -10)
-                }
-              }
-
-              Section {
-                ForEach(viewModel.likes, id: \.actor.did) { like in
-                  LikeItemView(like: like)
-                }
-              } header: {
-                Text("いいねしたユーザー")
-                  .font(.caption)
-                  .foregroundColor(.secondary)
-                  .padding(.leading, -10)
-              }
-            }
-            .listStyle(.plain)
+            ContentUnavailableView("まだいいねがありません", systemImage: "heart")
           }
-        }
-        .navigationTitle("いいね一覧")
-        .navigationBarTitleDisplayMode(.inline)
-        .task {
-          await viewModel.fetchTargetPost(uri: postUri)
-          await viewModel.fetchLikes(uri: postUri, cid: postCid)
         }
 
         // 右下の戻るボタン
@@ -81,9 +69,7 @@ struct LikesView: View {
           Spacer()
           HStack {
             Spacer()
-            Button(action: {
-              dismiss()
-            }) {
+            Button(action: { dismiss() }) {
               Image(systemName: "xmark.circle.fill")
                 .font(.largeTitle)
                 .foregroundColor(.white)
@@ -96,6 +82,12 @@ struct LikesView: View {
             .scaleEffect(1.2)
           }
         }
+      }
+      .navigationTitle("いいね一覧")
+      .navigationBarTitleDisplayMode(.inline)
+      .task {
+        await viewModel.fetchTargetPost(uri: postUri)
+        await viewModel.fetchLikes(uri: postUri, cid: postCid)
       }
     }
   }

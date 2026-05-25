@@ -75,49 +75,47 @@ struct ContentView: View {
 
   @ViewBuilder
   private var mainContent: some View {
-    ZStack {
+    ScrollViewReader { proxy in
+      List {
+        Color.clear.frame(height: 0).id("top")
+        ForEach(Array(viewModel.validFeeds.enumerated()), id: \.element.id) { index, feedItem in
+          let prevItem = index > 0 ? viewModel.validFeeds[index - 1] : nil
+          let nextItem =
+            index + 1 < viewModel.validFeeds.count ? viewModel.validFeeds[index + 1] : nil
+          let connectsAbove = prevItem.map { areThreadConnected($0, feedItem) } ?? false
+          let connectsBelow = nextItem.map { areThreadConnected(feedItem, $0) } ?? false
+          feedRow(
+            feedItem, connectsToCardAbove: connectsAbove, connectsToCardBelow: connectsBelow)
+        }
+        if viewModel.isLoadingMore {
+          HStack {
+            Spacer()
+            ProgressView()
+            Spacer()
+          }
+          .listRowSeparator(.hidden)
+        }
+      }
+      .listStyle(.plain)
+      .onAppear { scrollProxy = proxy }
+      .modifier(
+        FeedTabStripModifier(
+          show: feedSelectorStyle == "tabs" && viewModel.feedTabs.count > 1,
+          strip: feedTabStrip
+        ))
+    }
+    .overlay {
       if viewModel.validFeeds.isEmpty && viewModel.isFetchingTimeline {
         ProgressView()
           .progressViewStyle(CircularProgressViewStyle())
           .scaleEffect(1.5)
-      } else {
-        ScrollViewReader { proxy in
-          List {
-            Color.clear.frame(height: 0).id("top")
-            ForEach(Array(viewModel.validFeeds.enumerated()), id: \.element.id) { index, feedItem in
-              let prevItem = index > 0 ? viewModel.validFeeds[index - 1] : nil
-              let nextItem =
-                index + 1 < viewModel.validFeeds.count ? viewModel.validFeeds[index + 1] : nil
-              let connectsAbove = prevItem.map { areThreadConnected($0, feedItem) } ?? false
-              let connectsBelow = nextItem.map { areThreadConnected(feedItem, $0) } ?? false
-              feedRow(
-                feedItem, connectsToCardAbove: connectsAbove, connectsToCardBelow: connectsBelow)
-            }
-            if viewModel.isLoadingMore {
-              HStack {
-                Spacer()
-                ProgressView()
-                Spacer()
-              }
-              .listRowSeparator(.hidden)
-            }
-          }
-          .listStyle(.plain)
-          .onAppear { scrollProxy = proxy }
-          .modifier(
-            FeedTabStripModifier(
-              show: feedSelectorStyle == "tabs" && viewModel.feedTabs.count > 1,
-              strip: feedTabStrip
-            ))
-        }
-        if viewModel.isFetchingTimeline {
-          VStack {
-            ProgressView()
-              .progressViewStyle(LinearProgressViewStyle())
-              .tint(.accentColor)
-            Spacer()
-          }
-        }
+      }
+    }
+    .overlay(alignment: .top) {
+      if viewModel.isFetchingTimeline && !viewModel.validFeeds.isEmpty {
+        ProgressView()
+          .progressViewStyle(LinearProgressViewStyle())
+          .tint(.accentColor)
       }
     }
   }
