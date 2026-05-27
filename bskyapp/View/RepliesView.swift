@@ -14,8 +14,8 @@ struct RepliesView: View {
   @State private var isShowReplyCard = false
 
   var body: some View {
-    ZStack {
-      NavigationStack {
+    NavigationStack {
+      ZStack {
         VStack(spacing: 0) {
           // カスタムヘッダー
           HStack {
@@ -36,44 +36,41 @@ struct RepliesView: View {
           .background(Color(UIColor.systemBackground))
 
           // リプライリスト
-          if viewModel.isFetchingReplies {
-            Spacer()
-            ProgressView()
-              .progressViewStyle(CircularProgressViewStyle())
-              .scaleEffect(2.0)
-            Spacer()
-          } else {
-            List(viewModel.replyNotifications) { notification in
-              ReplyCardView(notification: notification)
-                .onTapGesture {
-                  selectedNotification = notification
-                  isShowReplyCard = true
-                }
+          List(viewModel.replyNotifications) { notification in
+            ReplyCardView(notification: notification)
+              .onTapGesture {
+                selectedNotification = notification
+                isShowReplyCard = true
+              }
+          }
+          .listStyle(.plain)
+          .overlay {
+            if viewModel.isFetchingReplies {
+              ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+                .scaleEffect(2.0)
             }
-            .listStyle(.plain)
           }
         }
         .navigationBarHidden(true)
-      }
 
-      // 右下の戻るボタン
-      VStack {
-        Spacer()
-        HStack {
+        // 右下の戻るボタン
+        VStack {
           Spacer()
-          Button(action: {
-            dismiss()
-          }) {
-            Image(systemName: "xmark.circle.fill")
-              .font(.largeTitle)
-              .foregroundColor(.white)
-              .background(Color.black.opacity(0.7))
-              .clipShape(Circle())
-              .shadow(radius: 5)
+          HStack {
+            Spacer()
+            Button(action: { dismiss() }) {
+              Image(systemName: "xmark.circle.fill")
+                .font(.largeTitle)
+                .foregroundColor(.white)
+                .background(Color.black.opacity(0.7))
+                .clipShape(Circle())
+                .shadow(radius: 5)
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 20)
+            .scaleEffect(1.2)
           }
-          .padding(.trailing, 20)
-          .padding(.bottom, 20)
-          .scaleEffect(1.2)
         }
       }
     }

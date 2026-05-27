@@ -246,19 +246,19 @@ struct ContentView: View {
         SwiftUI.Label(
           title: { Text("Top") },
           icon: {
-            ZStack(alignment: .topTrailing) {
-              Image(systemName: "arrow.up.to.line")
-              if viewModel.unreadCount > 0 {
-                Text(viewModel.unreadCount > 99 ? "99+" : "\(viewModel.unreadCount)")
-                  .font(.system(size: 8, weight: .bold))
-                  .foregroundColor(.white)
-                  .padding(.horizontal, 3)
-                  .padding(.vertical, 1)
-                  .background(Color.accentColor)
-                  .clipShape(Capsule())
-                  .offset(x: 10, y: -8)
+            Image(systemName: "arrow.up.to.line")
+              .overlay(alignment: .topTrailing) {
+                if viewModel.unreadCount > 0 {
+                  Text(viewModel.unreadCount > 99 ? "99+" : "\(viewModel.unreadCount)")
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 3)
+                    .padding(.vertical, 1)
+                    .background(Color.accentColor)
+                    .clipShape(Capsule())
+                    .offset(x: 10, y: -8)
+                }
               }
-            }
           }
         )
       }

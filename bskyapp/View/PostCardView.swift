@@ -76,24 +76,24 @@ struct PostCardView: View {
 
   @ViewBuilder
   private var textEditorArea: some View {
-    ZStack(alignment: .topTrailing) {
-      TextEditor(text: $viewModel.text)
-        .padding(8)
-        .overlay(
-          RoundedRectangle(cornerRadius: 8)
-            .stroke(viewModel.isTextValid ? Color.gray.opacity(0.3) : Color.red, lineWidth: 1)
-        )
-        .focused($isTextEditorFocused)
-        .onChange(of: viewModel.text) {
-          viewModel.checkTextCount()
-        }
-      Text(viewModel.textCountString)
-        .font(.caption)
-        .foregroundColor(viewModel.isTextValid ? .secondary : .red)
-        .padding(8)
-    }
-    .padding(.horizontal)
-    .padding(.top, 8)
+    TextEditor(text: $viewModel.text)
+      .padding(8)
+      .overlay(
+        RoundedRectangle(cornerRadius: 8)
+          .stroke(viewModel.isTextValid ? Color.gray.opacity(0.3) : Color.red, lineWidth: 1)
+      )
+      .focused($isTextEditorFocused)
+      .onChange(of: viewModel.text) {
+        viewModel.checkTextCount()
+      }
+      .overlay(alignment: .topTrailing) {
+        Text(viewModel.textCountString)
+          .font(.caption)
+          .foregroundColor(viewModel.isTextValid ? .secondary : .red)
+          .padding(8)
+      }
+      .padding(.horizontal)
+      .padding(.top, 8)
   }
 
   @ViewBuilder
@@ -113,19 +113,19 @@ struct PostCardView: View {
 
   @ViewBuilder
   private func imageCell(item: IdentifiableImage, at index: Int) -> some View {
-    ZStack(alignment: .topTrailing) {
-      Image(uiImage: item.image)
-        .resizable()
-        .scaledToFill()
-        .frame(width: 80, height: 80)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-      Button(action: { viewModel.removeImage(at: index) }) {
-        Image(systemName: "xmark.circle.fill")
-          .foregroundColor(.red)
-          .background(Circle().fill(Color.white))
+    Image(uiImage: item.image)
+      .resizable()
+      .scaledToFill()
+      .frame(width: 80, height: 80)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+      .overlay(alignment: .topTrailing) {
+        Button(action: { viewModel.removeImage(at: index) }) {
+          Image(systemName: "xmark.circle.fill")
+            .foregroundColor(.red)
+            .background(Circle().fill(Color.white))
+        }
+        .padding(4)
       }
-      .padding(4)
-    }
   }
 
   @ViewBuilder
