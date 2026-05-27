@@ -150,7 +150,6 @@ struct TimelineCardView: View {
             .font(.caption)
             .foregroundColor(.secondary)
         }
-        .padding(.horizontal, 16)
         .padding(.top, (viewModel.isRepost || viewModel.isReply) ? 0 : 10)
         .padding(.bottom, 6)
 
@@ -174,7 +173,6 @@ struct TimelineCardView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
           }
           .buttonStyle(.plain)
-          .padding(.horizontal, 16)
           .padding(.bottom, 8)
         } else {
           // 本文テキスト（メイン）
@@ -185,14 +183,12 @@ struct TimelineCardView: View {
             .font(.body)
             .foregroundColor(.primary)
             .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal, 16)
             .padding(.bottom, 8)
           }
 
           // 添付画像サムネイル
           if let images = viewModel.post.embed?.resolvedImages, !images.isEmpty {
             ImageGridView(images: images)
-              .padding(.horizontal, 16)
               .padding(.bottom, 8)
           }
 
@@ -202,21 +198,18 @@ struct TimelineCardView: View {
               MediaBadge(icon: "play.rectangle", label: "動画")
               Spacer()
             }
-            .padding(.horizontal, 16)
             .padding(.bottom, 8)
           }
 
           // 引用ポスト（存在する場合のみ）
           if let quoted = viewModel.quotedPost {
             QuotePostCard(quoted: quoted)
-              .padding(.horizontal, 16)
               .padding(.bottom, 8)
           }
 
           // リンクカード（外部リンク埋め込みがある場合のみ）
           if let externalLink = viewModel.externalLink {
             CompactLinkCard(externalLink: externalLink)
-              .padding(.horizontal, 16)
               .padding(.bottom, 8)
           }
         }
@@ -307,9 +300,10 @@ struct TimelineCardView: View {
           .buttonStyle(.plain)
           .accessibilityLabel(isBookmarked ? "ブックマーク済み" : "ブックマーク")
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, -8)
         .padding(.bottom, 4)
       }  // body VStack
+      .padding(.horizontal, 16)
       .overlay {
         if viewModel.connectsToCardAbove || viewModel.connectsToCardBelow {
           HStack(spacing: 0) {
