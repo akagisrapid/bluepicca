@@ -59,7 +59,7 @@ struct PostCardView: View {
       .alert(isPresented: $viewModel.isPostFailed) {
         Alert(title: Text("送信エラー"), message: Text(viewModel.errorMessage))
       }
-      .onChange(of: viewModel.selectedPhotoItems) { newItems in
+      .onChange(of: viewModel.selectedPhotoItems) { _, newItems in
         if let latestItem = newItems.last {
           viewModel.loadImage(from: latestItem)
         }
