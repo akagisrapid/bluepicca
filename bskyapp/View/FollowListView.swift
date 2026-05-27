@@ -29,10 +29,10 @@ struct FollowListView: View {
                 )
               }
               .onAppear {
-                if item.did == viewModel.followItems.last?.did {
-                  Task {
-                    await viewModel.loadMore()
-                  }
+                if item.did == viewModel.followItems.last?.did,
+                  !viewModel.isFetching, viewModel.hasMoreData
+                {
+                  Task { await viewModel.loadMore() }
                 }
               }
             }
@@ -50,10 +50,10 @@ struct FollowListView: View {
                 )
               }
               .onAppear {
-                if item.did == viewModel.followerItems.last?.did {
-                  Task {
-                    await viewModel.loadMore()
-                  }
+                if item.did == viewModel.followerItems.last?.did,
+                  !viewModel.isFetching, viewModel.hasMoreData
+                {
+                  Task { await viewModel.loadMore() }
                 }
               }
             }

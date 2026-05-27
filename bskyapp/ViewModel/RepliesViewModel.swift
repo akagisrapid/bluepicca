@@ -27,6 +27,7 @@ class RepliesViewModel: ObservableObject {
 
   @MainActor
   func fetchReplies() async {
+    guard !isFetchingReplies else { return }
     isFetchingReplies = true
 
     do {
