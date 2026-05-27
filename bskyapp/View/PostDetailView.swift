@@ -62,7 +62,7 @@ struct PostDetailView: View {
     .sheet(isPresented: $isShowingReplySheet) {
       ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
     }
-    .onChange(of: isShowingReplySheet) { isShowing in
+    .onChange(of: isShowingReplySheet) { _, isShowing in
       if !isShowing {
         Task { await viewModel.refreshAfterReply() }
       }
