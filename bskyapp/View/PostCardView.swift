@@ -1,4 +1,3 @@
-import Combine
 import PhotosUI
 import SwiftUI
 
@@ -8,7 +7,6 @@ struct PostCardView: View {
   @Environment(\.dismiss) private var dismiss
   @Environment(\.modelContext) private var modelContext
   @FocusState private var isTextEditorFocused: Bool
-  @State private var keyboardHeight: CGFloat = 0
   @State private var isShowDrafts = false
   @State private var isDraftSaved = false
   @State private var showReplyAudiencePicker = false
@@ -62,11 +60,6 @@ struct PostCardView: View {
       .onChange(of: viewModel.selectedPhotoItems) { _, newItems in
         if let latestItem = newItems.last {
           viewModel.loadImage(from: latestItem)
-        }
-      }
-      .onReceive(Publishers.keyboardHeight) { height in
-        withAnimation(.easeInOut(duration: 0.25)) {
-          keyboardHeight = height
         }
       }
     }
@@ -173,7 +166,7 @@ struct PostCardView: View {
     }
     .padding(.horizontal)
     .padding(.vertical, 12)
-    .padding(.bottom, keyboardHeight > 0 ? 0 : 8)
+    .padding(.bottom, 8)
   }
 
   @ViewBuilder
