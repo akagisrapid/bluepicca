@@ -95,6 +95,9 @@ struct FollowListView: View {
       }
       .navigationTitle(title)
       .navigationBarTitleDisplayMode(.inline)
+      .task {
+        await viewModel.fetchData()
+      }
     }
   }
 
