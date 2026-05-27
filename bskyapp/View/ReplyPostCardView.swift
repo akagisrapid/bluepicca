@@ -5,7 +5,6 @@
 //  Created by shuya on 2025/09/17.
 //
 
-import Combine
 import PhotosUI
 import SwiftUI
 
@@ -15,7 +14,6 @@ struct ReplyPostCardView: View {
   @Binding var isShowReplyCard: Bool
   @StateObject private var viewModel: ReplyPostCardViewModel
   @FocusState private var isTextEditorFocused: Bool
-  @State private var keyboardHeight: CGFloat = 0
 
   // NotificationItem用のイニシャライザー
   init(notification: NotificationItem, isShowReplyCard: Binding<Bool>) {
@@ -166,7 +164,7 @@ struct ReplyPostCardView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 12)
-        .padding(.bottom, keyboardHeight > 0 ? 0 : 8)
+        .padding(.bottom, 8)
       }
       .navigationTitle("リプライ")
       .navigationBarTitleDisplayMode(.inline)
@@ -188,11 +186,6 @@ struct ReplyPostCardView: View {
       .onChange(of: viewModel.selectedPhotoItems) { newItems in
         if let latestItem = newItems.last {
           viewModel.loadImage(from: latestItem)
-        }
-      }
-      .onReceive(Publishers.keyboardHeight) { height in
-        withAnimation(.easeInOut(duration: 0.25)) {
-          keyboardHeight = height
         }
       }
     }
