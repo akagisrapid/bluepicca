@@ -5,6 +5,8 @@ struct TimelineCardView: View {
   let viewModel: TimelineCardViewModel
   @ObservedObject var post: Post
   @State private var isShowingReplySheet = false
+  @State private var isShowingQuoteSheet = false
+  @State private var showRepostMenu = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
   @State private var likeScale: CGFloat = 1.0
@@ -243,11 +245,8 @@ struct TimelineCardView: View {
 
           Spacer()
 
-          // リポストボタン
-          Button(action: {
-            Task { await viewModel.toggleRepost() }
-            triggerRepostAnimation()
-          }) {
+          // リポスト・引用ボタン
+          Button(action: { showRepostMenu = true }) {
             HStack(spacing: 4) {
               Image(systemName: "arrow.rectanglepath")
                 .font(.caption)
@@ -261,6 +260,14 @@ struct TimelineCardView: View {
             .frame(minWidth: 44, minHeight: 36)
           }
           .buttonStyle(.plain)
+          .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
+            Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
+              Task { await viewModel.toggleRepost() }
+              triggerRepostAnimation()
+            }
+            Button("引用ポスト") { isShowingQuoteSheet = true }
+            Button("キャンセル", role: .cancel) {}
+          }
           .accessibilityLabel(
             viewModel.isReposted
               ? "リポスト済み \(viewModel.repostCount)件" : "リポスト \(viewModel.repostCount)件")
@@ -323,10 +330,9 @@ struct TimelineCardView: View {
       }
       .tint(.yellow)
     }
-    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
       Button {
-        Task { await viewModel.toggleRepost() }
-        triggerRepostAnimation()
+        showRepostMenu = true
       } label: {
         Image(systemName: "arrow.rectanglepath")
       }
@@ -334,6 +340,9 @@ struct TimelineCardView: View {
     }
     .sheet(isPresented: $isShowingReplySheet) {
       ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
+    }
+    .sheet(isPresented: $isShowingQuoteSheet) {
+      QuotePostCardView(post: viewModel.post, isShowQuoteCard: $isShowingQuoteSheet)
     }
     .sheet(item: $hashtagSearchItem) { item in
       SearchView(initialQuery: item.query)
