@@ -6,7 +6,16 @@ struct PostDetailView: View {
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
   @State private var showDeleteConfirm = false
+  @State private var isShowingShareSheet = false
   @Environment(\.dismiss) private var dismiss
+
+  private var bskyShareUrl: URL? {
+    guard let uri = viewModel.post.uri,
+      let handle = viewModel.post.author?.handle,
+      let rkey = uri.split(separator: "/").last
+    else { return nil }
+    return URL(string: "https://bsky.app/profile/\(handle)/post/\(rkey)")
+  }
 
   var body: some View {
     ScrollView {
@@ -69,6 +78,12 @@ struct PostDetailView: View {
     }
     .sheet(item: $hashtagSearchItem) { item in
       SearchView(initialQuery: item.query)
+    }
+    .sheet(isPresented: $isShowingShareSheet) {
+      if let url = bskyShareUrl {
+        ActivityShareSheet(url: url)
+          .presentationDetents([.medium, .large])
+      }
     }
   }
 
@@ -232,6 +247,15 @@ struct PostDetailView: View {
         .opacity(viewModel.isReposting ? 0.5 : 1.0)
 
         Spacer()
+
+        Button(action: { isShowingShareSheet = true }) {
+          Image(systemName: "square.and.arrow.up")
+            .font(.subheadline)
+            .foregroundColor(.secondary)
+            .frame(minWidth: 44, minHeight: 44)
+        }
+        .buttonStyle(.plain)
+        .disabled(bskyShareUrl == nil)
       }
       .padding(.bottom, 4)
     }

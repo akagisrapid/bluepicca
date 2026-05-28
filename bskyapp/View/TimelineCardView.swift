@@ -6,6 +6,7 @@ struct TimelineCardView: View {
   @ObservedObject var post: Post
   @State private var isShowingReplySheet = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
+  @State private var isShowingShareSheet = false
   @State private var isSensitiveRevealed = false
   @State private var likeScale: CGFloat = 1.0
   @State private var repostScale: CGFloat = 1.0
@@ -48,6 +49,89 @@ struct TimelineCardView: View {
         text: viewModel.text
       )
       modelContext.insert(bookmark)
+    }
+  }
+
+  private var bskyShareUrl: URL? {
+    guard let uri = viewModel.post.uri,
+      let handle = viewModel.post.author?.handle,
+      let rkey = uri.split(separator: "/").last
+    else { return nil }
+    return URL(string: "https://bsky.app/profile/\(handle)/post/\(rkey)")
+  }
+
+  @ViewBuilder
+  private var contextMenuContent: some View {
+    if !viewModel.isReplyDisabled {
+      Button {
+        isShowingReplySheet = true
+      } label: {
+        SwiftUI.Label("返信", systemImage: "arrowshape.turn.up.left")
+      }
+    }
+
+    Button {
+      Task { await viewModel.toggleLike() }
+      triggerLikeAnimation()
+    } label: {
+      SwiftUI.Label(
+        viewModel.isLiked ? "いいね解除" : "いいね",
+        systemImage: viewModel.isLiked ? "star.slash" : "star")
+    }
+
+    Button {
+      Task { await viewModel.toggleRepost() }
+      triggerRepostAnimation()
+    } label: {
+      SwiftUI.Label(
+        viewModel.isReposted ? "リポスト解除" : "リポスト",
+        systemImage: "arrow.rectanglepath")
+    }
+
+    Button {
+      toggleBookmark()
+    } label: {
+      SwiftUI.Label(
+        isBookmarked ? "ブックマーク解除" : "ブックマーク",
+        systemImage: isBookmarked ? "bookmark.slash" : "bookmark")
+    }
+
+    if viewModel.isRepost {
+      if let did = viewModel.repostAuthorDid {
+        Button {
+          if rtFilterManager.isFiltered(did) {
+            rtFilterManager.remove(did: did)
+          } else {
+            rtFilterManager.add(
+              did: did,
+              displayName: viewModel.repostAuthorName,
+              handle: viewModel.repostAuthorHandle,
+              avatarUrl: viewModel.repostAuthorAvatarUrl
+            )
+          }
+        } label: {
+          SwiftUI.Label(
+            rtFilterManager.isFiltered(did) ? "RTを再表示" : "RTを非表示",
+            systemImage: rtFilterManager.isFiltered(did) ? "eye" : "eye.slash")
+        }
+      }
+    }
+
+    Divider()
+
+    Button(role: .destructive) {
+      Task {
+        guard let did = viewModel.post.author?.did else { return }
+        try? await MuteBlockApi.muteActor(did: did)
+      }
+    } label: {
+      SwiftUI.Label("ミュート", systemImage: "speaker.slash")
+    }
+
+    Button {
+      isShowingShareSheet = true
+    } label: {
+      SwiftUI.Label("シェア", systemImage: "square.and.arrow.up")
     }
   }
 
@@ -332,11 +416,18 @@ struct TimelineCardView: View {
       }
       .tint(.green)
     }
+    .contextMenu { contextMenuContent }
     .sheet(isPresented: $isShowingReplySheet) {
       ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
     }
     .sheet(item: $hashtagSearchItem) { item in
       SearchView(initialQuery: item.query)
+    }
+    .sheet(isPresented: $isShowingShareSheet) {
+      if let url = bskyShareUrl {
+        ActivityShareSheet(url: url)
+          .presentationDetents([.medium, .large])
+      }
     }
   }
 }
@@ -690,4 +781,14 @@ private struct ThumbView: View {
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .clipped()
   }
+}
+
+struct ActivityShareSheet: UIViewControllerRepresentable {
+  let url: URL
+
+  func makeUIViewController(context: Context) -> UIActivityViewController {
+    UIActivityViewController(activityItems: [url], applicationActivities: nil)
+  }
+
+  func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
