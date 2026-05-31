@@ -3,6 +3,8 @@ import SwiftUI
 struct PostDetailView: View {
   @StateObject var viewModel: PostDetailViewModel
   @State private var isShowingReplySheet = false
+  @State private var isShowingQuoteSheet = false
+  @State private var showRepostMenu = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
   @State private var showDeleteConfirm = false
@@ -66,6 +68,9 @@ struct PostDetailView: View {
       if !isShowing {
         Task { await viewModel.refreshAfterReply() }
       }
+    }
+    .sheet(isPresented: $isShowingQuoteSheet) {
+      QuotePostCardView(post: viewModel.post, isShowQuoteCard: $isShowingQuoteSheet)
     }
     .sheet(item: $hashtagSearchItem) { item in
       SearchView(initialQuery: item.query)
@@ -218,7 +223,7 @@ struct PostDetailView: View {
 
         Spacer()
 
-        Button(action: { Task { await viewModel.toggleRepost() } }) {
+        Button(action: { showRepostMenu = true }) {
           HStack(spacing: 6) {
             Image(systemName: "arrow.rectanglepath")
             Text("\(viewModel.repostCount)")
@@ -230,6 +235,13 @@ struct PostDetailView: View {
         .buttonStyle(.plain)
         .disabled(viewModel.isReposting)
         .opacity(viewModel.isReposting ? 0.5 : 1.0)
+        .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
+          Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
+            Task { await viewModel.toggleRepost() }
+          }
+          Button("引用ポスト") { isShowingQuoteSheet = true }
+          Button("キャンセル", role: .cancel) {}
+        }
 
         Spacer()
       }
