@@ -11,6 +11,7 @@ class LikesViewModel: ObservableObject {
   private let getPostThreadApi = GetPostThreadApi()
 
   func fetchLikes(uri: String, cid: String? = nil) async {
+    guard !isLoading else { return }
     isLoading = true
     errorMessage = nil
 
