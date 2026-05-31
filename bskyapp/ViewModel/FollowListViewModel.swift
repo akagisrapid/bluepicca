@@ -18,9 +18,6 @@ class FollowListViewModel: ObservableObject {
   init(actor: String, listType: FollowListType) {
     self.actor = actor
     self.listType = listType
-    Task { [weak self] in
-      await self?.fetchData()
-    }
   }
 
   @MainActor

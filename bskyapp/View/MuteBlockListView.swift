@@ -28,6 +28,10 @@ struct MuteBlockListView: View {
       }
       .navigationTitle("モデレーション")
       .navigationBarTitleDisplayMode(.inline)
+      .task {
+        await viewModel.fetchMuted()
+        await viewModel.fetchBlocked()
+      }
       .overlay(alignment: .bottomTrailing) {
         Button(action: { dismiss() }) {
           SwiftUI.Label("閉じる", systemImage: "xmark.circle.fill")
