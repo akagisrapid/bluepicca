@@ -92,6 +92,51 @@ class PostCreationService {
     }
   }
 
+  // MARK: - Quote Post Creation
+
+  func createQuotePost(
+    text: String,
+    images: [UploadedImage]?,
+    quotedUri: String,
+    quotedCid: String
+  ) async throws {
+    let session = try await SessionManager.shared.getSession()
+
+    let recordReference: [String: Any] = ["uri": quotedUri, "cid": quotedCid]
+
+    let embed: [String: Any]
+    if let images = images, !images.isEmpty {
+      embed = [
+        "$type": "app.bsky.embed.recordWithMedia",
+        "record": [
+          "$type": "app.bsky.embed.record",
+          "record": recordReference,
+        ],
+        "media": buildImageEmbed(images),
+      ]
+    } else {
+      embed = [
+        "$type": "app.bsky.embed.record",
+        "record": recordReference,
+      ]
+    }
+
+    let recordDict: [String: Any] = [
+      "$type": "app.bsky.feed.post",
+      "text": text,
+      "createdAt": Date().ISO8601Format(),
+      "embed": embed,
+    ]
+
+    let paramDict: [String: Any] = [
+      "repo": session.did,
+      "collection": "app.bsky.feed.post",
+      "record": recordDict,
+    ]
+
+    try await sendCreateRecord(paramDict: paramDict, session: session)
+  }
+
   // MARK: - Reply Creation
 
   func createReply(
