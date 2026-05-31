@@ -84,42 +84,9 @@ struct TimelineCardView: View {
           }
         }
         .foregroundColor(.secondary)
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
-        .padding(.bottom, 4)
-      }
-
-      // リプライ情報バナー（スレッドルートへのリンク付き）
-      if viewModel.isReply {
-        NavigationLink(
-          destination: PostDetailView(
-            viewModel: PostDetailViewModel(post: viewModel.replyRootPost ?? viewModel.post))
-        ) {
-          HStack(spacing: 4) {
-            Image(systemName: "arrowshape.turn.up.left")
-              .font(.caption2)
-            Text("\(viewModel.replyTargetAuthorName)への返信")
-              .font(.caption2)
-            Spacer()
-            Image(systemName: "chevron.right")
-              .font(.caption2)
-          }
-          .foregroundColor(.secondary)
-        }
-        .buttonStyle(.plain)
-        .padding(.horizontal, 16)
-        .padding(.top, viewModel.isRepost ? 0 : 8)
-        .padding(.bottom, 4)
-        .overlay {
-          // 上のカードとスレッド接続しているときだけバナー部分にも縦線を引く
-          if viewModel.connectsToCardAbove {
-            HStack(spacing: 0) {
-              Color.clear.frame(width: timelineAvatarSize)
-              Color.accentColor.opacity(0.35).frame(width: 2)
-              Spacer()
-            }
-          }
-        }
+        .padding(.horizontal, 12)
+        .padding(.top, 6)
+        .padding(.bottom, 2)
       }
 
       VStack(alignment: .leading, spacing: 0) {
@@ -133,11 +100,22 @@ struct TimelineCardView: View {
             actor: viewModel.post.author?.did ?? "")
 
           VStack(alignment: .leading, spacing: 1) {
-            Text(viewModel.authorName)
-              .font(.subheadline)
-              .fontWeight(.semibold)
-              .foregroundColor(.primary)
-              .lineLimit(1)
+            HStack(spacing: 4) {
+              Text(viewModel.authorName)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+                .lineLimit(1)
+              if viewModel.isReply {
+                Image(systemName: "arrowshape.turn.up.left.fill")
+                  .font(.system(size: 9))
+                  .foregroundColor(.secondary)
+                Text(viewModel.replyTargetAuthorName)
+                  .font(.caption2)
+                  .foregroundColor(.secondary)
+                  .lineLimit(1)
+              }
+            }
             Text(viewModel.authorHandle)
               .font(.caption)
               .foregroundColor(.secondary)
@@ -150,8 +128,8 @@ struct TimelineCardView: View {
             .font(.caption)
             .foregroundColor(.secondary)
         }
-        .padding(.top, (viewModel.isRepost || viewModel.isReply) ? 0 : 10)
-        .padding(.bottom, 6)
+        .padding(.top, viewModel.isRepost ? 0 : 8)
+        .padding(.bottom, 5)
 
         // センシティブコンテンツ警告または本文・メディア
         if viewModel.post.isSensitive && !isSensitiveRevealed {
@@ -173,7 +151,7 @@ struct TimelineCardView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
           }
           .buttonStyle(.plain)
-          .padding(.bottom, 8)
+          .padding(.bottom, 6)
         } else {
           // 本文テキスト（メイン）
           if !viewModel.text.isEmpty {
@@ -183,13 +161,13 @@ struct TimelineCardView: View {
             .font(.body)
             .foregroundColor(.primary)
             .fixedSize(horizontal: false, vertical: true)
-            .padding(.bottom, 8)
+            .padding(.bottom, 6)
           }
 
           // 添付画像サムネイル
           if let images = viewModel.post.embed?.resolvedImages, !images.isEmpty {
             ImageGridView(images: images)
-              .padding(.bottom, 8)
+              .padding(.bottom, 6)
           }
 
           // 動画バッジ（サムネイルなし）
@@ -198,19 +176,19 @@ struct TimelineCardView: View {
               MediaBadge(icon: "play.rectangle", label: "動画")
               Spacer()
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, 6)
           }
 
           // 引用ポスト（存在する場合のみ）
           if let quoted = viewModel.quotedPost {
             QuotePostCard(quoted: quoted)
-              .padding(.bottom, 8)
+              .padding(.bottom, 6)
           }
 
           // リンクカード（外部リンク埋め込みがある場合のみ）
           if let externalLink = viewModel.externalLink {
             CompactLinkCard(externalLink: externalLink)
-              .padding(.bottom, 8)
+              .padding(.bottom, 6)
           }
         }
 
@@ -300,14 +278,14 @@ struct TimelineCardView: View {
           .buttonStyle(.plain)
           .accessibilityLabel(isBookmarked ? "ブックマーク済み" : "ブックマーク")
         }
-        .padding(.horizontal, -8)
+        .padding(.horizontal, -4)
         .padding(.bottom, 4)
       }  // body VStack
-      .padding(.horizontal, 16)
+      .padding(.horizontal, 12)
       .overlay {
         if viewModel.connectsToCardAbove || viewModel.connectsToCardBelow {
           HStack(spacing: 0) {
-            Color.clear.frame(width: 30)
+            Color.clear.frame(width: 12 + timelineAvatarSize / 2 - 1)
             Color.accentColor.opacity(0.35).frame(width: 2)
             Spacer()
           }
