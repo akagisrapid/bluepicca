@@ -79,6 +79,8 @@
 		98C635E02F2CCBEA0064F497 /* GetActorLikesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C635DF2F2CCBEA0064F497 /* GetActorLikesApi.swift */; };
 		98C635E22F2CCC1D0064F497 /* GetActorLikesApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C635E12F2CCC1D0064F497 /* GetActorLikesApiModel.swift */; };
 		98C636362F33B6300064F497 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C636352F33B6300064F497 /* SettingsView.swift */; };
+		98CC34372FCC8AC000AA162D /* QuotePostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CC34362FCC8AC000AA162D /* QuotePostCardView.swift */; };
+		98CC34392FCC8ADC00AA162D /* QuotePostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CC34382FCC8ADC00AA162D /* QuotePostCardViewModel.swift */; };
 		98CCEE022C08B10000E08633 /* ErrorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CCEE012C08B10000E08633 /* ErrorExtension.swift */; };
 		98D959582CAD9B3E00E6A6B7 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */; };
 		98D9595A2CAD9F0000E6A6B7 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */; };
@@ -105,13 +107,6 @@
 		CCCC00072F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00062F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift */; };
 		DDDD00012F500001007DDDDD /* PostDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00002F500001007DDDDD /* PostDraft.swift */; };
 		DDDD00032F500001007DDDDD /* DraftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00022F500001007DDDDD /* DraftsView.swift */; };
-		FFFF00012F700001007FFFFF /* MuteBlockApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */; };
-		FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00022F700002007FFFFF /* MuteBlockApi.swift */; };
-		FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */; };
-		FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00062F700004007FFFFF /* MuteBlockListView.swift */; };
-		FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00082F700005007FFFFF /* MuteWordManager.swift */; };
-		FFFF00112F700007007FFFFF /* RTFilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00102F700007007FFFFF /* RTFilterManager.swift */; };
-		FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF000A2F700006007FFFFF /* MuteWordsView.swift */; };
 		EEEE00012F600001007EEEEE /* BookmarkedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00002F600001007EEEEE /* BookmarkedPost.swift */; };
 		EEEE00032F600001007EEEEE /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00022F600001007EEEEE /* BookmarksView.swift */; };
 		EEEE00052F600001007EEEEE /* SearchPostsApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00042F600001007EEEEE /* SearchPostsApiModel.swift */; };
@@ -128,6 +123,7 @@
 		FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00062F700004007FFFFF /* MuteBlockListView.swift */; };
 		FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00082F700005007FFFFF /* MuteWordManager.swift */; };
 		FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF000A2F700006007FFFFF /* MuteWordsView.swift */; };
+		FFFF00112F700007007FFFFF /* RTFilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00102F700007007FFFFF /* RTFilterManager.swift */; };
 		FFFF00132F700008007FFFFF /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00122F700008007FFFFF /* AppLogger.swift */; };
 /* End PBXBuildFile section */
 
@@ -206,6 +202,8 @@
 		98C635DF2F2CCBEA0064F497 /* GetActorLikesApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetActorLikesApi.swift; sourceTree = "<group>"; };
 		98C635E12F2CCC1D0064F497 /* GetActorLikesApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetActorLikesApiModel.swift; sourceTree = "<group>"; };
 		98C636352F33B6300064F497 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		98CC34362FCC8AC000AA162D /* QuotePostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotePostCardView.swift; sourceTree = "<group>"; };
+		98CC34382FCC8ADC00AA162D /* QuotePostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotePostCardViewModel.swift; sourceTree = "<group>"; };
 		98CCEE012C08B10000E08633 /* ErrorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorExtension.swift; sourceTree = "<group>"; };
 		98D959572CAD9B3E00E6A6B7 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
@@ -233,13 +231,6 @@
 		CCCC00062F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedGeneratorTimelineViewModel.swift; sourceTree = "<group>"; };
 		DDDD00002F500001007DDDDD /* PostDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDraft.swift; sourceTree = "<group>"; };
 		DDDD00022F500001007DDDDD /* DraftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftsView.swift; sourceTree = "<group>"; };
-		FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApiModel.swift; sourceTree = "<group>"; };
-		FFFF00022F700002007FFFFF /* MuteBlockApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApi.swift; sourceTree = "<group>"; };
-		FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListViewModel.swift; sourceTree = "<group>"; };
-		FFFF00062F700004007FFFFF /* MuteBlockListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListView.swift; sourceTree = "<group>"; };
-		FFFF00082F700005007FFFFF /* MuteWordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordManager.swift; sourceTree = "<group>"; };
-		FFFF00102F700007007FFFFF /* RTFilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTFilterManager.swift; sourceTree = "<group>"; };
-		FFFF000A2F700006007FFFFF /* MuteWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordsView.swift; sourceTree = "<group>"; };
 		EEEE00002F600001007EEEEE /* BookmarkedPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkedPost.swift; sourceTree = "<group>"; };
 		EEEE00022F600001007EEEEE /* BookmarksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksView.swift; sourceTree = "<group>"; };
 		EEEE00042F600001007EEEEE /* SearchPostsApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPostsApiModel.swift; sourceTree = "<group>"; };
@@ -256,21 +247,12 @@
 		FFFF00062F700004007FFFFF /* MuteBlockListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListView.swift; sourceTree = "<group>"; };
 		FFFF00082F700005007FFFFF /* MuteWordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordManager.swift; sourceTree = "<group>"; };
 		FFFF000A2F700006007FFFFF /* MuteWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordsView.swift; sourceTree = "<group>"; };
+		FFFF00102F700007007FFFFF /* RTFilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTFilterManager.swift; sourceTree = "<group>"; };
 		FFFF00122F700008007FFFFF /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		980FD1CA2E770BE900AE29EF /* Session */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = Session;
-			sourceTree = "<group>";
-		};
+		980FD1CA2E770BE900AE29EF /* Session */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Session; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -351,6 +333,7 @@
 				EEEE00082F600001007EEEEE /* SearchViewModel.swift */,
 				9874EC6C2E7C5DD700F116D0 /* FollowListViewModel.swift */,
 				980FD20A2E7B005500AE29EF /* ReplyPostCardViewModel.swift */,
+				98CC34382FCC8ADC00AA162D /* QuotePostCardViewModel.swift */,
 				9871534D2C08C39200E08633 /* ContentViewModel.swift */,
 				9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */,
 				980FD1D72E7714B500AE29EF /* LoginViewModel.swift */,
@@ -471,6 +454,7 @@
 				FFFF00002F600001007FFFFF /* PostTextView.swift */,
 				CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */,
 				CCCC00022F600001007CCCCC /* FullScreenImageView.swift */,
+				98CC34362FCC8AC000AA162D /* QuotePostCardView.swift */,
 				CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */,
 				987153532C29ADF300E08633 /* PostDetailView.swift */,
 				98C636352F33B6300064F497 /* SettingsView.swift */,
@@ -640,9 +624,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-bskyapp/Pods-bskyapp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-bskyapp/Pods-bskyapp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -690,6 +678,7 @@
 				9874EC5B2E7C335800F116D0 /* LikesView.swift in Sources */,
 				98697E9D2F1E4C9B007EFC2F /* InteractionService.swift in Sources */,
 				987153352C08ABB400E08633 /* ThreadgateList.swift in Sources */,
+				98CC34372FCC8AC000AA162D /* QuotePostCardView.swift in Sources */,
 				980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */,
 				980FD20B2E7B005500AE29EF /* ReplyPostCardViewModel.swift in Sources */,
 				9871533B2C08ACA300E08633 /* Reply.swift in Sources */,
@@ -708,6 +697,7 @@
 				9874EC5D2E7C335F00F116D0 /* LikesViewModel.swift in Sources */,
 				98D959622CADA8CF00E6A6B7 /* ProfileImageView.swift in Sources */,
 				987153392C08AC6F00E08633 /* FeedResponse.swift in Sources */,
+				98CC34392FCC8ADC00AA162D /* QuotePostCardViewModel.swift in Sources */,
 				98733E042EA7A31A00177E2C /* GetNotificationsApi.swift in Sources */,
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */,
