@@ -97,6 +97,19 @@ struct TimelineCardView: View {
         isBookmarked ? "ブックマークを削除" : "ブックマーク",
         systemImage: isBookmarked ? "bookmark.fill" : "bookmark")
     }
+    Divider()
+    Button {
+      UIPasteboard.general.string = viewModel.text
+    } label: {
+      SwiftUI.Label("テキストをコピー", systemImage: "doc.on.doc")
+    }
+    if let url = shareUrl {
+      Button {
+        UIPasteboard.general.string = url.absoluteString
+      } label: {
+        SwiftUI.Label("URLをコピー", systemImage: "link")
+      }
+    }
     rtFilterMenuItems
     shareMenuItem
   }
