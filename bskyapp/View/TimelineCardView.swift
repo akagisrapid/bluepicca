@@ -9,8 +9,10 @@ struct TimelineCardView: View {
   @State private var showRepostMenu = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
-  @State private var likeScale: CGFloat = 1.0
-  @State private var repostScale: CGFloat = 1.0
+  @AppStorage("swipeLeadingAction") private var swipeLeadingActionRaw: String = SwipeAction.like
+    .rawValue
+  @AppStorage("swipeTrailingAction") private var swipeTrailingActionRaw: String = SwipeAction.repost
+    .rawValue
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
   @ObservedObject private var rtFilterManager = RTFilterManager.shared
@@ -24,16 +26,6 @@ struct TimelineCardView: View {
   private var isBookmarked: Bool {
     guard let uri = viewModel.post.uri else { return false }
     return bookmarks.contains { $0.postUri == uri }
-  }
-
-  private func triggerLikeAnimation() {
-    likeScale = 1.5
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { likeScale = 1.0 }
-  }
-
-  private func triggerRepostAnimation() {
-    repostScale = 1.5
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { repostScale = 1.0 }
   }
 
   private var shareUrl: URL? {
@@ -77,7 +69,6 @@ struct TimelineCardView: View {
     Divider()
     Button {
       Task { await viewModel.toggleLike() }
-      triggerLikeAnimation()
     } label: {
       SwiftUI.Label(
         viewModel.isLiked ? "いいねを取り消す" : "いいね",
@@ -144,6 +135,49 @@ struct TimelineCardView: View {
       ShareLink(item: url) {
         SwiftUI.Label("シェア", systemImage: "square.and.arrow.up")
       }
+    }
+  }
+
+  @ViewBuilder
+  private func swipeButton(for action: SwipeAction) -> some View {
+    switch action {
+    case .like:
+      Button {
+        Task { await viewModel.toggleLike() }
+      } label: {
+        Image(systemName: viewModel.isLiked ? "star.slash.fill" : "star.fill")
+      }
+      .tint(.yellow)
+    case .repost:
+      Button {
+        showRepostMenu = true
+      } label: {
+        Image(systemName: "arrow.rectanglepath")
+      }
+      .tint(.green)
+    case .reply:
+      Button {
+        isShowingReplySheet = true
+      } label: {
+        Image(systemName: "bubble.left.fill")
+      }
+      .tint(.blue)
+    case .bookmark:
+      Button {
+        toggleBookmark()
+      } label: {
+        Image(systemName: isBookmarked ? "bookmark.slash.fill" : "bookmark.fill")
+      }
+      .tint(.blue)
+    case .quote:
+      Button {
+        isShowingQuoteSheet = true
+      } label: {
+        Image(systemName: "quote.bubble.fill")
+      }
+      .tint(.purple)
+    case .none:
+      EmptyView()
     }
   }
 
@@ -288,96 +322,50 @@ struct TimelineCardView: View {
           }
         }
 
-        // アクションバー: リプライ・リポスト・いいね
+        // アクションバー: 件数表示のみ（操作は長押しメニュー・スワイプで行う）
         HStack(spacing: 0) {
-          // リプライボタン（Threadgateで制限中はグレーアウト＋ロックバッジ）
-          Button(action: {
-            isShowingReplySheet = true
-          }) {
-            HStack(spacing: 4) {
-              Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
-                .font(.caption)
-                .overlay(alignment: .topTrailing) {
-                  if viewModel.isReplyDisabled {
-                    Image(systemName: "lock.fill")
-                      .font(.system(size: 7))
-                      .offset(x: 5, y: -5)
-                  }
-                }
-              Text("\(viewModel.post.replyCount ?? 0)")
-                .font(.caption)
-            }
-            .foregroundColor(viewModel.isReplyDisabled ? .secondary.opacity(0.4) : .secondary)
-            .frame(minWidth: 44, minHeight: 36)
-          }
-          .buttonStyle(.plain)
-          .disabled(viewModel.isReplyDisabled)
-          .accessibilityLabel(
-            viewModel.isReplyDisabled ? "返信不可" : "返信 \(viewModel.post.replyCount ?? 0)件")
-
-          Spacer()
-
-          // リポスト・引用ボタン
-          Button(action: { showRepostMenu = true }) {
-            HStack(spacing: 4) {
-              Image(systemName: "arrow.rectanglepath")
-                .font(.caption)
-                .scaleEffect(repostScale)
-                .animation(.spring(response: 0.3, dampingFraction: 0.4), value: repostScale)
-              Text("\(viewModel.repostCount)")
-                .font(.caption)
-            }
-            .foregroundColor(viewModel.isReposted ? .green : .secondary)
-            .animation(.easeInOut(duration: 0.2), value: viewModel.isReposted)
-            .frame(minWidth: 44, minHeight: 36)
-          }
-          .buttonStyle(.plain)
-          .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
-            Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
-              Task { await viewModel.toggleRepost() }
-              triggerRepostAnimation()
-            }
-            Button("引用ポスト") { isShowingQuoteSheet = true }
-            Button("キャンセル", role: .cancel) {}
-          }
-          .accessibilityLabel(
-            viewModel.isReposted
-              ? "リポスト済み \(viewModel.repostCount)件" : "リポスト \(viewModel.repostCount)件")
-
-          Spacer()
-
-          // いいねボタン
-          Button(action: {
-            Task { await viewModel.toggleLike() }
-            triggerLikeAnimation()
-          }) {
-            HStack(spacing: 4) {
-              Image(systemName: viewModel.isLiked ? "star.fill" : "star")
-                .font(.caption)
-                .scaleEffect(likeScale)
-                .animation(.spring(response: 0.3, dampingFraction: 0.4), value: likeScale)
-              Text("\(viewModel.likeCount)")
-                .font(.caption)
-            }
-            .foregroundColor(viewModel.isLiked ? .yellow : .secondary)
-            .animation(.easeInOut(duration: 0.2), value: viewModel.isLiked)
-            .frame(minWidth: 44, minHeight: 36)
-          }
-          .buttonStyle(.plain)
-          .accessibilityLabel(
-            viewModel.isLiked ? "いいね済み \(viewModel.likeCount)件" : "いいね \(viewModel.likeCount)件")
-
-          Spacer()
-
-          // ブックマークボタン
-          Button(action: { toggleBookmark() }) {
-            Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
+          HStack(spacing: 4) {
+            Image(systemName: viewModel.isReplyDisabled ? "bubble.left.fill" : "bubble.left")
               .font(.caption)
-              .foregroundColor(isBookmarked ? .blue : .secondary)
-              .frame(minWidth: 44, minHeight: 36)
+              .overlay(alignment: .topTrailing) {
+                if viewModel.isReplyDisabled {
+                  Image(systemName: "lock.fill")
+                    .font(.system(size: 7))
+                    .offset(x: 5, y: -5)
+                }
+              }
+            Text("\(viewModel.post.replyCount ?? 0)")
+              .font(.caption)
           }
-          .buttonStyle(.plain)
-          .accessibilityLabel(isBookmarked ? "ブックマーク済み" : "ブックマーク")
+          .foregroundColor(viewModel.isReplyDisabled ? .secondary.opacity(0.4) : .secondary)
+          .frame(minWidth: 44, minHeight: 28)
+
+          Spacer()
+
+          HStack(spacing: 4) {
+            Image(systemName: "arrow.rectanglepath")
+              .font(.caption)
+            Text("\(viewModel.repostCount)")
+              .font(.caption)
+          }
+          .foregroundColor(viewModel.isReposted ? .green : .secondary)
+
+          Spacer()
+
+          HStack(spacing: 4) {
+            Image(systemName: viewModel.isLiked ? "star.fill" : "star")
+              .font(.caption)
+            Text("\(viewModel.likeCount)")
+              .font(.caption)
+          }
+          .foregroundColor(viewModel.isLiked ? .yellow : .secondary)
+
+          Spacer()
+
+          Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
+            .font(.caption)
+            .foregroundColor(isBookmarked ? .blue : .secondary)
+            .frame(minWidth: 44, minHeight: 28)
         }
         .padding(.horizontal, -4)
         .padding(.bottom, 4)
@@ -393,23 +381,19 @@ struct TimelineCardView: View {
         }
       }
     }  // root VStack
+    .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
+      Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
+        Task { await viewModel.toggleRepost() }
+      }
+      Button("引用ポスト") { isShowingQuoteSheet = true }
+      Button("キャンセル", role: .cancel) {}
+    }
     .contextMenu { contextMenuItems }
     .swipeActions(edge: .leading, allowsFullSwipe: true) {
-      Button {
-        Task { await viewModel.toggleLike() }
-        triggerLikeAnimation()
-      } label: {
-        Image(systemName: viewModel.isLiked ? "star.slash.fill" : "star.fill")
-      }
-      .tint(.yellow)
+      swipeButton(for: SwipeAction(rawValue: swipeLeadingActionRaw) ?? .like)
     }
     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-      Button {
-        showRepostMenu = true
-      } label: {
-        Image(systemName: "arrow.rectanglepath")
-      }
-      .tint(.green)
+      swipeButton(for: SwipeAction(rawValue: swipeTrailingActionRaw) ?? .repost)
     }
     .sheet(isPresented: $isShowingReplySheet) {
       ReplyPostCardView(post: viewModel.post, isShowReplyCard: $isShowingReplySheet)
