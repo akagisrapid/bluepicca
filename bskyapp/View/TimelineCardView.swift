@@ -36,6 +36,15 @@ struct TimelineCardView: View {
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { repostScale = 1.0 }
   }
 
+  private var shareUrl: URL? {
+    guard let uri = viewModel.post.uri,
+      let handle = viewModel.post.author?.handle
+    else { return nil }
+    let rkey = String(uri.split(separator: "/").last ?? "")
+    guard !rkey.isEmpty else { return nil }
+    return URL(string: "https://bsky.app/profile/\(handle)/post/\(rkey)")
+  }
+
   private func toggleBookmark() {
     guard let uri = viewModel.post.uri else { return }
     if let existing = bookmarks.first(where: { $0.postUri == uri }) {
@@ -50,6 +59,91 @@ struct TimelineCardView: View {
         text: viewModel.text
       )
       modelContext.insert(bookmark)
+    }
+  }
+
+  @ViewBuilder
+  private var contextMenuItems: some View {
+    Button {
+      isShowingReplySheet = true
+    } label: {
+      SwiftUI.Label("返信", systemImage: "bubble.left")
+    }
+    Button {
+      isShowingQuoteSheet = true
+    } label: {
+      SwiftUI.Label("引用ポスト", systemImage: "quote.bubble")
+    }
+    Divider()
+    Button {
+      Task { await viewModel.toggleLike() }
+      triggerLikeAnimation()
+    } label: {
+      SwiftUI.Label(
+        viewModel.isLiked ? "いいねを取り消す" : "いいね",
+        systemImage: viewModel.isLiked ? "star.slash" : "star")
+    }
+    Button {
+      showRepostMenu = true
+    } label: {
+      SwiftUI.Label(
+        viewModel.isReposted ? "リポストを取り消す" : "リポスト",
+        systemImage: "arrow.rectanglepath")
+    }
+    Button {
+      toggleBookmark()
+    } label: {
+      SwiftUI.Label(
+        isBookmarked ? "ブックマークを削除" : "ブックマーク",
+        systemImage: isBookmarked ? "bookmark.fill" : "bookmark")
+    }
+    Divider()
+    Button {
+      UIPasteboard.general.string = viewModel.text
+    } label: {
+      SwiftUI.Label("テキストをコピー", systemImage: "doc.on.doc")
+    }
+    if let url = shareUrl {
+      Button {
+        UIPasteboard.general.string = url.absoluteString
+      } label: {
+        SwiftUI.Label("URLをコピー", systemImage: "link")
+      }
+    }
+    rtFilterMenuItems
+    shareMenuItem
+  }
+
+  @ViewBuilder
+  private var rtFilterMenuItems: some View {
+    if viewModel.isRepost, let did = viewModel.repostAuthorDid {
+      Divider()
+      Button {
+        if rtFilterManager.isFiltered(did) {
+          rtFilterManager.remove(did: did)
+        } else {
+          rtFilterManager.add(
+            did: did,
+            displayName: viewModel.repostAuthorName,
+            handle: viewModel.repostAuthorHandle,
+            avatarUrl: viewModel.repostAuthorAvatarUrl
+          )
+        }
+      } label: {
+        SwiftUI.Label(
+          rtFilterManager.isFiltered(did) ? "このユーザーのRTを再表示" : "このユーザーのRTを非表示",
+          systemImage: rtFilterManager.isFiltered(did) ? "eye" : "eye.slash")
+      }
+    }
+  }
+
+  @ViewBuilder
+  private var shareMenuItem: some View {
+    if let url = shareUrl {
+      Divider()
+      ShareLink(item: url) {
+        SwiftUI.Label("シェア", systemImage: "square.and.arrow.up")
+      }
     }
   }
 
@@ -299,6 +393,7 @@ struct TimelineCardView: View {
         }
       }
     }  // root VStack
+    .contextMenu { contextMenuItems }
     .swipeActions(edge: .leading, allowsFullSwipe: true) {
       Button {
         Task { await viewModel.toggleLike() }
