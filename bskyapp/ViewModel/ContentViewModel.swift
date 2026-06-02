@@ -25,6 +25,7 @@ class ContentViewModel: ObservableObject {
   private let lastReadUriKey = "lastReadPostUri"
   private var currentFetchTask: Task<Void, any Error>?
   private var postCreatedObserver: NSObjectProtocol?
+  var lastFetchDate: Date?
 
   var timelineCursor: String?
 
@@ -101,6 +102,7 @@ class ContentViewModel: ObservableObject {
         self.feeds = response.feed
         self.posts = self.feeds.compactMap { $0.post }
         self.timelineCursor = response.cursor
+        self.lastFetchDate = Date()
         PostStateManager.shared.syncWithServerState(posts: self.posts)
         self.isFetchingTimeline = false
 

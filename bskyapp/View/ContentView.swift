@@ -55,6 +55,11 @@ struct ContentView: View {
         .onChange(of: scenePhase) { _, newPhase in
           if newPhase == .background {
             viewModel.saveReadPosition(uri: viewModel.validFeeds.first?.post?.uri)
+          } else if newPhase == .active,
+            let lastFetch = viewModel.lastFetchDate,
+            Date().timeIntervalSince(lastFetch) > 300
+          {
+            Task { try? await viewModel.fetchTimeline() }
           }
         }
         .alert(
