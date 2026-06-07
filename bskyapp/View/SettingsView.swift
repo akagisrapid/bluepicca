@@ -35,6 +35,12 @@ struct SettingsView: View {
     .rawValue
   @AppStorage("swipeTrailingAction") private var swipeTrailingActionRaw: String = SwipeAction.repost
     .rawValue
+  @AppStorage("showSensitiveContent") private var showSensitiveContent: Bool = false
+  @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
+  @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
+  @AppStorage("hideImagePreview") private var hideImagePreview: Bool = false
+  @AppStorage("hideAvatars") private var hideAvatars: Bool = false
+  @AppStorage("restoreScrollOnTabSwitch") private var restoreScrollOnTabSwitch: Bool = true
 
   private var appearanceMode: AppearanceMode {
     AppearanceMode(rawValue: appearanceModeRaw) ?? .system
@@ -49,6 +55,20 @@ struct SettingsView: View {
             Text("タブ").tag("tabs")
           }
           .pickerStyle(.segmented)
+          Toggle("フィード切り替え時に前回位置に戻る", isOn: $restoreScrollOnTabSwitch)
+          Toggle("自動更新", isOn: $autoRefreshEnabled)
+          if autoRefreshEnabled {
+            Picker("更新間隔", selection: $autoRefreshIntervalSeconds) {
+              Text("30秒").tag(30)
+              Text("1分").tag(60)
+              Text("3分").tag(180)
+              Text("5分").tag(300)
+            }
+          }
+        }
+
+        Section("コンテンツ") {
+          Toggle("センシティブなコンテンツを表示", isOn: $showSensitiveContent)
         }
 
         Section("スワイプ操作") {
@@ -71,6 +91,8 @@ struct SettingsView: View {
             }
           }
           .pickerStyle(.segmented)
+          Toggle("画像プレビューを非表示", isOn: $hideImagePreview)
+          Toggle("アバターを非表示", isOn: $hideAvatars)
         }
 
         Section("モデレーション") {

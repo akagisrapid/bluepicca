@@ -70,7 +70,14 @@ struct TimelineCardView: View {
     }
     Divider()
     Button {
-      Task { await viewModel.toggleLike() }
+      let wasLiked = viewModel.isLiked
+      Task {
+        await viewModel.toggleLike()
+        ToastManager.shared.show(
+          icon: wasLiked ? "star.slash" : "star.fill",
+          text: wasLiked ? "いいねを取り消し" : "いいね"
+        )
+      }
     } label: {
       SwiftUI.Label(
         viewModel.isLiked ? "いいねを取り消す" : "いいね",
@@ -84,7 +91,12 @@ struct TimelineCardView: View {
         systemImage: "arrow.rectanglepath")
     }
     Button {
+      let wasBookmarked = isBookmarked
       toggleBookmark()
+      ToastManager.shared.show(
+        icon: wasBookmarked ? "bookmark.slash" : "bookmark.fill",
+        text: wasBookmarked ? "ブックマークを削除" : "ブックマーク"
+      )
     } label: {
       SwiftUI.Label(
         isBookmarked ? "ブックマークを削除" : "ブックマーク",
@@ -145,7 +157,14 @@ struct TimelineCardView: View {
     switch action {
     case .like:
       Button {
-        Task { await viewModel.toggleLike() }
+        let wasLiked = viewModel.isLiked
+        Task {
+          await viewModel.toggleLike()
+          ToastManager.shared.show(
+            icon: wasLiked ? "star.slash" : "star.fill",
+            text: wasLiked ? "いいねを取り消し" : "いいね"
+          )
+        }
       } label: {
         Image(systemName: viewModel.isLiked ? "star.slash.fill" : "star.fill")
       }
@@ -166,7 +185,12 @@ struct TimelineCardView: View {
       .tint(.blue)
     case .bookmark:
       Button {
+        let wasBookmarked = isBookmarked
         toggleBookmark()
+        ToastManager.shared.show(
+          icon: wasBookmarked ? "bookmark.slash" : "bookmark.fill",
+          text: wasBookmarked ? "ブックマークを削除" : "ブックマーク"
+        )
       } label: {
         Image(systemName: isBookmarked ? "bookmark.slash.fill" : "bookmark.fill")
       }
@@ -396,7 +420,14 @@ struct TimelineCardView: View {
     }  // root VStack
     .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
       Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
-        Task { await viewModel.toggleRepost() }
+        let wasReposted = viewModel.isReposted
+        Task {
+          await viewModel.toggleRepost()
+          ToastManager.shared.show(
+            icon: "arrow.rectanglepath",
+            text: wasReposted ? "リポストを取り消し" : "リポスト"
+          )
+        }
       }
       Button("引用ポスト") { isShowingQuoteSheet = true }
       Button("キャンセル", role: .cancel) {}

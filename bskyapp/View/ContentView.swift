@@ -6,6 +6,7 @@ struct ContentView: View {
   @Environment(\.scenePhase) private var scenePhase
   @StateObject var viewModel: ContentViewModel
   @Binding var isLoggedIn: Bool
+  @ObservedObject private var toastManager = ToastManager.shared
   @State private var isShowReplies = false
   @State private var isShowLikes = false
   @State private var isShowSettings = false
@@ -15,10 +16,16 @@ struct ContentView: View {
   @State private var selectedPostForLikes: Post?
   @State private var scrollProxy: ScrollViewProxy? = nil
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
+  @AppStorage("showSensitiveContent") private var showSensitiveContent: Bool = false
+  @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
+  @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
 
   var body: some View {
     NavigationStack {
       mainContent
+        .overlay(alignment: .bottom) {
+          ToastOverlay(toastManager: toastManager)
+        }
         .sheet(isPresented: $viewModel.isShowPostCard) {
           PostCardView(
             viewModel: PostCardViewModel(text: ""), isShowPostCard: $viewModel.isShowPostCard
@@ -54,12 +61,20 @@ struct ContentView: View {
         }
         .onChange(of: scenePhase) { _, newPhase in
           if newPhase == .background {
-            viewModel.saveReadPosition(uri: viewModel.validFeeds.first?.post?.uri)
+            viewModel.saveReadPosition(uri: viewModel.currentReadUri)
           } else if newPhase == .active,
             let lastFetch = viewModel.lastFetchDate,
             Date().timeIntervalSince(lastFetch) > 300
           {
             Task { try? await viewModel.fetchTimeline() }
+          }
+        }
+        .task(id: "\(autoRefreshEnabled)-\(autoRefreshIntervalSeconds)") {
+          guard autoRefreshEnabled else { return }
+          while !Task.isCancelled {
+            try? await Task.sleep(for: .seconds(autoRefreshIntervalSeconds))
+            guard !Task.isCancelled, !viewModel.isFetchingTimeline else { continue }
+            try? await viewModel.fetchTimeline()
           }
         }
         .alert(
@@ -141,9 +156,13 @@ struct ContentView: View {
       .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
       .id(post.uri ?? feedItem.id)
       .onAppear {
+        if let uri = post.uri { viewModel.cellDidAppear(uri: uri) }
         if feedItem.id == viewModel.validFeeds.last?.id {
           Task { await viewModel.loadMore() }
         }
+      }
+      .onDisappear {
+        if let uri = post.uri { viewModel.cellDidDisappear(uri: uri) }
       }
     }
   }
@@ -212,19 +231,18 @@ struct ContentView: View {
   @ToolbarContentBuilder
   private var trailingToolbarItem: some ToolbarContent {
     ToolbarItem(placement: .navigationBarTrailing) {
-      HStack(spacing: 16) {
-        Button(action: { isShowMyProfile = true }) {
-          SwiftUI.Label("プロフィール", systemImage: "person.circle").labelStyle(.iconOnly)
-        }
-        .buttonStyle(.plain)
-        Button(action: { isShowSearch = true }) {
-          SwiftUI.Label("検索", systemImage: "magnifyingglass").labelStyle(.iconOnly)
-        }
-        .buttonStyle(.plain)
-        Button(action: { isShowSettings = true }) {
-          SwiftUI.Label("設定", systemImage: "gearshape").labelStyle(.iconOnly)
-        }
-        .buttonStyle(.plain)
+      Button(action: { isShowMyProfile = true }) {
+        SwiftUI.Label("プロフィール", systemImage: "person.circle").labelStyle(.iconOnly)
+      }
+    }
+    ToolbarItem(placement: .navigationBarTrailing) {
+      Button(action: { isShowSearch = true }) {
+        SwiftUI.Label("検索", systemImage: "magnifyingglass").labelStyle(.iconOnly)
+      }
+    }
+    ToolbarItem(placement: .navigationBarTrailing) {
+      Button(action: { isShowSettings = true }) {
+        SwiftUI.Label("設定", systemImage: "gearshape").labelStyle(.iconOnly)
       }
     }
   }
