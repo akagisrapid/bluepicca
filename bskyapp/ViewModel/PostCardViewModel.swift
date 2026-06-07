@@ -88,7 +88,8 @@ class PostCardViewModel: ObservableObject {
   func checkTextCount() {
     DispatchQueue.main.async { [weak self] in
       guard let self else { return }
-      self.isTextValid = 0 < self.text.count && self.text.count <= self.maxTextCount
+      let hasImages = !self.selectedImages.isEmpty
+      self.isTextValid = (hasImages || 0 < self.text.count) && self.text.count <= self.maxTextCount
     }
   }
 
@@ -115,6 +116,7 @@ class PostCardViewModel: ObservableObject {
             if selectedImages.count < maxImageCount {
               selectedImages.append(IdentifiableImage(image: image))
               objectWillChange.send()
+              self.checkTextCount()
 
               if originalSize > ImageCompressionHelper.maxFileSizeBytes {
                 errorMessage =
@@ -141,6 +143,7 @@ class PostCardViewModel: ObservableObject {
       if index < selectedPhotoItems.count {
         selectedPhotoItems.remove(at: index)
       }
+      checkTextCount()
     }
   }
 
