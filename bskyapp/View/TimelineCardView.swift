@@ -13,6 +13,8 @@ struct TimelineCardView: View {
     .rawValue
   @AppStorage("swipeTrailingAction") private var swipeTrailingActionRaw: String = SwipeAction.repost
     .rawValue
+  @AppStorage("hideImagePreview") private var hideImagePreview: Bool = false
+  @AppStorage("hideAvatars") private var hideAvatars: Bool = false
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
   @ObservedObject private var rtFilterManager = RTFilterManager.shared
@@ -222,12 +224,14 @@ struct TimelineCardView: View {
       VStack(alignment: .leading, spacing: 0) {
         // ヘッダー: アバター + 著者情報 + 時刻
         HStack(alignment: .top, spacing: 10) {
-          ProfileImageView(
-            viewModel: AsyncImageViewModel(
-              url: viewModel.post.author?.avatarUrl,
-              imageSize: .timeline,
-              alt: viewModel.authorName),
-            actor: viewModel.post.author?.did ?? "")
+          if !hideAvatars {
+            ProfileImageView(
+              viewModel: AsyncImageViewModel(
+                url: viewModel.post.author?.avatarUrl,
+                imageSize: .timeline,
+                alt: viewModel.authorName),
+              actor: viewModel.post.author?.did ?? "")
+          }
 
           VStack(alignment: .leading, spacing: 1) {
             HStack(spacing: 4) {
@@ -296,11 +300,20 @@ struct TimelineCardView: View {
 
           // 添付画像サムネイル
           if let images = viewModel.post.embed?.resolvedImages, !images.isEmpty {
-            ImageGridView(images: images)
+            if hideImagePreview {
+              HStack(spacing: 6) {
+                MediaBadge(
+                  icon: "photo", label: images.count == 1 ? "画像" : "画像 \(images.count)枚")
+                Spacer()
+              }
               .padding(.bottom, 6)
+            } else {
+              ImageGridView(images: images)
+                .padding(.bottom, 6)
+            }
           }
 
-          // 動画バッジ（サムネイルなし）
+          // 動画バッジ
           if viewModel.videoCount > 0 {
             HStack(spacing: 6) {
               MediaBadge(icon: "play.rectangle", label: "動画")
@@ -372,7 +385,7 @@ struct TimelineCardView: View {
       }  // body VStack
       .padding(.horizontal, 12)
       .overlay {
-        if viewModel.connectsToCardAbove || viewModel.connectsToCardBelow {
+        if !hideAvatars && (viewModel.connectsToCardAbove || viewModel.connectsToCardBelow) {
           HStack(spacing: 0) {
             Color.clear.frame(width: 12 + timelineAvatarSize / 2 - 1)
             Color.accentColor.opacity(0.35).frame(width: 2)
@@ -432,6 +445,7 @@ private struct MediaBadge: View {
 
 struct QuotePostCard: View {
   let quoted: EmbeddedRecordViewItem
+  @AppStorage("hideImagePreview") private var hideImagePreview: Bool = false
 
   private var quotedAsPost: Post {
     Post(uri: quoted.uri, cid: nil, author: quoted.author, record: quoted.value)
@@ -478,16 +492,22 @@ struct QuotePostCard: View {
           }
 
           if !quotedImages.isEmpty {
-            ScrollView(.horizontal, showsIndicators: false) {
-              HStack(spacing: 4) {
-                ForEach(quotedImages.prefix(4), id: \.thumb) { image in
-                  CachedAsyncImage(url: image.thumbUrl) { img in
-                    img.resizable().scaledToFill()
-                  } placeholder: {
-                    Color(.systemGray5).overlay(ProgressView().tint(.secondary))
+            if hideImagePreview {
+              MediaBadge(
+                icon: "photo",
+                label: quotedImages.count == 1 ? "画像" : "画像 \(quotedImages.count)枚")
+            } else {
+              ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 4) {
+                  ForEach(quotedImages.prefix(4), id: \.thumb) { image in
+                    CachedAsyncImage(url: image.thumbUrl) { img in
+                      img.resizable().scaledToFill()
+                    } placeholder: {
+                      Color(.systemGray5).overlay(ProgressView().tint(.secondary))
+                    }
+                    .frame(width: 72, height: 72)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
                   }
-                  .frame(width: 72, height: 72)
-                  .clipShape(RoundedRectangle(cornerRadius: 6))
                 }
               }
             }
