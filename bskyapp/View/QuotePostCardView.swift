@@ -28,7 +28,7 @@ struct QuotePostCardView: View {
       .navigationTitle("引用ポスト")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
+        ToolbarItem(placement: .navigationBarTrailing) {
           Button(action: { isShowQuoteCard = false }) {
             SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
           }

@@ -23,16 +23,16 @@ struct PostCardView: View {
       .navigationTitle("新しいポスト")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
-          Button(action: { isShowPostCard.toggle() }) {
-            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
-          }
-        }
         ToolbarItem(placement: .navigationBarTrailing) {
           Button(action: { saveDraft() }) {
             SwiftUI.Label("下書きに保存", systemImage: "doc.badge.plus").labelStyle(.iconOnly)
           }
           .disabled(viewModel.text.isEmpty)
+        }
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button(action: { isShowPostCard.toggle() }) {
+            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
+          }
         }
       }
       .sheet(isPresented: $isShowDrafts) {

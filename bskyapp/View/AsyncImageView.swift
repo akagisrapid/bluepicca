@@ -28,14 +28,7 @@ struct AsyncImageView: View {
           Text("alt: \(viewModel.alt)")
         }
       }
-      //                .gesture(DragGesture().onEnded { gesture in
-      //                    if gesture.translation.height > 100 {
-      //                        isFullsizeView.toggle()
-      //                    }
-      //                })
-
-      HStack {
-        Spacer()
+      .overlay(alignment: .topTrailing) {
         Button(action: {
           isFullsizeView.toggle()
         }) {
@@ -47,10 +40,9 @@ struct AsyncImageView: View {
             .shadow(radius: 5)
         }
         .padding(.trailing, 20)
-        .padding(.bottom, 20)
+        .padding(.top, 20)
         .scaleEffect(1.2)
       }
-      .padding()
     }
   }
 }

@@ -8,83 +8,69 @@ struct LikesView: View {
 
   var body: some View {
     NavigationStack {
-      ZStack {
-        List {
-          if let targetPost = viewModel.targetPost {
-            Section {
-              TimelineCardView(viewModel: TimelineCardViewModel(post: targetPost))
-            } header: {
-              Text("対象ポスト")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding(.leading, -10)
-            }
-          }
-
+      List {
+        if let targetPost = viewModel.targetPost {
           Section {
-            ForEach(viewModel.likes, id: \.actor.did) { like in
-              LikeItemView(like: like)
-            }
+            TimelineCardView(viewModel: TimelineCardViewModel(post: targetPost))
           } header: {
-            Text("いいねしたユーザー")
+            Text("対象ポスト")
               .font(.caption)
               .foregroundColor(.secondary)
               .padding(.leading, -10)
           }
         }
-        .listStyle(.plain)
-        .overlay {
-          if viewModel.isLoading {
-            ProgressView("いいね一覧を読み込み中...")
-              .progressViewStyle(CircularProgressViewStyle())
-              .scaleEffect(1.5)
-              .padding()
-              .frame(maxWidth: .infinity, maxHeight: .infinity)
-              .background(Color(.systemBackground))
-          } else if let errorMessage = viewModel.errorMessage {
-            VStack(spacing: 12) {
-              Image(systemName: "exclamationmark.triangle")
-                .font(.largeTitle)
-                .foregroundColor(.red)
-              Text(errorMessage)
-                .foregroundColor(.red)
-                .multilineTextAlignment(.center)
-                .padding()
-              Button("再試行") {
-                Task {
-                  await viewModel.fetchTargetPost(uri: postUri)
-                  await viewModel.fetchLikes(uri: postUri, cid: postCid)
-                }
-              }
-              .buttonStyle(.bordered)
-            }
-            .padding()
-          } else if viewModel.likes.isEmpty {
-            ContentUnavailableView("まだいいねがありません", systemImage: "heart")
-          }
-        }
 
-        // 右下の戻るボタン
-        VStack {
-          Spacer()
-          HStack {
-            Spacer()
-            Button(action: { dismiss() }) {
-              Image(systemName: "xmark.circle.fill")
-                .font(.largeTitle)
-                .foregroundColor(.white)
-                .background(Color.black.opacity(0.7))
-                .clipShape(Circle())
-                .shadow(radius: 5)
-            }
-            .padding(.trailing, 20)
-            .padding(.bottom, 20)
-            .scaleEffect(1.2)
+        Section {
+          ForEach(viewModel.likes, id: \.actor.did) { like in
+            LikeItemView(like: like)
           }
+        } header: {
+          Text("いいねしたユーザー")
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .padding(.leading, -10)
+        }
+      }
+      .listStyle(.plain)
+      .overlay {
+        if viewModel.isLoading {
+          ProgressView("いいね一覧を読み込み中...")
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(1.5)
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(.systemBackground))
+        } else if let errorMessage = viewModel.errorMessage {
+          VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle")
+              .font(.largeTitle)
+              .foregroundColor(.red)
+            Text(errorMessage)
+              .foregroundColor(.red)
+              .multilineTextAlignment(.center)
+              .padding()
+            Button("再試行") {
+              Task {
+                await viewModel.fetchTargetPost(uri: postUri)
+                await viewModel.fetchLikes(uri: postUri, cid: postCid)
+              }
+            }
+            .buttonStyle(.bordered)
+          }
+          .padding()
+        } else if viewModel.likes.isEmpty {
+          ContentUnavailableView("まだいいねがありません", systemImage: "heart")
         }
       }
       .navigationTitle("いいね一覧")
       .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button("閉じる", systemImage: "xmark") {
+            dismiss()
+          }
+        }
+      }
       .task {
         await viewModel.fetchTargetPost(uri: postUri)
         await viewModel.fetchLikes(uri: postUri, cid: postCid)

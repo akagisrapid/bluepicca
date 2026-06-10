@@ -44,14 +44,14 @@ struct DraftsView: View {
       .navigationTitle("下書き")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
-          Button(action: { dismiss() }) {
-            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
-          }
-        }
         if !drafts.isEmpty {
           ToolbarItem(placement: .navigationBarTrailing) {
             EditButton()
+          }
+        }
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button(action: { dismiss() }) {
+            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
           }
         }
       }
