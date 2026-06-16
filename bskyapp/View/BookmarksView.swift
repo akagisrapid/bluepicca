@@ -30,20 +30,12 @@ struct BookmarksView: View {
       }
       .navigationTitle("ブックマーク")
       .navigationBarTitleDisplayMode(.inline)
-      .overlay(alignment: .bottomTrailing) {
-        Button(action: { dismiss() }) {
-          SwiftUI.Label("閉じる", systemImage: "xmark.circle.fill")
-            .labelStyle(.iconOnly)
-            .font(.largeTitle)
-            .foregroundColor(.white)
-            .background(Color.black.opacity(0.7))
-            .clipShape(Circle())
-            .shadow(radius: 5)
-            .scaleEffect(1.2)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button("閉じる", systemImage: "xmark") {
+            dismiss()
+          }
         }
-        .buttonStyle(.plain)
-        .padding(.trailing, 20)
-        .padding(.bottom, 20)
       }
     }
   }

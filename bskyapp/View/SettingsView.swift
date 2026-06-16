@@ -135,7 +135,7 @@ struct SettingsView: View {
       .navigationTitle("設定")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
+        ToolbarItem(placement: .navigationBarTrailing) {
           Button("閉じる", systemImage: "xmark") {
             dismiss()
           }
