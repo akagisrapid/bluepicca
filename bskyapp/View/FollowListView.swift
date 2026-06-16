@@ -13,88 +13,71 @@ struct FollowListView: View {
 
   var body: some View {
     NavigationStack {
-      ZStack {
-        List {
-          if viewModel.listType == .follows {
-            ForEach(viewModel.followItems, id: \.did) { item in
-              NavigationLink(
-                destination: ProfileView(
-                  viewModel: ProfileViewModel(
-                    actor: item.handle, profile: .init(did: "", handle: "", labels: [])))
-              ) {
-                FollowItemRow(
-                  handle: item.handle,
-                  displayName: item.displayName,
-                  avatar: item.avatar
-                )
-              }
-              .onAppear {
-                if item.did == viewModel.followItems.last?.did,
-                  !viewModel.isFetching, viewModel.hasMoreData
-                {
-                  Task { await viewModel.loadMore() }
-                }
-              }
+      List {
+        if viewModel.listType == .follows {
+          ForEach(viewModel.followItems, id: \.did) { item in
+            NavigationLink(
+              destination: ProfileView(
+                viewModel: ProfileViewModel(
+                  actor: item.handle, profile: .init(did: "", handle: "", labels: [])))
+            ) {
+              FollowItemRow(
+                handle: item.handle,
+                displayName: item.displayName,
+                avatar: item.avatar
+              )
             }
-          } else {
-            ForEach(viewModel.followerItems, id: \.did) { item in
-              NavigationLink(
-                destination: ProfileView(
-                  viewModel: ProfileViewModel(
-                    actor: item.handle, profile: .init(did: "", handle: "", labels: [])))
-              ) {
-                FollowItemRow(
-                  handle: item.handle,
-                  displayName: item.displayName,
-                  avatar: item.avatar
-                )
-              }
-              .onAppear {
-                if item.did == viewModel.followerItems.last?.did,
-                  !viewModel.isFetching, viewModel.hasMoreData
-                {
-                  Task { await viewModel.loadMore() }
-                }
+            .onAppear {
+              if item.did == viewModel.followItems.last?.did,
+                !viewModel.isFetching, viewModel.hasMoreData
+              {
+                Task { await viewModel.loadMore() }
               }
             }
           }
-
-          if viewModel.isFetching {
-            HStack {
-              Spacer()
-              ProgressView()
-                .progressViewStyle(CircularProgressViewStyle())
-              Spacer()
+        } else {
+          ForEach(viewModel.followerItems, id: \.did) { item in
+            NavigationLink(
+              destination: ProfileView(
+                viewModel: ProfileViewModel(
+                  actor: item.handle, profile: .init(did: "", handle: "", labels: [])))
+            ) {
+              FollowItemRow(
+                handle: item.handle,
+                displayName: item.displayName,
+                avatar: item.avatar
+              )
             }
-            .padding()
+            .onAppear {
+              if item.did == viewModel.followerItems.last?.did,
+                !viewModel.isFetching, viewModel.hasMoreData
+              {
+                Task { await viewModel.loadMore() }
+              }
+            }
           }
         }
-        .listStyle(.plain)
 
-        // 右下の戻るボタン
-        VStack {
-          Spacer()
+        if viewModel.isFetching {
           HStack {
             Spacer()
-            Button(action: {
-              dismiss()
-            }) {
-              SwiftUI.Label("閉じる", systemImage: "xmark.circle.fill")
-                .labelStyle(.iconOnly)
-                .font(.largeTitle)
-                .foregroundColor(.white)
-                .background(Color.black.opacity(0.7))
-                .clipShape(Circle())
-                .shadow(radius: 5)
-            }
-            .padding(.trailing, 20)
-            .padding(.bottom, 20)
-            .scaleEffect(1.2)
+            ProgressView()
+              .progressViewStyle(CircularProgressViewStyle())
+            Spacer()
+          }
+          .padding()
+        }
+      }
+      .listStyle(.plain)
+      .navigationTitle(title)
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button("閉じる", systemImage: "xmark") {
+            dismiss()
           }
         }
       }
-      .navigationTitle(title)
-      .navigationBarTitleDisplayMode(.inline)
       .task {
         await viewModel.fetchData()
       }

@@ -167,7 +167,7 @@ struct ReplyPostCardView: View {
       .navigationTitle("リプライ")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .navigationBarLeading) {
+        ToolbarItem(placement: .navigationBarTrailing) {
           Button(action: {
             isShowReplyCard = false
           }) {

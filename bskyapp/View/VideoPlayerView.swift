@@ -56,24 +56,22 @@ private struct VideoPlayerSheet: View {
           .foregroundColor(.secondary)
           .padding(.horizontal)
       }
-
-      HStack {
-        Spacer()
-        Button(action: {
-          player?.pause()
-          isPresented = false
-        }) {
-          Image(systemName: "xmark.circle.fill")
-            .font(.largeTitle)
-            .foregroundColor(.white)
-            .background(Color.black.opacity(0.7))
-            .clipShape(Circle())
-            .shadow(radius: 5)
-        }
-        .padding(.trailing, 20)
-        .padding(.bottom, 20)
-        .scaleEffect(1.2)
+    }
+    .overlay(alignment: .topTrailing) {
+      Button(action: {
+        player?.pause()
+        isPresented = false
+      }) {
+        Image(systemName: "xmark.circle.fill")
+          .font(.largeTitle)
+          .foregroundColor(.white)
+          .background(Color.black.opacity(0.7))
+          .clipShape(Circle())
+          .shadow(radius: 5)
       }
+      .padding(.trailing, 20)
+      .padding(.top, 20)
+      .scaleEffect(1.2)
     }
     .onAppear {
       UIApplication.shared.isIdleTimerDisabled = true
