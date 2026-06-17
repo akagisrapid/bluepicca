@@ -89,6 +89,11 @@ struct TimelineCardViewModel {
     return reply?.root
   }
 
+  /// リプライ先の親投稿（プレビュー表示用）
+  var replyParentPost: Post? {
+    return reply?.parent
+  }
+
   // MARK: - リプライ制限（Threadgate）
 
   /// 返信が無効化されているか（投稿者がThreadgateで制限している場合）

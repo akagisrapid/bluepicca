@@ -9,6 +9,8 @@ struct TimelineCardView: View {
   @State private var showRepostMenu = false
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
+  @State private var showHighlightPicker = false
+  @State private var viewingImageIndex: Int? = nil
   @AppStorage("swipeLeadingAction") private var swipeLeadingActionRaw: String = SwipeAction.like
     .rawValue
   @AppStorage("swipeTrailingAction") private var swipeTrailingActionRaw: String = SwipeAction.repost
@@ -18,6 +20,8 @@ struct TimelineCardView: View {
   @Environment(\.modelContext) private var modelContext
   @Query private var bookmarks: [BookmarkedPost]
   @ObservedObject private var rtFilterManager = RTFilterManager.shared
+  @ObservedObject private var highlightManager = UserHighlightManager.shared
+  @ObservedObject private var labelManager = ContentLabelManager.shared
   @ScaledMetric(relativeTo: .subheadline) private var timelineAvatarSize: CGFloat = 30
 
   init(viewModel: TimelineCardViewModel) {
@@ -37,6 +41,11 @@ struct TimelineCardView: View {
     let rkey = String(uri.split(separator: "/").last ?? "")
     guard !rkey.isEmpty else { return nil }
     return URL(string: "https://bsky.app/profile/\(handle)/post/\(rkey)")
+  }
+
+  private var authorHighlightColor: Color? {
+    guard let did = viewModel.post.author?.did else { return nil }
+    return highlightManager.color(for: did)
   }
 
   private func toggleBookmark() {
@@ -116,6 +125,7 @@ struct TimelineCardView: View {
       }
     }
     rtFilterMenuItems
+    highlightMenuItems
     shareMenuItem
   }
 
@@ -138,6 +148,25 @@ struct TimelineCardView: View {
         SwiftUI.Label(
           rtFilterManager.isFiltered(did) ? "このユーザーのRTを再表示" : "このユーザーのRTを非表示",
           systemImage: rtFilterManager.isFiltered(did) ? "eye" : "eye.slash")
+      }
+    }
+  }
+
+  @ViewBuilder
+  private var highlightMenuItems: some View {
+    if let did = viewModel.post.author?.did {
+      Divider()
+      Button {
+        showHighlightPicker = true
+      } label: {
+        SwiftUI.Label("背景色を設定", systemImage: "paintpalette")
+      }
+      if highlightManager.hasHighlight(for: did) {
+        Button(role: .destructive) {
+          highlightManager.remove(did: did)
+        } label: {
+          SwiftUI.Label("背景色を削除", systemImage: "paintbrush.pointed")
+        }
       }
     }
   }
@@ -289,8 +318,38 @@ struct TimelineCardView: View {
         .padding(.top, viewModel.isRepost ? 0 : 8)
         .padding(.bottom, 5)
 
+        // リプライ先プレビュー
+        if viewModel.isReply,
+          let parentPost = viewModel.replyParentPost,
+          !viewModel.connectsToCardAbove
+        {
+          NavigationLink(
+            destination: PostDetailView(viewModel: PostDetailViewModel(post: parentPost))
+          ) {
+            HStack(spacing: 6) {
+              Image(systemName: "bubble.left.fill")
+                .font(.system(size: 9))
+                .foregroundColor(.secondary)
+              Text(viewModel.replyTargetText)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .lineLimit(2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+              Image(systemName: "chevron.right")
+                .font(.system(size: 9))
+                .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .background(Color(.systemGray6))
+            .clipShape(RoundedRectangle(cornerRadius: 6))
+          }
+          .buttonStyle(.plain)
+          .padding(.bottom, 6)
+        }
+
         // センシティブコンテンツ警告または本文・メディア
-        if viewModel.post.isSensitive && !isSensitiveRevealed {
+        if labelManager.policy(for: viewModel.post) == .blur && !isSensitiveRevealed {
           Button(action: { isSensitiveRevealed = true }) {
             HStack(spacing: 8) {
               Image(systemName: "eye.slash")
@@ -332,8 +391,10 @@ struct TimelineCardView: View {
               }
               .padding(.bottom, 6)
             } else {
-              ImageGridView(images: images)
-                .padding(.bottom, 6)
+              ImageGridView(images: images) { index in
+                viewingImageIndex = index
+              }
+              .padding(.bottom, 6)
             }
           }
 
@@ -418,6 +479,7 @@ struct TimelineCardView: View {
         }
       }
     }  // root VStack
+    .background(authorHighlightColor?.opacity(0.12))
     .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
       Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
         let wasReposted = viewModel.isReposted
@@ -447,6 +509,25 @@ struct TimelineCardView: View {
     }
     .sheet(item: $hashtagSearchItem) { item in
       SearchView(initialQuery: item.query)
+    }
+    .sheet(isPresented: $showHighlightPicker) {
+      if let did = viewModel.post.author?.did {
+        HighlightColorPickerView(
+          did: did,
+          authorName: viewModel.authorName
+        )
+        .presentationDetents([.height(280)])
+      }
+    }
+    .fullScreenCover(
+      item: Binding(
+        get: { viewingImageIndex.map { IdentifiableInt(value: $0) } },
+        set: { viewingImageIndex = $0?.value }
+      )
+    ) { item in
+      if let images = viewModel.post.embed?.resolvedImages {
+        FullScreenImageView(images: images, initialIndex: item.value)
+      }
     }
   }
 }
@@ -691,10 +772,11 @@ struct HashtagSearchItem: Identifiable {
   let query: String
 }
 
-// MARK: - 画像グリッド（1〜4枚対応、タイムラインではタップで詳細画面へ遷移）
+// MARK: - 画像グリッド（1〜4枚対応、タップでフルスクリーン表示）
 
 private struct ImageGridView: View {
   let images: [EmbedImagesViewItem]
+  let onTap: (Int) -> Void
 
   private func aspectRatioValue(for image: EmbedImagesViewItem) -> CGFloat {
     guard let ar = image.aspectRatio, ar.width > 0 else { return 16.0 / 9.0 }
@@ -717,22 +799,22 @@ private struct ImageGridView: View {
       Group {
         switch count {
         case 1:
-          ThumbView(url: images[0].thumbUrl)
+          TappableThumbView(url: images[0].thumbUrl) { onTap(0) }
             .frame(width: w, height: h)
             .clipShape(RoundedRectangle(cornerRadius: 8))
         case 2:
           HStack(spacing: 2) {
-            ThumbView(url: images[0].thumbUrl)
-            ThumbView(url: images[1].thumbUrl)
+            TappableThumbView(url: images[0].thumbUrl) { onTap(0) }
+            TappableThumbView(url: images[1].thumbUrl) { onTap(1) }
           }
           .frame(width: w, height: h)
           .clipShape(RoundedRectangle(cornerRadius: 8))
         case 3:
           HStack(spacing: 2) {
-            ThumbView(url: images[0].thumbUrl)
+            TappableThumbView(url: images[0].thumbUrl) { onTap(0) }
             VStack(spacing: 2) {
-              ThumbView(url: images[1].thumbUrl)
-              ThumbView(url: images[2].thumbUrl)
+              TappableThumbView(url: images[1].thumbUrl) { onTap(1) }
+              TappableThumbView(url: images[2].thumbUrl) { onTap(2) }
             }
           }
           .frame(width: w, height: h)
@@ -740,12 +822,12 @@ private struct ImageGridView: View {
         default:
           VStack(spacing: 2) {
             HStack(spacing: 2) {
-              ThumbView(url: images[0].thumbUrl)
-              ThumbView(url: images[1].thumbUrl)
+              TappableThumbView(url: images[0].thumbUrl) { onTap(0) }
+              TappableThumbView(url: images[1].thumbUrl) { onTap(1) }
             }
             HStack(spacing: 2) {
-              ThumbView(url: images[2].thumbUrl)
-              ThumbView(url: images[3].thumbUrl)
+              TappableThumbView(url: images[2].thumbUrl) { onTap(2) }
+              TappableThumbView(url: images[3].thumbUrl) { onTap(3) }
             }
           }
           .frame(width: w, height: h)
@@ -794,6 +876,25 @@ private struct SingleImageView: View {
   }
 }
 
+private struct TappableThumbView: View {
+  let url: URL?
+  let onTap: () -> Void
+
+  var body: some View {
+    Button(action: onTap) {
+      CachedAsyncImage(url: url) { image in
+        image.resizable().scaledToFill()
+      } placeholder: {
+        Color(.systemGray6)
+          .overlay(ProgressView().tint(.secondary))
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .clipped()
+    }
+    .buttonStyle(.plain)
+  }
+}
+
 private struct ThumbView: View {
   let url: URL?
 
@@ -806,5 +907,82 @@ private struct ThumbView: View {
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .clipped()
+  }
+}
+
+// MARK: - 背景色ピッカーシート
+
+struct HighlightColorPickerView: View {
+  let did: String
+  let authorName: String
+  @ObservedObject private var highlightManager = UserHighlightManager.shared
+  @Environment(\.dismiss) private var dismiss
+
+  private let columns = Array(repeating: GridItem(.flexible()), count: 3)
+
+  var body: some View {
+    VStack(spacing: 20) {
+      Text("\(authorName) の背景色")
+        .font(.headline)
+        .padding(.top, 20)
+
+      LazyVGrid(columns: columns, spacing: 16) {
+        ForEach(UserHighlightManager.presetColors, id: \.hex) { item in
+          let isSelected = highlightManager.highlights[did] == item.hex
+          Button {
+            highlightManager.set(did: did, hex: item.hex)
+            dismiss()
+          } label: {
+            VStack(spacing: 6) {
+              RoundedRectangle(cornerRadius: 10)
+                .fill(Color(hex: item.hex))
+                .frame(height: 44)
+                .overlay(
+                  RoundedRectangle(cornerRadius: 10)
+                    .stroke(isSelected ? Color.primary : Color.clear, lineWidth: 2)
+                )
+              Text(item.label)
+                .font(.caption2)
+                .foregroundColor(.primary)
+            }
+          }
+          .buttonStyle(.plain)
+        }
+      }
+      .padding(.horizontal, 24)
+
+      if highlightManager.hasHighlight(for: did) {
+        Button(role: .destructive) {
+          highlightManager.remove(did: did)
+          dismiss()
+        } label: {
+          Text("背景色を削除")
+            .font(.subheadline)
+        }
+      }
+
+      Spacer()
+    }
+  }
+}
+
+// MARK: - IdentifiableInt（fullScreenCover用）
+
+private struct IdentifiableInt: Identifiable {
+  let value: Int
+  var id: Int { value }
+}
+
+// MARK: - Color(hex:) extension（HighlightColorPickerView用）
+
+extension Color {
+  init(hex: String) {
+    let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+    var int: UInt64 = 0
+    Scanner(string: hex).scanHexInt64(&int)
+    let r = Double((int >> 16) & 0xFF) / 255
+    let g = Double((int >> 8) & 0xFF) / 255
+    let b = Double(int & 0xFF) / 255
+    self.init(red: r, green: g, blue: b)
   }
 }

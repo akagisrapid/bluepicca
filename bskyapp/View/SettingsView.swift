@@ -28,6 +28,7 @@ struct SettingsView: View {
   @State private var showLogoutConfirmation = false
   @State private var showMuteBlockList = false
   @State private var showMuteWords = false
+  @State private var showContentLabels = false
   @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system
     .rawValue
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
@@ -35,7 +36,6 @@ struct SettingsView: View {
     .rawValue
   @AppStorage("swipeTrailingAction") private var swipeTrailingActionRaw: String = SwipeAction.repost
     .rawValue
-  @AppStorage("showSensitiveContent") private var showSensitiveContent: Bool = false
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
   @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
   @AppStorage("hideImagePreview") private var hideImagePreview: Bool = false
@@ -65,10 +65,6 @@ struct SettingsView: View {
               Text("5分").tag(300)
             }
           }
-        }
-
-        Section("コンテンツ") {
-          Toggle("センシティブなコンテンツを表示", isOn: $showSensitiveContent)
         }
 
         Section("スワイプ操作") {
@@ -119,6 +115,18 @@ struct SettingsView: View {
             }
           }
           .foregroundColor(.primary)
+
+          Button(action: { showContentLabels = true }) {
+            HStack {
+              Image(systemName: "eye.slash")
+              Text("センシティブコンテンツ")
+              Spacer()
+              Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            }
+          }
+          .foregroundColor(.primary)
         }
 
         Section {
@@ -147,6 +155,9 @@ struct SettingsView: View {
       .sheet(isPresented: $showMuteWords) {
         MuteWordsView()
       }
+      .sheet(isPresented: $showContentLabels) {
+        ContentLabelSettingsView()
+      }
       .alert("ログアウトしますか？", isPresented: $showLogoutConfirmation) {
         Button("キャンセル", role: .cancel) {}
         Button("ログアウト", role: .destructive) {
@@ -157,6 +168,42 @@ struct SettingsView: View {
       }
     }
     .preferredColorScheme(appearanceMode.colorScheme)
+  }
+}
+
+// MARK: - ハッシュタグフィード管理
+
+// MARK: - コンテンツラベル設定
+
+private struct ContentLabelSettingsView: View {
+  @ObservedObject private var manager = ContentLabelManager.shared
+  @Environment(\.dismiss) private var dismiss
+
+  var body: some View {
+    NavigationStack {
+      List {
+        Section {
+          Picker("性的コンテンツ", selection: $manager.sexualPolicy) {
+            ForEach(LabelPolicy.allCases, id: \.self) { Text($0.label).tag($0) }
+          }
+          Picker("ヌード", selection: $manager.nudityPolicy) {
+            ForEach(LabelPolicy.allCases, id: \.self) { Text($0.label).tag($0) }
+          }
+          Picker("グロテスク", selection: $manager.graphicPolicy) {
+            ForEach(LabelPolicy.allCases, id: \.self) { Text($0.label).tag($0) }
+          }
+        } footer: {
+          Text("「警告付き」はタイムラインに表示されますが、タップするまで内容が隠れます。「非表示」はタイムラインから除外されます。")
+        }
+      }
+      .navigationTitle("センシティブコンテンツ")
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button("閉じる", systemImage: "xmark") { dismiss() }
+        }
+      }
+    }
   }
 }
 
