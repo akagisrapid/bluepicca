@@ -125,8 +125,11 @@
 		FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00082F700005007FFFFF /* MuteWordManager.swift */; };
 		FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF000A2F700006007FFFFF /* MuteWordsView.swift */; };
 		FFFF00112F700007007FFFFF /* RTFilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00102F700007007FFFFF /* RTFilterManager.swift */; };
+		FFFF00182F70000A007FFFFF /* UserHighlightManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00172F70000A007FFFFF /* UserHighlightManager.swift */; };
 		FFFF00132F700008007FFFFF /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00122F700008007FFFFF /* AppLogger.swift */; };
 		FFFF00152F700009007FFFFF /* SwipeActionSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00142F700009007FFFFF /* SwipeActionSetting.swift */; };
+		EEEE00102F800001007EEEEE /* HashtagFeedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00112F800001007EEEEE /* HashtagFeedManager.swift */; };
+		EEEE00122F800001007EEEEE /* ContentLabelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00132F800001007EEEEE /* ContentLabelManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -251,8 +254,11 @@
 		FFFF00082F700005007FFFFF /* MuteWordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordManager.swift; sourceTree = "<group>"; };
 		FFFF000A2F700006007FFFFF /* MuteWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordsView.swift; sourceTree = "<group>"; };
 		FFFF00102F700007007FFFFF /* RTFilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTFilterManager.swift; sourceTree = "<group>"; };
+		FFFF00172F70000A007FFFFF /* UserHighlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserHighlightManager.swift; sourceTree = "<group>"; };
 		FFFF00122F700008007FFFFF /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		FFFF00142F700009007FFFFF /* SwipeActionSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionSetting.swift; sourceTree = "<group>"; };
+		EEEE00112F800001007EEEEE /* HashtagFeedManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagFeedManager.swift; sourceTree = "<group>"; };
+		EEEE00132F800001007EEEEE /* ContentLabelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentLabelManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -436,8 +442,11 @@
 				AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */,
 				FFFF00082F700005007FFFFF /* MuteWordManager.swift */,
 				FFFF00102F700007007FFFFF /* RTFilterManager.swift */,
+				FFFF00172F70000A007FFFFF /* UserHighlightManager.swift */,
 				FFFF00122F700008007FFFFF /* AppLogger.swift */,
 				FFFF00142F700009007FFFFF /* SwipeActionSetting.swift */,
+				EEEE00112F800001007EEEEE /* HashtagFeedManager.swift */,
+				EEEE00132F800001007EEEEE /* ContentLabelManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -664,8 +673,11 @@
 				FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */,
 				FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */,
 				FFFF00112F700007007FFFFF /* RTFilterManager.swift in Sources */,
+				FFFF00182F70000A007FFFFF /* UserHighlightManager.swift in Sources */,
 				FFFF00132F700008007FFFFF /* AppLogger.swift in Sources */,
 				FFFF00152F700009007FFFFF /* SwipeActionSetting.swift in Sources */,
+				EEEE00102F800001007EEEEE /* HashtagFeedManager.swift in Sources */,
+				EEEE00122F800001007EEEEE /* ContentLabelManager.swift in Sources */,
 				FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */,
 				9874EC6D2E7C5DD700F116D0 /* FollowListViewModel.swift in Sources */,
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
