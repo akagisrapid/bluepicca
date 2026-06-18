@@ -16,7 +16,6 @@ struct ContentView: View {
   @State private var selectedPostForLikes: Post?
   @State private var scrollProxy: ScrollViewProxy? = nil
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
-  @AppStorage("showSensitiveContent") private var showSensitiveContent: Bool = false
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
   @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
 

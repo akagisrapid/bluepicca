@@ -1,4 +1,5 @@
 import Alamofire
+import Combine
 import Foundation
 
 extension Notification.Name {
@@ -31,6 +32,7 @@ class ContentViewModel: ObservableObject {
 
   private var currentFetchTask: Task<Void, any Error>?
   private var postCreatedObserver: NSObjectProtocol?
+  private var hashtagFeedCancellable: AnyCancellable?
   var lastFetchDate: Date?
 
   var timelineCursor: String?
@@ -41,11 +43,11 @@ class ContentViewModel: ObservableObject {
   }
   private var feedsCache: [String: FeedCache] = [:]
 
-  // ミュート・ブロック済みアカウント・ミュートワード・RTフィルタ・センシティブコンテンツに該当する投稿を除外する
+  // ミュート・ブロック済みアカウント・ミュートワード・RTフィルタ・ラベルポリシーに該当する投稿を除外する
   var validFeeds: [FeedItem] {
     let muteWordManager = MuteWordManager.shared
     let rtFilterManager = RTFilterManager.shared
-    let showSensitive = UserDefaults.standard.bool(forKey: "showSensitiveContent")
+    let labelManager = ContentLabelManager.shared
     return feeds.filter { feedItem in
       guard let post = feedItem.post else { return false }
       let viewer = post.author?.viewer
@@ -58,7 +60,7 @@ class ContentViewModel: ObservableObject {
       {
         return false
       }
-      if !showSensitive && post.isSensitive { return false }
+      if labelManager.policy(for: post) == .hide { return false }
       return true
     }
   }
@@ -75,6 +77,20 @@ class ContentViewModel: ObservableObject {
         try? await self?.fetchTimeline()
       }
     }
+    hashtagFeedCancellable = HashtagFeedManager.shared.$hashtags
+      .dropFirst()
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] hashtags in
+        guard let self else { return }
+        Task { @MainActor [weak self] in
+          guard let self else { return }
+          let nonHashtagTabs = self.feedTabs.filter { $0.hashtag == nil }
+          self.feedTabs = nonHashtagTabs + hashtags.map { FeedTab.forHashtag($0) }
+          if let removed = self.selectedTab.hashtag, !hashtags.contains(removed) {
+            self.selectTab(.home)
+          }
+        }
+      }
   }
 
   deinit {
@@ -89,10 +105,12 @@ class ContentViewModel: ObservableObject {
   func loadFeedTabs() async {
     isLoadingFeedTabs = true
     do {
-      feedTabs = try await GetUserFeedsApi().getUserFeeds()
+      var tabs = try await GetUserFeedsApi().getUserFeeds()
+      tabs += HashtagFeedManager.shared.feedTabs
+      feedTabs = tabs
     } catch {
       dlog("ContentViewModel: loadFeedTabs error: \(error)")
-      feedTabs = [.home]
+      feedTabs = [.home] + HashtagFeedManager.shared.feedTabs
     }
     isLoadingFeedTabs = false
   }
@@ -239,10 +257,32 @@ class ContentViewModel: ObservableObject {
 
   @MainActor
   private func fetchFeed(cursor: String?) async throws -> FeedResponse {
-    if let uri = selectedTab.uri {
+    if let hashtag = selectedTab.hashtag {
+      let response = try await SearchPostsApi().searchPosts(query: hashtag, cursor: cursor)
+      let feedItems = response.posts.map { FeedItem(post: $0) }
+      return FeedResponse(cursor: response.cursor, feed: feedItems)
+    } else if let uri = selectedTab.uri {
       return try await GetFeedApi().getFeed(uri: uri, cursor: cursor)
     } else {
       return try await GetTimelineApi().getTimeline(cursor: cursor)
+    }
+  }
+
+  // MARK: - ハッシュタグフィード管理
+
+  @MainActor
+  func addHashtagFeed(_ tag: String) {
+    HashtagFeedManager.shared.add(tag)
+    guard !feedTabs.contains(where: { $0.hashtag == tag }) else { return }
+    feedTabs.append(FeedTab.forHashtag(tag))
+  }
+
+  @MainActor
+  func removeHashtagFeed(_ tag: String) {
+    HashtagFeedManager.shared.remove(tag)
+    feedTabs.removeAll { $0.hashtag == tag }
+    if selectedTab.hashtag == tag {
+      selectTab(.home)
     }
   }
 }
