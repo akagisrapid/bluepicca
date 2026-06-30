@@ -178,7 +178,7 @@ struct PostCardView: View {
       HStack(spacing: 4) {
         Image(systemName: isRestricted ? "lock.fill" : "globe")
           .font(.subheadline)
-        Text(isRestricted ? "制限中" : "全員")
+        Text(LocalizedStringKey(isRestricted ? "制限中" : "全員"))
           .font(.caption)
       }
       .foregroundColor(isRestricted ? .blue : .secondary)
@@ -301,7 +301,7 @@ private struct ReplyRulePickerSheet: View {
         } header: {
           Text("引用")
         } footer: {
-          Text(quotingDisabled ? "他のユーザーはこの投稿を引用できません" : "全員がこの投稿を引用できます")
+          Text(LocalizedStringKey(quotingDisabled ? "他のユーザーはこの投稿を引用できません" : "全員がこの投稿を引用できます"))
         }
       }
       .navigationTitle("投稿の制限設定")

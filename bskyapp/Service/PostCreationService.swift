@@ -311,9 +311,9 @@ enum ThreadgateRule: String, CaseIterable, Hashable {
 
   var label: String {
     switch self {
-    case .mentioned: return "メンションした人"
-    case .followed: return "フォロー中"
-    case .follower: return "フォロワー"
+    case .mentioned: return String(localized: "メンションした人")
+    case .followed: return String(localized: "フォロー中")
+    case .follower: return String(localized: "フォロワー")
     }
   }
 
