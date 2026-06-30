@@ -10,12 +10,12 @@ enum SwipeAction: String, CaseIterable {
 
   var label: String {
     switch self {
-    case .like: return "いいね"
-    case .repost: return "リポスト"
-    case .reply: return "返信"
-    case .bookmark: return "ブックマーク"
-    case .quote: return "引用ポスト"
-    case .none: return "なし"
+    case .like: return String(localized: "いいね")
+    case .repost: return String(localized: "リポスト")
+    case .reply: return String(localized: "返信")
+    case .bookmark: return String(localized: "ブックマーク")
+    case .quote: return String(localized: "引用ポスト")
+    case .none: return String(localized: "なし")
     }
   }
 

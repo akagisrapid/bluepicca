@@ -22,8 +22,13 @@ struct ProfileView: View {
   }
 
   private var tabs: [String] {
-    var t = ["概要", "投稿", "フォロワー", "フォロー中"]
-    if viewModel.isOwnProfile { t.append("いいね") }
+    var t = [
+      String(localized: "概要"),
+      String(localized: "ポスト"),
+      String(localized: "フォロワー"),
+      String(localized: "フォロー中"),
+    ]
+    if viewModel.isOwnProfile { t.append(String(localized: "いいね")) }
     return t
   }
 
@@ -123,7 +128,7 @@ struct ProfileView: View {
         .fixedSize()
         VStack(spacing: 2) {
           Text("\(viewModel.profile.postsCount ?? 0)").font(.headline)
-          Text("投稿").font(.caption).foregroundColor(.secondary)
+          Text("ポスト").font(.caption).foregroundColor(.secondary)
         }
         .fixedSize()
         if !viewModel.isOwnProfile {

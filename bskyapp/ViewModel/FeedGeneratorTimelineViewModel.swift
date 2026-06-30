@@ -46,7 +46,7 @@ class FeedGeneratorTimelineViewModel: ObservableObject {
         PostStateManager.shared.syncWithServerState(posts: self.feeds.compactMap { $0.post })
       } catch {
         if !(error is CancellationError) {
-          self.fetchError = "フィードの読み込みに失敗しました"
+          self.fetchError = String(localized: "フィードの読み込みに失敗しました")
           dlog("FeedGeneratorTimelineViewModel: fetchFeed error: \(error)")
         }
       }

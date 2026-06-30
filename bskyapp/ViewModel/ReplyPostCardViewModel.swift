@@ -51,7 +51,7 @@ class ReplyPostCardViewModel: ObservableObject {
         parentCid = cid
       } else {
         await MainActor.run {
-          errorMessage = "リプライに必要な情報が不足しています"
+          errorMessage = String(localized: "リプライに必要な情報が不足しています")
           isPostFailed = true
         }
         throw NSError(
@@ -139,7 +139,7 @@ class ReplyPostCardViewModel: ObservableObject {
             self.objectWillChange.send()
             self.checkTextCount()
           } else {
-            self.errorMessage = "最大\(self.maxImageCount)枚まで選択できます"
+            self.errorMessage = String(localized: "最大\(self.maxImageCount)枚まで選択できます")
           }
         }
       } catch {

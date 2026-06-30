@@ -77,7 +77,7 @@ class PostCardViewModel: ObservableObject {
           let statusCode = afError.responseCode,
           statusCode == 429
         {
-          errorMessage = "投稿回数制限に達しました。しばらく待ってから再度お試しください。"
+          errorMessage = String(localized: "投稿回数制限に達しました。しばらく待ってから再度お試しください。")
           SessionManager.shared.clearSession()
         }
       }
@@ -119,16 +119,17 @@ class PostCardViewModel: ObservableObject {
               self.checkTextCount()
 
               if originalSize > ImageCompressionHelper.maxFileSizeBytes {
-                errorMessage =
-                  "画像が大きいため、投稿時に圧縮されます (\(originalSizeString) → \(compressedSizeString))"
+                errorMessage = String(
+                  localized: "画像が大きいため、投稿時に圧縮されます (\(originalSizeString) → \(compressedSizeString))"
+                )
               }
             } else {
-              errorMessage = "最大\(maxImageCount)枚まで選択できます"
+              errorMessage = String(localized: "最大\(maxImageCount)枚まで選択できます")
             }
           }
         } else {
           await MainActor.run {
-            errorMessage = "この画像は使用できません"
+            errorMessage = String(localized: "この画像は使用できません")
           }
         }
       } catch {

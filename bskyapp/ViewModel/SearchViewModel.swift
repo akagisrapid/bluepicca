@@ -56,7 +56,7 @@ class SearchViewModel: ObservableObject {
       posts = response.posts
       searchCursor = response.cursor
     } catch {
-      errorMessage = "検索に失敗しました"
+      errorMessage = String(localized: "検索に失敗しました")
       dlog("SearchViewModel: search error: \(error)")
     }
     isSearching = false
