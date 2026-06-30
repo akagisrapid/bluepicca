@@ -96,7 +96,6 @@ struct ContentView: View {
   private var mainContent: some View {
     ScrollViewReader { proxy in
       List {
-        Color.clear.frame(height: 0).id("top")
         ForEach(Array(viewModel.validFeeds.enumerated()), id: \.element.id) { index, feedItem in
           let prevItem = index > 0 ? viewModel.validFeeds[index - 1] : nil
           let nextItem =
@@ -148,7 +147,11 @@ struct ContentView: View {
         post: post, reason: feedItem.reason, reply: feedItem.reply,
         connectsToCardAbove: connectsToCardAbove, connectsToCardBelow: connectsToCardBelow)
       let detailVM = PostDetailViewModel(post: post)
-      NavigationLink(destination: PostDetailView(viewModel: detailVM)) {
+      ZStack {
+        NavigationLink(destination: PostDetailView(viewModel: detailVM)) {
+          EmptyView()
+        }
+        .opacity(0)
         TimelineCardView(viewModel: cardVM)
       }
       .buttonStyle(.plain)
@@ -203,7 +206,9 @@ struct ContentView: View {
   @ToolbarContentBuilder
   private var leadingToolbarItem: some ToolbarContent {
     ToolbarItem(placement: .navigationBarLeading) {
-      if feedSelectorStyle == "dropdown" && viewModel.feedTabs.count > 1 {
+      if feedSelectorStyle == "dropdown" && viewModel.isLoadingFeedTabs {
+        ProgressView().scaleEffect(0.8)
+      } else if feedSelectorStyle == "dropdown" && viewModel.feedTabs.count > 1 {
         Picker(
           selection: Binding(
             get: { viewModel.selectedTab.id },
@@ -263,7 +268,8 @@ struct ContentView: View {
       Spacer()
       Button {
         viewModel.clearUnreadCount()
-        withAnimation { scrollProxy?.scrollTo("top", anchor: .top) }
+        let firstId = viewModel.validFeeds.first.map { $0.post?.uri ?? $0.id }
+        withAnimation { scrollProxy?.scrollTo(firstId, anchor: .top) }
       } label: {
         SwiftUI.Label(
           title: { Text("Top") },

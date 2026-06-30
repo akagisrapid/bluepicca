@@ -117,6 +117,7 @@
 		EEEE000D2F600001007EEEEE /* GetUserFeedsApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE000C2F600001007EEEEE /* GetUserFeedsApiModel.swift */; };
 		EEEE000F2F600001007EEEEE /* GetUserFeedsApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE000E2F600001007EEEEE /* GetUserFeedsApi.swift */; };
 		EEEE00112F600001007EEEEE /* GetFeedApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00102F600001007EEEEE /* GetFeedApi.swift */; };
+		BBBB00052F400001007BBBBB /* HashtagPreferenceApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00042F400001007BBBBB /* HashtagPreferenceApi.swift */; };
 		FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F600001007FFFFF /* PostTextView.swift */; };
 		FFFF00012F700001007FFFFF /* MuteBlockApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */; };
 		FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00022F700002007FFFFF /* MuteBlockApi.swift */; };
@@ -246,6 +247,7 @@
 		EEEE000C2F600001007EEEEE /* GetUserFeedsApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserFeedsApiModel.swift; sourceTree = "<group>"; };
 		EEEE000E2F600001007EEEEE /* GetUserFeedsApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetUserFeedsApi.swift; sourceTree = "<group>"; };
 		EEEE00102F600001007EEEEE /* GetFeedApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFeedApi.swift; sourceTree = "<group>"; };
+		BBBB00042F400001007BBBBB /* HashtagPreferenceApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagPreferenceApi.swift; sourceTree = "<group>"; };
 		FFFF00002F600001007FFFFF /* PostTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTextView.swift; sourceTree = "<group>"; };
 		FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApiModel.swift; sourceTree = "<group>"; };
 		FFFF00022F700002007FFFFF /* MuteBlockApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApi.swift; sourceTree = "<group>"; };
@@ -397,6 +399,7 @@
 				EEEE00062F600001007EEEEE /* SearchPostsApi.swift */,
 				EEEE000E2F600001007EEEEE /* GetUserFeedsApi.swift */,
 				EEEE00102F600001007EEEEE /* GetFeedApi.swift */,
+				BBBB00042F400001007BBBBB /* HashtagPreferenceApi.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -692,6 +695,7 @@
 				EEEE000D2F600001007EEEEE /* GetUserFeedsApiModel.swift in Sources */,
 				EEEE000F2F600001007EEEEE /* GetUserFeedsApi.swift in Sources */,
 				EEEE00112F600001007EEEEE /* GetFeedApi.swift in Sources */,
+				BBBB00052F400001007BBBBB /* HashtagPreferenceApi.swift in Sources */,
 				983B2C142BB27216004E20F3 /* GetTimelineApi.swift in Sources */,
 				980FD2122E7B042900AE29EF /* PostThreadResponse.swift in Sources */,
 				9874EC5B2E7C335800F116D0 /* LikesView.swift in Sources */,
