@@ -122,70 +122,87 @@ private struct ZoomableImageView: View {
   @State private var lastScale: CGFloat = 1.0
   @State private var offset: CGSize = .zero
   @State private var lastOffset: CGSize = .zero
+  @State private var isPinching: Bool = false
 
   var body: some View {
-    CachedAsyncImage(url: url) { image in
-      image.resizable().scaledToFit()
-    } placeholder: {
-      ProgressView().tint(.white)
-    }
-    .scaleEffect(scale)
-    .offset(offset)
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .accessibilityLabel(alt.isEmpty ? "画像" : alt)
-    .gesture(
-      SimultaneousGesture(
-        MagnificationGesture()
-          .onChanged { value in
-            scale = max(1.0, min(lastScale * value, 5.0))
-            isZoomed = scale > 1
-          }
-          .onEnded { _ in
-            lastScale = scale
-            if scale < 1 {
-              withAnimation(.spring()) {
-                scale = 1
-                lastScale = 1
-                offset = .zero
-                lastOffset = .zero
+    GeometryReader { geo in
+      CachedAsyncImage(url: url) { image in
+        image.resizable().scaledToFit()
+      } placeholder: {
+        ProgressView().tint(.white)
+      }
+      .scaleEffect(scale)
+      .offset(offset)
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .accessibilityLabel(alt.isEmpty ? "画像" : alt)
+      .gesture(
+        SimultaneousGesture(
+          MagnificationGesture(minimumScaleDelta: 0.05)
+            .onChanged { value in
+              isPinching = true
+              let proposed = lastScale * value
+              if proposed < 1.0 {
+                // ラバーバンド：係数を小さくして視覚的縮小を抑える
+                scale = 1.0 + (proposed - 1.0) * 0.15
+              } else {
+                scale = min(proposed, 5.0)
+              }
+              isZoomed = scale > 1
+            }
+            .onEnded { _ in
+              if scale <= 1.0 {
+                withAnimation(.spring()) {
+                  scale = 1.0
+                  lastScale = 1.0
+                  offset = .zero
+                  lastOffset = .zero
+                }
+              } else {
+                lastScale = scale
+              }
+              isZoomed = scale > 1
+              DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isPinching = false
+              }
+            },
+          DragGesture(minimumDistance: 4)
+            .onChanged { value in
+              guard !isPinching else { return }
+              if scale > 1 {
+                // 画像が画面外に出ないようオフセットを制限
+                let maxX = geo.size.width * (scale - 1) / 2
+                let maxY = geo.size.height * (scale - 1) / 2
+                offset = CGSize(
+                  width: min(maxX, max(-maxX, lastOffset.width + value.translation.width)),
+                  height: min(maxY, max(-maxY, lastOffset.height + value.translation.height))
+                )
+              } else {
+                onDrag(value.translation)
               }
             }
-            isZoomed = scale > 1
-          },
-        DragGesture()
-          .onChanged { value in
-            if scale > 1 {
-              // ズーム中はパン操作
-              offset = CGSize(
-                width: lastOffset.width + value.translation.width,
-                height: lastOffset.height + value.translation.height
-              )
-            } else {
-              // 親にドラッグ変位を通知してページ切り替え・dismiss を委譲
-              onDrag(value.translation)
+            .onEnded { value in
+              guard !isPinching else { return }
+              if scale > 1 {
+                lastOffset = offset
+              } else {
+                onDragEnd(value)
+              }
             }
-          }
-          .onEnded { value in
-            if scale > 1 {
-              lastOffset = offset
-            } else {
-              onDragEnd(value)
-            }
-          }
+        )
       )
-    )
-    .onTapGesture(count: 2) {
-      withAnimation(.spring()) {
-        if scale > 1 {
-          scale = 1
-          lastScale = 1
-          offset = .zero
-          lastOffset = .zero
-          isZoomed = false
-        } else {
-          scale = 2
-          lastScale = 2
-          isZoomed = true
+      .onTapGesture(count: 2) {
+        withAnimation(.spring()) {
+          if scale > 1 {
+            scale = 1
+            lastScale = 1
+            offset = .zero
+            lastOffset = .zero
+            isZoomed = false
+          } else {
+            scale = 2
+            lastScale = 2
+            isZoomed = true
+          }
         }
       }
     }
