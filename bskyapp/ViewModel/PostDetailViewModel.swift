@@ -96,7 +96,8 @@ class PostDetailViewModel: ObservableObject {
 
   private func makeExternalViewItem(uri: String) -> EmbeddedExternalViewItem {
     let title = URL(string: uri)?.host ?? uri
-    return EmbeddedExternalViewItem(uri: uri, title: title, description: "リンク先のコンテンツ", thumb: nil)
+    return EmbeddedExternalViewItem(
+      uri: uri, title: title, description: String(localized: "リンク先のコンテンツ"), thumb: nil)
   }
 
   var indexedAt: String {

@@ -24,7 +24,7 @@ class QuotePostCardViewModel: ObservableObject {
   func postQuote() async throws {
     guard let quotedUri = quotedPost.uri, let quotedCid = quotedPost.cid else {
       await MainActor.run {
-        errorMessage = "引用に必要な情報が不足しています"
+        errorMessage = String(localized: "引用に必要な情報が不足しています")
         isPostFailed = true
       }
       throw NSError(
@@ -108,7 +108,7 @@ class QuotePostCardViewModel: ObservableObject {
             self.selectedImages.append(IdentifiableImage(image: image))
             self.objectWillChange.send()
           } else {
-            self.errorMessage = "最大\(self.maxImageCount)枚まで選択できます"
+            self.errorMessage = String(localized: "最大\(self.maxImageCount)枚まで選択できます")
           }
         }
       } catch {

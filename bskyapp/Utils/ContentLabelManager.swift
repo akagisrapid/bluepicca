@@ -7,9 +7,9 @@ enum LabelPolicy: String, CaseIterable {
 
   var label: String {
     switch self {
-    case .hide: return "非表示"
-    case .blur: return "警告付き"
-    case .show: return "表示"
+    case .hide: return String(localized: "非表示")
+    case .blur: return String(localized: "警告付き")
+    case .show: return String(localized: "表示")
     }
   }
 }
