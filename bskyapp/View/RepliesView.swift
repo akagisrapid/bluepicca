@@ -15,49 +15,33 @@ struct RepliesView: View {
 
   var body: some View {
     NavigationStack {
-      VStack(spacing: 0) {
-        // カスタムヘッダー
-        HStack {
-          Text("リプライ")
-            .font(.title2)
-            .fontWeight(.bold)
-
-          Spacer()
-
-          Button("更新", systemImage: "arrow.clockwise") {
-            Task {
-              await viewModel.fetchReplies()
-            }
+      List(viewModel.replyNotifications) { notification in
+        ReplyCardView(notification: notification)
+          .onTapGesture {
+            selectedNotification = notification
+            isShowReplyCard = true
           }
-          Button(action: { dismiss() }) {
-            Image(systemName: "xmark")
-              .font(.body.weight(.semibold))
-              .foregroundColor(.primary)
-          }
-          .padding(.leading, 4)
-        }
-        .padding(.horizontal)
-        .padding(.vertical, 12)
-        .background(Color(UIColor.systemBackground))
-
-        // リプライリスト
-        List(viewModel.replyNotifications) { notification in
-          ReplyCardView(notification: notification)
-            .onTapGesture {
-              selectedNotification = notification
-              isShowReplyCard = true
-            }
-        }
-        .listStyle(.plain)
-        .overlay {
-          if viewModel.isFetchingReplies {
-            ProgressView()
-              .progressViewStyle(CircularProgressViewStyle())
-              .scaleEffect(2.0)
-          }
+      }
+      .listStyle(.plain)
+      .overlay {
+        if viewModel.isFetchingReplies {
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle())
+            .scaleEffect(2.0)
         }
       }
-      .navigationBarHidden(true)
+      .navigationTitle("リプライ")
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarLeading) {
+          Button("更新", systemImage: "arrow.clockwise") {
+            Task { await viewModel.fetchReplies() }
+          }
+        }
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Button("閉じる", systemImage: "xmark") { dismiss() }
+        }
+      }
     }
     .onAppear {
       Task {

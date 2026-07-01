@@ -30,9 +30,7 @@ struct PostCardView: View {
           .disabled(viewModel.text.isEmpty)
         }
         ToolbarItem(placement: .navigationBarTrailing) {
-          Button(action: { isShowPostCard.toggle() }) {
-            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
-          }
+          Button("閉じる", systemImage: "xmark") { isShowPostCard = false }
         }
       }
       .sheet(isPresented: $isShowDrafts) {

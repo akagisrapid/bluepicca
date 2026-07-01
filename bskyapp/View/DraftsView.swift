@@ -50,9 +50,7 @@ struct DraftsView: View {
           }
         }
         ToolbarItem(placement: .navigationBarTrailing) {
-          Button(action: { dismiss() }) {
-            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
-          }
+          Button("閉じる", systemImage: "xmark") { dismiss() }
         }
       }
     }

@@ -168,11 +168,7 @@ struct ReplyPostCardView: View {
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
-          Button(action: {
-            isShowReplyCard = false
-          }) {
-            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
-          }
+          Button("閉じる", systemImage: "xmark") { isShowReplyCard = false }
         }
       }
       .alert(isPresented: $viewModel.isPostCompleted) {

@@ -29,9 +29,7 @@ struct QuotePostCardView: View {
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
-          Button(action: { isShowQuoteCard = false }) {
-            SwiftUI.Label("閉じる", systemImage: "xmark").labelStyle(.iconOnly)
-          }
+          Button("閉じる", systemImage: "xmark") { isShowQuoteCard = false }
         }
       }
       .alert(isPresented: $viewModel.isPostCompleted) {
