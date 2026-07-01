@@ -19,11 +19,15 @@ struct ProfileImageView: View {
     Button {
       navigateToProfile = true
     } label: {
-      AsyncImage(url: viewModel.url) { image in
-        image.image?
+      CachedAsyncImage(url: viewModel.url) { image in
+        image
           .resizable()
           .aspectRatio(contentMode: .fit)
           .frame(maxWidth: scaledMaxSize, maxHeight: scaledMaxSize)
+      } placeholder: {
+        Circle()
+          .fill(Color(.systemGray5))
+          .frame(width: scaledMaxSize, height: scaledMaxSize)
       }
     }
     .buttonStyle(.plain)

@@ -576,7 +576,7 @@ struct QuotePostCard: View {
       ) {
         VStack(alignment: .leading, spacing: 4) {
           HStack(spacing: 6) {
-            AsyncImage(url: quoted.author?.avatarUrl) { image in
+            CachedAsyncImage(url: quoted.author?.avatarUrl) { image in
               image.resizable()
             } placeholder: {
               Circle().fill(Color(.systemGray5))
@@ -658,7 +658,7 @@ private struct FeedGeneratorCard: View {
 
   private var cardContent: some View {
     HStack(spacing: 10) {
-      AsyncImage(url: quoted.avatarUrl) { image in
+      CachedAsyncImage(url: quoted.avatarUrl) { image in
         image.resizable().scaledToFill()
       } placeholder: {
         RoundedRectangle(cornerRadius: 6).fill(Color(.systemGray5))

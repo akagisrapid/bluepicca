@@ -107,6 +107,7 @@
 		CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00022F600001007CCCCC /* FullScreenImageView.swift */; };
 		CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */; };
 		CCCC00072F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00062F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift */; };
+		ABCD00012F700001007ABCD0 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD00002F700001007ABCD0 /* ImageCache.swift */; };
 		DDDD00012F500001007DDDDD /* PostDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00002F500001007DDDDD /* PostDraft.swift */; };
 		DDDD00032F500001007DDDDD /* DraftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00022F500001007DDDDD /* DraftsView.swift */; };
 		EEEE00012F600001007EEEEE /* BookmarkedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00002F600001007EEEEE /* BookmarkedPost.swift */; };
@@ -142,6 +143,7 @@
 		980FD1E12E77B95300AE29EF /* LinkCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCardView.swift; sourceTree = "<group>"; };
 		980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadBlobApi.swift; sourceTree = "<group>"; };
 		980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressionHelper.swift; sourceTree = "<group>"; };
+		ABCD00002F700001007ABCD0 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStateManager.swift; sourceTree = "<group>"; };
 		980FD2012E7AFACD00AE29EF /* NotificationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationResponse.swift; sourceTree = "<group>"; };
 		980FD2062E7AFAF700AE29EF /* RepliesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesView.swift; sourceTree = "<group>"; };
@@ -444,6 +446,7 @@
 				98289CC92BF772C3007EA3C5 /* Extension */,
 				980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */,
 				980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */,
+				ABCD00002F700001007ABCD0 /* ImageCache.swift */,
 				AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */,
 				FFFF00082F700005007FFFFF /* MuteWordManager.swift */,
 				FFFF00102F700007007FFFFF /* RTFilterManager.swift */,
@@ -723,6 +726,7 @@
 				980FD2092E7AFB0400AE29EF /* RepliesViewModel.swift in Sources */,
 				98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */,
 				980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */,
+				ABCD00012F700001007ABCD0 /* ImageCache.swift in Sources */,
 				9874EC5D2E7C335F00F116D0 /* LikesViewModel.swift in Sources */,
 				98D959622CADA8CF00E6A6B7 /* ProfileImageView.swift in Sources */,
 				987153392C08AC6F00E08633 /* FeedResponse.swift in Sources */,

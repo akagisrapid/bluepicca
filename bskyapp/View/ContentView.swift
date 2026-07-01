@@ -290,7 +290,7 @@ struct ContentView: View {
           }
         )
       }
-      Button("Refresh", systemImage: "arrow.clockwise") {
+      Button("更新", systemImage: "arrow.clockwise") {
         Task {
           do {
             try await viewModel.fetchTimeline()
