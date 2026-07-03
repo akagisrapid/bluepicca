@@ -14,6 +14,7 @@ struct ContentView: View {
   @State private var isShowSearch = false
   @State private var isShowMyProfile = false
   @State private var selectedPostForLikes: Post?
+  @State private var navigationTarget: Post?
   @State private var scrollProxy: ScrollViewProxy? = nil
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
@@ -22,6 +23,15 @@ struct ContentView: View {
   var body: some View {
     NavigationStack {
       mainContent
+        .navigationDestination(
+          isPresented: Binding(
+            get: { navigationTarget != nil },
+            set: { if !$0 { navigationTarget = nil } })
+        ) {
+          if let post = navigationTarget {
+            PostDetailView(viewModel: PostDetailViewModel(post: post))
+          }
+        }
         .overlay(alignment: .bottom) {
           ToastOverlay(toastManager: toastManager)
         }
@@ -146,26 +156,20 @@ struct ContentView: View {
       let cardVM = TimelineCardViewModel(
         post: post, reason: feedItem.reason, reply: feedItem.reply,
         connectsToCardAbove: connectsToCardAbove, connectsToCardBelow: connectsToCardBelow)
-      let detailVM = PostDetailViewModel(post: post)
-      ZStack {
-        NavigationLink(destination: PostDetailView(viewModel: detailVM)) {
-          EmptyView()
+      TimelineCardView(viewModel: cardVM)
+        .contentShape(Rectangle())
+        .onTapGesture { navigationTarget = post }
+        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        .id(post.uri ?? feedItem.id)
+        .onAppear {
+          if let uri = post.uri { viewModel.cellDidAppear(uri: uri) }
+          if feedItem.id == viewModel.validFeeds.last?.id {
+            Task { await viewModel.loadMore() }
+          }
         }
-        .opacity(0)
-        TimelineCardView(viewModel: cardVM)
-      }
-      .buttonStyle(.plain)
-      .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-      .id(post.uri ?? feedItem.id)
-      .onAppear {
-        if let uri = post.uri { viewModel.cellDidAppear(uri: uri) }
-        if feedItem.id == viewModel.validFeeds.last?.id {
-          Task { await viewModel.loadMore() }
+        .onDisappear {
+          if let uri = post.uri { viewModel.cellDidDisappear(uri: uri) }
         }
-      }
-      .onDisappear {
-        if let uri = post.uri { viewModel.cellDidDisappear(uri: uri) }
-      }
     }
   }
 
