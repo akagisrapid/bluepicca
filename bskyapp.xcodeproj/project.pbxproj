@@ -102,6 +102,7 @@
 		BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00022F400003007BBBBB /* VideoPlayerView.swift */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
 		CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */; };
+		CCCC00112F601100007CCCCC /* PostImageGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00102F601000007CCCCC /* PostImageGrid.swift */; };
 		CCCC00082F600001007CCCCC /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CCCC00092F600001007CCCCC /* Localizable.xcstrings */; };
 		CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00022F600001007CCCCC /* FullScreenImageView.swift */; };
 		CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */; };
@@ -235,6 +236,7 @@
 		BBBB00002F400001007BBBBB /* EmbedVideoViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbedVideoViewItem.swift; sourceTree = "<group>"; };
 		BBBB00022F400003007BBBBB /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
+		CCCC00102F601000007CCCCC /* PostImageGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostImageGrid.swift; sourceTree = "<group>"; };
 		CCCC00092F600001007CCCCC /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CCCC00022F600001007CCCCC /* FullScreenImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageView.swift; sourceTree = "<group>"; };
 		CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedGeneratorTimelineView.swift; sourceTree = "<group>"; };
@@ -475,6 +477,7 @@
 				TOAST0012F000001007TOAST1 /* ToastManager.swift */,
 				FFFF00002F600001007FFFFF /* PostTextView.swift */,
 				CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */,
+				CCCC00102F601000007CCCCC /* PostImageGrid.swift */,
 				CCCC00022F600001007CCCCC /* FullScreenImageView.swift */,
 				98CC34362FCC8AC000AA162D /* QuotePostCardView.swift */,
 				CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */,
@@ -717,6 +720,7 @@
 				TOAST0022F000001007TOAST2 /* ToastManager.swift in Sources */,
 				FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */,
 				CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */,
+				CCCC00112F601100007CCCCC /* PostImageGrid.swift in Sources */,
 				CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */,
 				CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */,
 				CCCC00072F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift in Sources */,
