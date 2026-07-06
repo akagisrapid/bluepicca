@@ -179,7 +179,7 @@ struct ProfileView: View {
     ScrollView(.horizontal, showsIndicators: false) {
       HStack(spacing: 0) {
         ForEach(Array(tabs.enumerated()), id: \.element) { index, name in
-          ProfileTabButton(name: name, isSelected: selectedTab == index) {
+          UnderlineTabButton(name: name, isSelected: selectedTab == index) {
             selectedTab = index
           }
         }
@@ -419,31 +419,6 @@ private struct FollowDisplayItem: Identifiable {
   let displayName: String?
   let avatar: String?
   var id: String { did }
-}
-
-// MARK: - ProfileTabButton
-
-private struct ProfileTabButton: View {
-  let name: String
-  let isSelected: Bool
-  let action: () -> Void
-
-  var body: some View {
-    Button(action: action) {
-      VStack(spacing: 0) {
-        Text(name)
-          .font(.subheadline)
-          .fontWeight(isSelected ? .semibold : .regular)
-          .foregroundColor(isSelected ? .primary : .secondary)
-          .padding(.horizontal, 16)
-          .padding(.vertical, 10)
-        Rectangle()
-          .fill(isSelected ? Color.accentColor : Color.clear)
-          .frame(height: 2)
-      }
-    }
-    .buttonStyle(.plain)
-  }
 }
 
 #Preview {
