@@ -247,13 +247,12 @@ struct PostDetailView: View {
         .buttonStyle(.plain)
         .disabled(viewModel.isReposting)
         .opacity(viewModel.isReposting ? 0.5 : 1.0)
-        .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
-          Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
-            Task { await viewModel.toggleRepost() }
-          }
-          Button("引用ポスト") { isShowingQuoteSheet = true }
-          Button("キャンセル", role: .cancel) {}
-        }
+        .repostConfirmationDialog(
+          isPresented: $showRepostMenu,
+          isReposted: viewModel.isReposted,
+          onRepost: { Task { await viewModel.toggleRepost() } },
+          onQuote: { isShowingQuoteSheet = true }
+        )
 
         Spacer()
       }
