@@ -52,3 +52,20 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
     uiImage = img
   }
 }
+
+// MARK: - 標準ローディングプレースホルダ
+
+/// 画像読み込み中に表示する標準プレースホルダ（systemGray5 背景 + プログレスインジケータ）。
+struct ImageLoadingPlaceholder: View {
+  var body: some View {
+    Color(.systemGray5).overlay(ProgressView().tint(.secondary))
+  }
+}
+
+extension CachedAsyncImage where Placeholder == ImageLoadingPlaceholder {
+  /// 標準のローディングプレースホルダを用いる簡易イニシャライザ。
+  /// placeholder を明示したい場合は通常のイニシャライザを使う。
+  init(url: URL?, @ViewBuilder content: @escaping (Image) -> Content) {
+    self.init(url: url, content: content, placeholder: { ImageLoadingPlaceholder() })
+  }
+}

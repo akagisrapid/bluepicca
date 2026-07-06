@@ -91,8 +91,6 @@ struct PostImageGrid: View {
     } label: {
       CachedAsyncImage(url: url(for: displayImages[index])) { image in
         image.resizable().scaledToFill()
-      } placeholder: {
-        Color(.systemGray5).overlay(ProgressView().tint(.secondary))
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
       .clipped()
