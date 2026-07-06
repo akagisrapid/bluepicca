@@ -194,7 +194,7 @@ struct ContentView: View {
     ScrollView(.horizontal, showsIndicators: false) {
       HStack(spacing: 0) {
         ForEach(viewModel.feedTabs) { tab in
-          FeedTabButton(
+          UnderlineTabButton(
             name: tab.name,
             isSelected: viewModel.selectedTab.id == tab.id,
             action: { viewModel.selectTab(tab) }
@@ -319,31 +319,6 @@ private struct FeedTabStripModifier<Strip: View>: ViewModifier {
     } else {
       content
     }
-  }
-}
-
-// MARK: - Feed tab button
-
-private struct FeedTabButton: View {
-  let name: String
-  let isSelected: Bool
-  let action: () -> Void
-
-  var body: some View {
-    Button(action: action) {
-      VStack(spacing: 0) {
-        Text(name)
-          .font(.subheadline)
-          .fontWeight(isSelected ? .semibold : .regular)
-          .foregroundColor(isSelected ? .primary : .secondary)
-          .padding(.horizontal, 16)
-          .padding(.vertical, 10)
-        Rectangle()
-          .fill(isSelected ? Color.accentColor : Color.clear)
-          .frame(height: 2)
-      }
-    }
-    .buttonStyle(.plain)
   }
 }
 

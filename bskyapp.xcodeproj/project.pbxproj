@@ -10,6 +10,7 @@
 		980FD1D62E77149600AE29EF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1D52E77149600AE29EF /* LoginView.swift */; };
 		980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1D72E7714B500AE29EF /* LoginViewModel.swift */; };
 		980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E12E77B95300AE29EF /* LinkCardView.swift */; };
+		CCCC00172F601700007CCCCC /* UnderlineTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */; };
 		980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */; };
 		980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */; };
 		980FD1FC2E7AF71F00AE29EF /* PostStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */; };
@@ -140,6 +141,7 @@
 		980FD1D52E77149600AE29EF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		980FD1D72E7714B500AE29EF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		980FD1E12E77B95300AE29EF /* LinkCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCardView.swift; sourceTree = "<group>"; };
+		CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineTabButton.swift; sourceTree = "<group>"; };
 		980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadBlobApi.swift; sourceTree = "<group>"; };
 		980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressionHelper.swift; sourceTree = "<group>"; };
 		ABCD00002F700001007ABCD0 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
@@ -481,6 +483,7 @@
 				987153532C29ADF300E08633 /* PostDetailView.swift */,
 				98C636352F33B6300064F497 /* SettingsView.swift */,
 				980FD1E12E77B95300AE29EF /* LinkCardView.swift */,
+				CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */,
 				980FD2132E7B044900AE29EF /* ReplyItemView.swift */,
 				980FD20C2E7B006200AE29EF /* ReplyPostCardView.swift */,
 				987153572C29BC4E00E08633 /* AsyncImageView.swift */,
@@ -669,6 +672,7 @@
 			files = (
 				98C635E02F2CCBEA0064F497 /* GetActorLikesApi.swift in Sources */,
 				980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */,
+				CCCC00172F601700007CCCCC /* UnderlineTabButton.swift in Sources */,
 				983B2C1B2BB29583004E20F3 /* FeedItem.swift in Sources */,
 				9871532B2C08A9A300E08633 /* PostRecord.swift in Sources */,
 				987153372C08ABD900E08633 /* FeedRequest.swift in Sources */,
