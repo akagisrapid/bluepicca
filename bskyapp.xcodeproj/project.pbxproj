@@ -93,6 +93,7 @@
 		AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */; };
 		B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostCardView.swift */; };
 		B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */; };
+		CCCC00132F601300007CCCCC /* PostComposerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */; };
 		B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */; };
 		B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C0576F2B8712D80066AD91 /* bskyappApp.swift */; };
 		B0C057722B8712D80066AD91 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C057712B8712D80066AD91 /* ContentView.swift */; };
@@ -227,6 +228,7 @@
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
 		B01C96C42BA4210F0077D572 /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardViewModel.swift; sourceTree = "<group>"; };
+		CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostComposerViewModel.swift; sourceTree = "<group>"; };
 		B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApi.swift; sourceTree = "<group>"; };
 		B0C0576C2B8712D80066AD91 /* bskyapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bskyapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0C0576F2B8712D80066AD91 /* bskyappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bskyappApp.swift; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 				9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */,
 				980FD1D72E7714B500AE29EF /* LoginViewModel.swift */,
 				B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */,
+				CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */,
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
 				987153592C29BC8200E08633 /* AsyncImageViewModel.swift */,
 				98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */,
@@ -735,6 +738,7 @@
 				98733E042EA7A31A00177E2C /* GetNotificationsApi.swift in Sources */,
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */,
+				CCCC00132F601300007CCCCC /* PostComposerViewModel.swift in Sources */,
 				987153312C08AAAD00E08633 /* EmbeddedRecordViewItem.swift in Sources */,
 				987153522C29ADBD00E08633 /* PostDetailViewModel.swift in Sources */,
 				98733E142EAE534500177E2C /* GetAuthorFeedApi.swift in Sources */,
