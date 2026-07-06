@@ -65,6 +65,39 @@ struct TimelineCardView: View {
     }
   }
 
+  // MARK: - トースト付きアクション（コンテキストメニュー・スワイプ・リポストダイアログで共有）
+
+  private func likeWithToast() {
+    let wasLiked = viewModel.isLiked
+    Task {
+      await viewModel.toggleLike()
+      ToastManager.shared.show(
+        icon: wasLiked ? "star.slash" : "star.fill",
+        text: wasLiked ? "いいねを取り消し" : "いいね"
+      )
+    }
+  }
+
+  private func repostWithToast() {
+    let wasReposted = viewModel.isReposted
+    Task {
+      await viewModel.toggleRepost()
+      ToastManager.shared.show(
+        icon: "arrow.rectanglepath",
+        text: wasReposted ? "リポストを取り消し" : "リポスト"
+      )
+    }
+  }
+
+  private func bookmarkWithToast() {
+    let wasBookmarked = isBookmarked
+    toggleBookmark()
+    ToastManager.shared.show(
+      icon: wasBookmarked ? "bookmark.slash" : "bookmark.fill",
+      text: wasBookmarked ? "ブックマークを削除" : "ブックマーク"
+    )
+  }
+
   @ViewBuilder
   private var contextMenuItems: some View {
     Button {
@@ -79,14 +112,7 @@ struct TimelineCardView: View {
     }
     Divider()
     Button {
-      let wasLiked = viewModel.isLiked
-      Task {
-        await viewModel.toggleLike()
-        ToastManager.shared.show(
-          icon: wasLiked ? "star.slash" : "star.fill",
-          text: wasLiked ? "いいねを取り消し" : "いいね"
-        )
-      }
+      likeWithToast()
     } label: {
       SwiftUI.Label(
         viewModel.isLiked ? "いいねを取り消す" : "いいね",
@@ -100,12 +126,7 @@ struct TimelineCardView: View {
         systemImage: "arrow.rectanglepath")
     }
     Button {
-      let wasBookmarked = isBookmarked
-      toggleBookmark()
-      ToastManager.shared.show(
-        icon: wasBookmarked ? "bookmark.slash" : "bookmark.fill",
-        text: wasBookmarked ? "ブックマークを削除" : "ブックマーク"
-      )
+      bookmarkWithToast()
     } label: {
       SwiftUI.Label(
         isBookmarked ? "ブックマークを削除" : "ブックマーク",
@@ -186,14 +207,7 @@ struct TimelineCardView: View {
     switch action {
     case .like:
       Button {
-        let wasLiked = viewModel.isLiked
-        Task {
-          await viewModel.toggleLike()
-          ToastManager.shared.show(
-            icon: wasLiked ? "star.slash" : "star.fill",
-            text: wasLiked ? "いいねを取り消し" : "いいね"
-          )
-        }
+        likeWithToast()
       } label: {
         Image(systemName: viewModel.isLiked ? "star.slash.fill" : "star.fill")
       }
@@ -214,12 +228,7 @@ struct TimelineCardView: View {
       .tint(.blue)
     case .bookmark:
       Button {
-        let wasBookmarked = isBookmarked
-        toggleBookmark()
-        ToastManager.shared.show(
-          icon: wasBookmarked ? "bookmark.slash" : "bookmark.fill",
-          text: wasBookmarked ? "ブックマークを削除" : "ブックマーク"
-        )
+        bookmarkWithToast()
       } label: {
         Image(systemName: isBookmarked ? "bookmark.slash.fill" : "bookmark.fill")
       }
@@ -391,7 +400,7 @@ struct TimelineCardView: View {
               }
               .padding(.bottom, 6)
             } else {
-              ImageGridView(images: images) { index in
+              PostImageGrid(images: images, quality: .thumbnail) { index in
                 viewingImageIndex = index
               }
               .padding(.bottom, 6)
@@ -480,20 +489,12 @@ struct TimelineCardView: View {
       }
     }  // root VStack
     .background(authorHighlightColor?.opacity(0.12))
-    .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
-      Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
-        let wasReposted = viewModel.isReposted
-        Task {
-          await viewModel.toggleRepost()
-          ToastManager.shared.show(
-            icon: "arrow.rectanglepath",
-            text: wasReposted ? "リポストを取り消し" : "リポスト"
-          )
-        }
-      }
-      Button("引用ポスト") { isShowingQuoteSheet = true }
-      Button("キャンセル", role: .cancel) {}
-    }
+    .repostConfirmationDialog(
+      isPresented: $showRepostMenu,
+      isReposted: viewModel.isReposted,
+      onRepost: { repostWithToast() },
+      onQuote: { isShowingQuoteSheet = true }
+    )
     .contextMenu { contextMenuItems }
     .swipeActions(edge: .leading, allowsFullSwipe: true) {
       swipeButton(for: SwipeAction(rawValue: swipeLeadingActionRaw) ?? .like)
@@ -770,144 +771,6 @@ private struct CompactLinkCard: View {
 struct HashtagSearchItem: Identifiable {
   let id = UUID()
   let query: String
-}
-
-// MARK: - 画像グリッド（1〜4枚対応、タップでフルスクリーン表示）
-
-private struct ImageGridView: View {
-  let images: [EmbedImagesViewItem]
-  let onTap: (Int) -> Void
-
-  private func aspectRatioValue(for image: EmbedImagesViewItem) -> CGFloat {
-    guard let ar = image.aspectRatio, ar.width > 0 else { return 16.0 / 9.0 }
-    return min(max(CGFloat(ar.width) / CGFloat(ar.height), 0.5), 3.0)
-  }
-
-  private func gridHeight(count: Int, width: CGFloat) -> CGFloat {
-    switch count {
-    case 1: return min(width / aspectRatioValue(for: images[0]), 300)
-    case 2, 3: return 160
-    default: return 200
-    }
-  }
-
-  var body: some View {
-    let count = min(images.count, 4)
-    GeometryReader { geo in
-      let w = geo.size.width
-      let h = gridHeight(count: count, width: w)
-      Group {
-        switch count {
-        case 1:
-          TappableThumbView(url: images[0].thumbUrl) { onTap(0) }
-            .frame(width: w, height: h)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-        case 2:
-          HStack(spacing: 2) {
-            TappableThumbView(url: images[0].thumbUrl) { onTap(0) }
-            TappableThumbView(url: images[1].thumbUrl) { onTap(1) }
-          }
-          .frame(width: w, height: h)
-          .clipShape(RoundedRectangle(cornerRadius: 8))
-        case 3:
-          HStack(spacing: 2) {
-            TappableThumbView(url: images[0].thumbUrl) { onTap(0) }
-            VStack(spacing: 2) {
-              TappableThumbView(url: images[1].thumbUrl) { onTap(1) }
-              TappableThumbView(url: images[2].thumbUrl) { onTap(2) }
-            }
-          }
-          .frame(width: w, height: h)
-          .clipShape(RoundedRectangle(cornerRadius: 8))
-        default:
-          VStack(spacing: 2) {
-            HStack(spacing: 2) {
-              TappableThumbView(url: images[0].thumbUrl) { onTap(0) }
-              TappableThumbView(url: images[1].thumbUrl) { onTap(1) }
-            }
-            HStack(spacing: 2) {
-              TappableThumbView(url: images[2].thumbUrl) { onTap(2) }
-              TappableThumbView(url: images[3].thumbUrl) { onTap(3) }
-            }
-          }
-          .frame(width: w, height: h)
-          .clipShape(RoundedRectangle(cornerRadius: 8))
-        }
-      }
-    }
-    .frame(
-      maxWidth: .infinity,
-      minHeight: gridHeight(count: count, width: UIScreen.main.bounds.width - 32))
-  }
-}
-
-private struct SingleImageView: View {
-  let image: EmbedImagesViewItem
-  let onTap: () -> Void
-  @State private var containerWidth: CGFloat = UIScreen.main.bounds.width - 32
-
-  private var aspectRatioValue: CGFloat {
-    guard let ar = image.aspectRatio, ar.width > 0 else { return 16 / 9 }
-    let ratio = CGFloat(ar.width) / CGFloat(ar.height)
-    return min(max(ratio, 0.5), 3.0)
-  }
-
-  private var imageHeight: CGFloat { min(containerWidth / aspectRatioValue, 300) }
-
-  var body: some View {
-    Button(action: onTap) {
-      CachedAsyncImage(url: image.thumbUrl) { img in
-        img.resizable().scaledToFill()
-      } placeholder: {
-        Color(.systemGray6).overlay(ProgressView().tint(.secondary))
-      }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .clipped()
-    }
-    .buttonStyle(.plain)
-    .frame(maxWidth: .infinity)
-    .frame(height: imageHeight)
-    .clipShape(RoundedRectangle(cornerRadius: 8))
-    .background(
-      GeometryReader { geo in
-        Color.clear.onAppear { containerWidth = geo.size.width }
-      }
-    )
-  }
-}
-
-private struct TappableThumbView: View {
-  let url: URL?
-  let onTap: () -> Void
-
-  var body: some View {
-    Button(action: onTap) {
-      CachedAsyncImage(url: url) { image in
-        image.resizable().scaledToFill()
-      } placeholder: {
-        Color(.systemGray6)
-          .overlay(ProgressView().tint(.secondary))
-      }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .clipped()
-    }
-    .buttonStyle(.plain)
-  }
-}
-
-private struct ThumbView: View {
-  let url: URL?
-
-  var body: some View {
-    CachedAsyncImage(url: url) { image in
-      image.resizable().scaledToFill()
-    } placeholder: {
-      Color(.systemGray6)
-        .overlay(ProgressView().tint(.secondary))
-    }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .clipped()
-  }
 }
 
 // MARK: - 背景色ピッカーシート

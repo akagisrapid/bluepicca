@@ -11,6 +11,7 @@
 		980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1D72E7714B500AE29EF /* LoginViewModel.swift */; };
 		980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E12E77B95300AE29EF /* LinkCardView.swift */; };
 		CCCC00172F601700007CCCCC /* UnderlineTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */; };
+		CCCC00152F601500007CCCCC /* PostActionModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00142F601400007CCCCC /* PostActionModifiers.swift */; };
 		980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */; };
 		980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */; };
 		980FD1FC2E7AF71F00AE29EF /* PostStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */; };
@@ -94,6 +95,7 @@
 		AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */; };
 		B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostCardView.swift */; };
 		B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */; };
+		CCCC00132F601300007CCCCC /* PostComposerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */; };
 		B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */; };
 		B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C0576F2B8712D80066AD91 /* bskyappApp.swift */; };
 		B0C057722B8712D80066AD91 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C057712B8712D80066AD91 /* ContentView.swift */; };
@@ -103,6 +105,7 @@
 		BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00022F400003007BBBBB /* VideoPlayerView.swift */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
 		CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */; };
+		CCCC00112F601100007CCCCC /* PostImageGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00102F601000007CCCCC /* PostImageGrid.swift */; };
 		CCCC00082F600001007CCCCC /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CCCC00092F600001007CCCCC /* Localizable.xcstrings */; };
 		CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00022F600001007CCCCC /* FullScreenImageView.swift */; };
 		CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */; };
@@ -142,6 +145,7 @@
 		980FD1D72E7714B500AE29EF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		980FD1E12E77B95300AE29EF /* LinkCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCardView.swift; sourceTree = "<group>"; };
 		CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineTabButton.swift; sourceTree = "<group>"; };
+		CCCC00142F601400007CCCCC /* PostActionModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostActionModifiers.swift; sourceTree = "<group>"; };
 		980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadBlobApi.swift; sourceTree = "<group>"; };
 		980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressionHelper.swift; sourceTree = "<group>"; };
 		ABCD00002F700001007ABCD0 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
@@ -228,6 +232,7 @@
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
 		B01C96C42BA4210F0077D572 /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardViewModel.swift; sourceTree = "<group>"; };
+		CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostComposerViewModel.swift; sourceTree = "<group>"; };
 		B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApi.swift; sourceTree = "<group>"; };
 		B0C0576C2B8712D80066AD91 /* bskyapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bskyapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0C0576F2B8712D80066AD91 /* bskyappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bskyappApp.swift; sourceTree = "<group>"; };
@@ -237,6 +242,7 @@
 		BBBB00002F400001007BBBBB /* EmbedVideoViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbedVideoViewItem.swift; sourceTree = "<group>"; };
 		BBBB00022F400003007BBBBB /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
+		CCCC00102F601000007CCCCC /* PostImageGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostImageGrid.swift; sourceTree = "<group>"; };
 		CCCC00092F600001007CCCCC /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CCCC00022F600001007CCCCC /* FullScreenImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageView.swift; sourceTree = "<group>"; };
 		CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedGeneratorTimelineView.swift; sourceTree = "<group>"; };
@@ -355,6 +361,7 @@
 				9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */,
 				980FD1D72E7714B500AE29EF /* LoginViewModel.swift */,
 				B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */,
+				CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */,
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
 				987153592C29BC8200E08633 /* AsyncImageViewModel.swift */,
 				98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */,
@@ -477,6 +484,7 @@
 				TOAST0012F000001007TOAST1 /* ToastManager.swift */,
 				FFFF00002F600001007FFFFF /* PostTextView.swift */,
 				CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */,
+				CCCC00102F601000007CCCCC /* PostImageGrid.swift */,
 				CCCC00022F600001007CCCCC /* FullScreenImageView.swift */,
 				98CC34362FCC8AC000AA162D /* QuotePostCardView.swift */,
 				CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */,
@@ -484,6 +492,7 @@
 				98C636352F33B6300064F497 /* SettingsView.swift */,
 				980FD1E12E77B95300AE29EF /* LinkCardView.swift */,
 				CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */,
+				CCCC00142F601400007CCCCC /* PostActionModifiers.swift */,
 				980FD2132E7B044900AE29EF /* ReplyItemView.swift */,
 				980FD20C2E7B006200AE29EF /* ReplyPostCardView.swift */,
 				987153572C29BC4E00E08633 /* AsyncImageView.swift */,
@@ -673,6 +682,7 @@
 				98C635E02F2CCBEA0064F497 /* GetActorLikesApi.swift in Sources */,
 				980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */,
 				CCCC00172F601700007CCCCC /* UnderlineTabButton.swift in Sources */,
+				CCCC00152F601500007CCCCC /* PostActionModifiers.swift in Sources */,
 				983B2C1B2BB29583004E20F3 /* FeedItem.swift in Sources */,
 				9871532B2C08A9A300E08633 /* PostRecord.swift in Sources */,
 				987153372C08ABD900E08633 /* FeedRequest.swift in Sources */,
@@ -721,6 +731,7 @@
 				TOAST0022F000001007TOAST2 /* ToastManager.swift in Sources */,
 				FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */,
 				CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */,
+				CCCC00112F601100007CCCCC /* PostImageGrid.swift in Sources */,
 				CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */,
 				CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */,
 				CCCC00072F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift in Sources */,
@@ -735,6 +746,7 @@
 				98733E042EA7A31A00177E2C /* GetNotificationsApi.swift in Sources */,
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */,
+				CCCC00132F601300007CCCCC /* PostComposerViewModel.swift in Sources */,
 				987153312C08AAAD00E08633 /* EmbeddedRecordViewItem.swift in Sources */,
 				987153522C29ADBD00E08633 /* PostDetailViewModel.swift in Sources */,
 				98733E142EAE534500177E2C /* GetAuthorFeedApi.swift in Sources */,

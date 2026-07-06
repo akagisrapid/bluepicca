@@ -8,6 +8,7 @@ struct PostDetailView: View {
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
   @State private var showDeleteConfirm = false
+  @State private var viewingImageIndex: Int? = nil
   @Environment(\.dismiss) private var dismiss
 
   var body: some View {
@@ -74,6 +75,15 @@ struct PostDetailView: View {
     }
     .sheet(item: $hashtagSearchItem) { item in
       SearchView(initialQuery: item.query)
+    }
+    .fullScreenCover(
+      isPresented: Binding(
+        get: { viewingImageIndex != nil },
+        set: { if !$0 { viewingImageIndex = nil } }
+      )
+    ) {
+      FullScreenImageView(
+        images: viewModel.embeddedImages, initialIndex: viewingImageIndex ?? 0)
     }
   }
 
@@ -160,8 +170,10 @@ struct PostDetailView: View {
 
         // 画像
         if !viewModel.embeddedImages.isEmpty {
-          PostDetailImageGrid(images: viewModel.embeddedImages)
-            .padding(.bottom, 12)
+          PostImageGrid(images: viewModel.embeddedImages, quality: .full) { index in
+            viewingImageIndex = index
+          }
+          .padding(.bottom, 12)
         }
 
         // 動画
@@ -235,13 +247,12 @@ struct PostDetailView: View {
         .buttonStyle(.plain)
         .disabled(viewModel.isReposting)
         .opacity(viewModel.isReposting ? 0.5 : 1.0)
-        .confirmationDialog("", isPresented: $showRepostMenu, titleVisibility: .hidden) {
-          Button(viewModel.isReposted ? "リポストを取り消す" : "リポスト") {
-            Task { await viewModel.toggleRepost() }
-          }
-          Button("引用ポスト") { isShowingQuoteSheet = true }
-          Button("キャンセル", role: .cancel) {}
-        }
+        .repostConfirmationDialog(
+          isPresented: $showRepostMenu,
+          isReposted: viewModel.isReposted,
+          onRepost: { Task { await viewModel.toggleRepost() } },
+          onQuote: { isShowingQuoteSheet = true }
+        )
 
         Spacer()
       }
@@ -470,108 +481,5 @@ private struct ThreadAncestorRow: View {
       .padding(.top, 12)
     }
     .buttonStyle(.plain)
-  }
-}
-
-// MARK: - PostDetail用画像グリッド（高画質表示 + フルスクリーンビュアー）
-
-private struct PostDetailImageGrid: View {
-  let images: [EmbedImagesViewItem]
-  @State private var viewingIndex: Int? = nil
-
-  var body: some View {
-    let count = min(images.count, 4)
-    GeometryReader { geo in
-      let w = geo.size.width
-      Group {
-        switch count {
-        case 1:
-          CachedAsyncImage(url: images[0].fullsizeUrl) { img in
-            img.resizable().scaledToFill()
-          } placeholder: {
-            Color(.systemGray5).overlay(ProgressView())
-          }
-          .frame(width: w, height: singleImageHeight(for: images[0], width: w))
-          .clipped()
-          .clipShape(RoundedRectangle(cornerRadius: 10))
-          .onTapGesture { viewingIndex = 0 }
-        case 2:
-          HStack(spacing: 3) {
-            detailThumb(index: 0)
-            detailThumb(index: 1)
-          }
-          .frame(width: w, height: 220)
-          .clipShape(RoundedRectangle(cornerRadius: 10))
-        case 3:
-          HStack(spacing: 3) {
-            detailThumb(index: 0)
-            VStack(spacing: 3) {
-              detailThumb(index: 1)
-              detailThumb(index: 2)
-            }
-          }
-          .frame(width: w, height: 220)
-          .clipShape(RoundedRectangle(cornerRadius: 10))
-        default:
-          VStack(spacing: 3) {
-            HStack(spacing: 3) {
-              detailThumb(index: 0)
-              detailThumb(index: 1)
-            }
-            HStack(spacing: 3) {
-              detailThumb(index: 2)
-              detailThumb(index: 3)
-            }
-          }
-          .frame(width: w, height: 280)
-          .clipShape(RoundedRectangle(cornerRadius: 10))
-        }
-      }
-    }
-    .frame(maxWidth: .infinity, minHeight: fallbackGridHeight(count: count))
-    .fullScreenCover(
-      isPresented: Binding(
-        get: { viewingIndex != nil },
-        set: { if !$0 { viewingIndex = nil } }
-      )
-    ) {
-      FullScreenImageView(images: images, initialIndex: viewingIndex ?? 0)
-    }
-  }
-
-  @ViewBuilder
-  private func detailThumb(index: Int) -> some View {
-    Button {
-      viewingIndex = index
-    } label: {
-      CachedAsyncImage(url: images[index].fullsizeUrl) { image in
-        image.resizable().scaledToFill()
-      } placeholder: {
-        Color(.systemGray5)
-          .overlay(ProgressView())
-      }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .clipped()
-    }
-    .buttonStyle(.plain)
-  }
-
-  private func singleImageHeight(for image: EmbedImagesViewItem, width: CGFloat) -> CGFloat {
-    let ratio: CGFloat
-    if let ar = image.aspectRatio, ar.width > 0 {
-      ratio = min(max(CGFloat(ar.width) / CGFloat(ar.height), 0.5), 3.0)
-    } else {
-      ratio = 16 / 9
-    }
-    return min(width / ratio, 400)
-  }
-
-  /// GeometryReader が計測される前の初期 minHeight（レイアウトジャンプ防止）
-  private func fallbackGridHeight(count: Int) -> CGFloat {
-    switch count {
-    case 1: return singleImageHeight(for: images[0], width: UIScreen.main.bounds.width - 32)
-    case 2, 3: return 220
-    default: return 280
-    }
   }
 }
