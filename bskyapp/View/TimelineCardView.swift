@@ -615,8 +615,6 @@ struct QuotePostCard: View {
                   ForEach(quotedImages.prefix(4), id: \.thumb) { image in
                     CachedAsyncImage(url: image.thumbUrl) { img in
                       img.resizable().scaledToFill()
-                    } placeholder: {
-                      Color(.systemGray5).overlay(ProgressView().tint(.secondary))
                     }
                     .frame(width: 72, height: 72)
                     .clipShape(RoundedRectangle(cornerRadius: 6))

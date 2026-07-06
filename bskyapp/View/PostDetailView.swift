@@ -391,8 +391,6 @@ private struct MainChainRow: View {
               ForEach(Array(images.prefix(4).enumerated()), id: \.element.thumb) { _, image in
                 CachedAsyncImage(url: image.thumbUrl) { img in
                   img.resizable().scaledToFill()
-                } placeholder: {
-                  Color(.systemGray5).overlay(ProgressView().tint(.secondary))
                 }
                 .frame(width: 72, height: 72)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
