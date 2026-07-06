@@ -31,20 +31,13 @@ struct ProfileImageView: View {
       }
     }
     .buttonStyle(.plain)
-    .background(
-      NavigationLink(
-        isActive: $navigateToProfile,
-        destination: {
-          ProfileView(
-            viewModel: ProfileViewModel(
-              actor: actor,
-              profile: .init(did: "", handle: "", labels: [])
-            )
-          )
-        },
-        label: { EmptyView() }
+    .navigationDestination(isPresented: $navigateToProfile) {
+      ProfileView(
+        viewModel: ProfileViewModel(
+          actor: actor,
+          profile: .init(did: "", handle: "", labels: [])
+        )
       )
-      .hidden()
-    )
+    }
   }
 }
