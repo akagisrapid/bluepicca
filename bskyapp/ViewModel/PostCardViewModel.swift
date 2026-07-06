@@ -3,64 +3,19 @@ import Foundation
 import PhotosUI
 import SwiftUI
 
-struct IdentifiableImage: Identifiable {
-  let id = UUID()
-  let image: UIImage
-}
-
-class PostCardViewModel: ObservableObject {
-  @Published var text: String = ""
-  @Published var isPostCompleted: Bool = false
-  @Published var isPostFailed: Bool = false
-  @Published var isTextValid: Bool = false
-  @Published var errorMessage: String = ""
-  @Published var selectedImages: [IdentifiableImage] = []
-  @Published var selectedPhotoItems: [PhotosPickerItem] = [] {
-    didSet {
-      dlog("selectedPhotoItems didSet: \(selectedPhotoItems.count)個")
-    }
-  }
-  @Published var isUploading: Bool = false
-  @Published var uploadProgress: Double = 0.0
+class PostCardViewModel: PostComposerViewModel {
   @Published var selectedThreadgateRules: Set<ThreadgateRule> = []
   @Published var replyDisabled: Bool = false
   @Published var quotingDisabled: Bool = false
 
-  var maxTextCount: Int = 300
-  var maxImageCount: Int = 4
-
   init(text: String) {
+    super.init()
     self.text = text
   }
 
   func postText() async throws {
     do {
-      var uploadedImages: [UploadedImage]? = nil
-
-      if !selectedImages.isEmpty {
-        await MainActor.run {
-          isUploading = true
-          uploadProgress = 0.0
-        }
-
-        let imagesToUpload = selectedImages.map { ImageToUpload(image: $0.image, alt: "画像の説明") }
-
-        uploadedImages = try await PostCreationService.shared.uploadImages(imagesToUpload) {
-          [weak self] progress in
-          Task { @MainActor in
-            self?.uploadProgress = progress
-          }
-        }
-
-        await MainActor.run {
-          isUploading = false
-          uploadProgress = 1.0
-        }
-
-        if uploadedImages?.isEmpty ?? true {
-          uploadedImages = nil
-        }
-      }
+      let uploadedImages = try await uploadSelectedImagesIfNeeded()
 
       try await PostCreationService.shared.createPost(
         text: text,
@@ -85,70 +40,37 @@ class PostCardViewModel: ObservableObject {
     }
   }
 
-  func checkTextCount() {
-    DispatchQueue.main.async { [weak self] in
-      guard let self else { return }
-      let hasImages = !self.selectedImages.isEmpty
-      self.isTextValid = (hasImages || 0 < self.text.count) && self.text.count <= self.maxTextCount
-    }
-  }
-
-  var textCountString: String {
-    "\(text.count) / \(maxTextCount)"
-  }
-
-  func loadImage(from item: PhotosPickerItem) {
+  /// 新規投稿では画像を圧縮し、サイズが大きい場合は圧縮予告メッセージを表示する。
+  override func loadImage(from item: PhotosPickerItem) {
     Task { [weak self] in
       guard let self else { return }
       do {
         let data = try await item.loadTransferable(type: Data.self)
-
-        guard let imageData = data else { return }
-        guard let image = UIImage(data: imageData) else { return }
-
+        guard let imageData = data, let image = UIImage(data: imageData) else { return }
         let originalSize = imageData.count
 
-        if let compressedData = ImageCompressionHelper.compressImage(image) {
-          let compressedSizeString = ImageCompressionHelper.formatFileSize(compressedData.count)
-          let originalSizeString = ImageCompressionHelper.formatFileSize(originalSize)
-
+        guard let compressedData = ImageCompressionHelper.compressImage(image) else {
           await MainActor.run {
-            if selectedImages.count < maxImageCount {
-              selectedImages.append(IdentifiableImage(image: image))
-              objectWillChange.send()
-              self.checkTextCount()
-
-              if originalSize > ImageCompressionHelper.maxFileSizeBytes {
-                errorMessage = String(
-                  localized: "画像が大きいため、投稿時に圧縮されます (\(originalSizeString) → \(compressedSizeString))"
-                )
-              }
-            } else {
-              errorMessage = String(localized: "最大\(maxImageCount)枚まで選択できます")
-            }
+            self.errorMessage = String(localized: "この画像は使用できません")
           }
-        } else {
-          await MainActor.run {
-            errorMessage = String(localized: "この画像は使用できません")
+          return
+        }
+        let compressedSizeString = ImageCompressionHelper.formatFileSize(compressedData.count)
+        let originalSizeString = ImageCompressionHelper.formatFileSize(originalSize)
+
+        await MainActor.run {
+          if self.appendImageIfPossible(image) {
+            self.checkTextCount()
+            if originalSize > ImageCompressionHelper.maxFileSizeBytes {
+              self.errorMessage = String(
+                localized: "画像が大きいため、投稿時に圧縮されます (\(originalSizeString) → \(compressedSizeString))"
+              )
+            }
           }
         }
       } catch {
         dlog("画像の読み込みエラー: \(error.localizedDescription)")
       }
     }
-  }
-
-  func removeImage(at index: Int) {
-    if index < selectedImages.count {
-      selectedImages.remove(at: index)
-      if index < selectedPhotoItems.count {
-        selectedPhotoItems.remove(at: index)
-      }
-      checkTextCount()
-    }
-  }
-
-  func canAddMoreImages() -> Bool {
-    return selectedImages.count < maxImageCount
   }
 }
