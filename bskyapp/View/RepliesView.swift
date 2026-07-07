@@ -12,6 +12,7 @@ struct RepliesView: View {
   @Environment(\.dismiss) private var dismiss
   @State private var selectedNotification: NotificationItem?
   @State private var isShowReplyCard = false
+  @State private var profileNavActor: String?
 
   var body: some View {
     NavigationStack {
@@ -30,6 +31,19 @@ struct RepliesView: View {
             .scaleEffect(2.0)
         }
       }
+      .navigationDestination(
+        isPresented: Binding(
+          get: { profileNavActor != nil },
+          set: { if !$0 { profileNavActor = nil } })
+      ) {
+        if let actor = profileNavActor {
+          ProfileView(
+            viewModel: ProfileViewModel(
+              actor: actor,
+              profile: .init(did: "", handle: "", labels: [])))
+        }
+      }
+      .environment(\.navigateToProfile, { actor in profileNavActor = actor })
       .navigationTitle("リプライ")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
