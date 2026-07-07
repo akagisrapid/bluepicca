@@ -76,51 +76,53 @@ struct RepliesView: View {
     let notification: NotificationItem
 
     var body: some View {
-      VStack(alignment: .leading, spacing: 8) {
-        HStack {
-          ProfileImageView(
-            viewModel: AsyncImageViewModel(
-              url: URL(string: notification.author.avatar ?? ""),
-              imageSize: .avatar,
-              alt: notification.author.displayName ?? notification.author.handle ?? ""
-            ),
-            actor: notification.author.did
-          )
-          .frame(width: 40, height: 40)
+      HStack(alignment: .top, spacing: 10) {
+        ProfileImageView(
+          viewModel: AsyncImageViewModel(
+            url: URL(string: notification.author.avatar ?? ""),
+            imageSize: .timeline,
+            alt: notification.author.displayName ?? notification.author.handle ?? ""
+          ),
+          actor: notification.author.did
+        )
 
-          VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 1) {
+          HStack(spacing: 4) {
             Text(notification.author.displayName ?? notification.author.handle ?? "")
-              .font(.headline)
+              .font(.subheadline)
+              .fontWeight(.semibold)
               .foregroundColor(.primary)
-
-            Text("@\(notification.author.handle ?? "")")
-              .font(.caption)
-              .foregroundColor(.secondary)
+              .lineLimit(1)
+            if !notification.isRead {
+              Circle()
+                .fill(Color.blue)
+                .frame(width: 8, height: 8)
+            }
           }
+          Text("@\(notification.author.handle ?? "")")
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .lineLimit(1)
 
-          Spacer()
+          if let record = notification.record, let text = record.text {
+            Text(text)
+              .font(.body)
+              .foregroundColor(.primary)
+              .fixedSize(horizontal: false, vertical: true)
+              .padding(.top, 2)
+          }
+        }
 
-          Text(notification.indexedAtDate?.formatted(.dateTime.hour().minute()) ?? "")
+        Spacer()
+
+        if let date = notification.indexedAtDate {
+          Text(date.formatted(.dateTime.hour().minute()))
             .font(.caption)
             .foregroundColor(.secondary)
         }
-
-        if let record = notification.record, let text = record.text {
-          Text(text)
-            .font(.body)
-            .padding(.leading, 48)
-        }
-
-        if !notification.isRead {
-          HStack {
-            Spacer()
-            Circle()
-              .fill(Color.blue)
-              .frame(width: 8, height: 8)
-          }
-        }
       }
-      .padding(.vertical, 4)
+      .padding(.vertical, 5)
+      .padding(.horizontal, 12)
     }
   }
 }
