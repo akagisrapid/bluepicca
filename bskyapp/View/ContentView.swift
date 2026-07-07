@@ -15,6 +15,7 @@ struct ContentView: View {
   @State private var isShowMyProfile = false
   @State private var selectedPostForLikes: Post?
   @State private var navigationTarget: Post?
+  @State private var profileNavActor: String?
   @State private var scrollProxy: ScrollViewProxy? = nil
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
@@ -32,6 +33,19 @@ struct ContentView: View {
             PostDetailView(viewModel: PostDetailViewModel(post: post))
           }
         }
+        .navigationDestination(
+          isPresented: Binding(
+            get: { profileNavActor != nil },
+            set: { if !$0 { profileNavActor = nil } })
+        ) {
+          if let actor = profileNavActor {
+            ProfileView(
+              viewModel: ProfileViewModel(
+                actor: actor,
+                profile: .init(did: "", handle: "", labels: [])))
+          }
+        }
+        .environment(\.navigateToProfile, { actor in profileNavActor = actor })
         .overlay(alignment: .bottom) {
           ToastOverlay(toastManager: toastManager)
         }

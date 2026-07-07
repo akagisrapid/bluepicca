@@ -10,6 +10,7 @@ struct PostDetailView: View {
   @State private var showDeleteConfirm = false
   @State private var viewingImageIndex: Int? = nil
   @Environment(\.dismiss) private var dismiss
+  @State private var profileNavActor: String?
 
   var body: some View {
     ScrollView {
@@ -33,6 +34,19 @@ struct PostDetailView: View {
         repliesSection
       }
     }
+    .navigationDestination(
+      isPresented: Binding(
+        get: { profileNavActor != nil },
+        set: { if !$0 { profileNavActor = nil } })
+    ) {
+      if let actor = profileNavActor {
+        ProfileView(
+          viewModel: ProfileViewModel(
+            actor: actor,
+            profile: .init(did: "", handle: "", labels: [])))
+      }
+    }
+    .environment(\.navigateToProfile, { actor in profileNavActor = actor })
     .navigationBarTitleDisplayMode(.inline)
     .task {
       await viewModel.fetchThread()
