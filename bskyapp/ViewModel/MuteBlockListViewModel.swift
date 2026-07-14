@@ -31,6 +31,7 @@ class MuteBlockListViewModel: ObservableObject {
           blockUri: nil
         )
       }
+      MutedUsersManager.shared.reconcile(withServerMutedDIDs: Set(mutedActors.map { $0.did }))
     } catch {
       dlog("getMutes error: \(error)")
     }
@@ -57,13 +58,29 @@ class MuteBlockListViewModel: ObservableObject {
     isFetchingBlocked = false
   }
 
+  // スワイプ操作と同じトランザクション内で即座に行毎削除する（Task内に遅延させるとList側の
+  // 削除アニメーションと競合し、行が一瞬消えてから復活して見える）
   @MainActor
-  func unmute(actor: ModeratedActor) async {
+  func unmuteOptimistically(actor: ModeratedActor) {
+    let previousActors = mutedActors
+    mutedActors.removeAll { $0.did == actor.did }
+    MutedUsersManager.shared.remove(did: actor.did)
+    Task { await unmute(actor: actor, previousActors: previousActors) }
+  }
+
+  @MainActor
+  private func unmute(actor: ModeratedActor, previousActors: [ModeratedActor]) async {
     do {
       try await MuteBlockApi.unmuteActor(did: actor.did)
-      mutedActors.removeAll { $0.did == actor.did }
     } catch {
       dlog("unmuteActor error: \(error)")
+      mutedActors = previousActors
+      MutedUsersManager.shared.add(did: actor.did)
+      ToastManager.shared.show(
+        icon: "exclamationmark.triangle",
+        text: "ミュート解除失敗: \(error.localizedDescription)",
+        durationMilliseconds: 4000
+      )
     }
   }
 

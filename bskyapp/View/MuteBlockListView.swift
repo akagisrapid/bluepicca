@@ -61,7 +61,7 @@ private struct MutedListSection: View {
             ModeratedActorRow(actor: actor)
               .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button("ミュート解除", systemImage: "speaker.wave.2") {
-                  Task { await viewModel.unmute(actor: actor) }
+                  viewModel.unmuteOptimistically(actor: actor)
                 }
                 .tint(.orange)
               }
