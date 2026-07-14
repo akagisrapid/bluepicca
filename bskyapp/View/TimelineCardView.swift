@@ -13,6 +13,7 @@ struct TimelineCardView: View {
   @State private var viewingImageIndex: Int? = nil
   @State private var showMuteUserConfirm = false
   @State private var showMuteWordPicker = false
+  @State private var showReportReasonPicker = false
   @State private var mutedOverride: Bool? = nil
   @AppStorage("swipeLeadingAction") private var swipeLeadingActionRaw: String = SwipeAction.like
     .rawValue
@@ -142,6 +143,23 @@ struct TimelineCardView: View {
     )
   }
 
+  private func reportPost(reasonType: String) {
+    guard let uri = viewModel.post.uri, let cid = viewModel.post.cid else { return }
+    Task {
+      do {
+        try await ModerationReportApi.createReport(uri: uri, cid: cid, reasonType: reasonType)
+        ToastManager.shared.show(icon: "flag.fill", text: "報告しました")
+      } catch {
+        dlog("reportPost error: \(error)")
+        ToastManager.shared.show(
+          icon: "exclamationmark.triangle",
+          text: "報告に失敗しました: \(error.localizedDescription)",
+          durationMilliseconds: 4000
+        )
+      }
+    }
+  }
+
   @ViewBuilder
   private var contextMenuItems: some View {
     Button {
@@ -191,6 +209,7 @@ struct TimelineCardView: View {
     }
     rtFilterMenuItems
     muteMenuItems
+    reportMenuItems
     highlightMenuItems
     shareMenuItem
   }
@@ -211,6 +230,16 @@ struct TimelineCardView: View {
       } label: {
         SwiftUI.Label("ミュートワードを追加", systemImage: "text.badge.xmark")
       }
+    }
+  }
+
+  @ViewBuilder
+  private var reportMenuItems: some View {
+    Divider()
+    Button(role: .destructive) {
+      showReportReasonPicker = true
+    } label: {
+      SwiftUI.Label("投稿を報告", systemImage: "flag")
     }
   }
 
@@ -558,6 +587,10 @@ struct TimelineCardView: View {
       isReposted: viewModel.isReposted,
       onRepost: { repostWithToast() },
       onQuote: { isShowingQuoteSheet = true }
+    )
+    .reportConfirmationDialog(
+      isPresented: $showReportReasonPicker,
+      onSelectReason: { reasonType in reportPost(reasonType: reasonType) }
     )
     .contextMenu { contextMenuItems }
     .swipeActions(edge: .leading, allowsFullSwipe: true) {

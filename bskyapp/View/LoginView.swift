@@ -69,6 +69,21 @@ struct LoginView: View {
         .padding(.horizontal, 30)
         .padding(.top, 20)
 
+        // 利用規約への同意
+        VStack(alignment: .leading, spacing: 4) {
+          Toggle("利用規約に同意します", isOn: $viewModel.hasAgreedToTerms)
+            .toggleStyle(.switch)
+            .font(.subheadline)
+          Link(
+            "利用規約を確認する",
+            destination: URL(
+              string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
+          )
+          .font(.caption)
+        }
+        .padding(.horizontal, 30)
+        .padding(.top, 10)
+
         // Error Message
         if !viewModel.errorMessage.isEmpty {
           Text(viewModel.errorMessage)
@@ -103,7 +118,7 @@ struct LoginView: View {
               .cornerRadius(10)
           }
         }
-        .disabled(viewModel.isLoggingIn)
+        .disabled(viewModel.isLoggingIn || !viewModel.hasAgreedToTerms)
         .padding(.horizontal, 30)
         .padding(.top, 20)
 

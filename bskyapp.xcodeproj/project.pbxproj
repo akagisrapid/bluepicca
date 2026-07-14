@@ -132,6 +132,8 @@
 		FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */; };
 		FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00062F700004007FFFFF /* MuteBlockListView.swift */; };
 		FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00082F700005007FFFFF /* MuteWordManager.swift */; };
+		9A9A00012F900001009A9A9A /* ModerationReportApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9A00002F900001009A9A9A /* ModerationReportApiModel.swift */; };
+		9A9A00032F900002009A9A9A /* ModerationReportApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9A00022F900002009A9A9A /* ModerationReportApi.swift */; };
 		FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF000A2F700006007FFFFF /* MuteWordsView.swift */; };
 		DDDD00042F500001007DDDDD /* MuteWordQuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00052F500001007DDDDD /* MuteWordQuickAddView.swift */; };
 		FFFF00112F700007007FFFFF /* RTFilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00102F700007007FFFFF /* RTFilterManager.swift */; };
@@ -277,6 +279,8 @@
 		DDDD00052F500001007DDDDD /* MuteWordQuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordQuickAddView.swift; sourceTree = "<group>"; };
 		FFFF00102F700007007FFFFF /* RTFilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTFilterManager.swift; sourceTree = "<group>"; };
 		DDDD00072F500001007DDDDD /* MutedUsersManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutedUsersManager.swift; sourceTree = "<group>"; };
+		9A9A00002F900001009A9A9A /* ModerationReportApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModerationReportApiModel.swift; sourceTree = "<group>"; };
+		9A9A00022F900002009A9A9A /* ModerationReportApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModerationReportApi.swift; sourceTree = "<group>"; };
 		FFFF00172F70000A007FFFFF /* UserHighlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserHighlightManager.swift; sourceTree = "<group>"; };
 		FFFF00122F700008007FFFFF /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		FFFF00142F700009007FFFFF /* SwipeActionSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionSetting.swift; sourceTree = "<group>"; };
@@ -396,6 +400,7 @@
 				98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */,
 				EEEE00042F600001007EEEEE /* SearchPostsApiModel.swift */,
 				EEEE000C2F600001007EEEEE /* GetUserFeedsApiModel.swift */,
+				9A9A00002F900001009A9A9A /* ModerationReportApiModel.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -414,6 +419,7 @@
 				9874EC5F2E7C59B800F116D0 /* DeleteRecordApi.swift */,
 				98697E9C2F1E4C9B007EFC2F /* InteractionService.swift */,
 				FFFF00022F700002007FFFFF /* MuteBlockApi.swift */,
+				9A9A00022F900002009A9A9A /* ModerationReportApi.swift */,
 				AAAA00002F000001007AAAAA /* PostCreationService.swift */,
 				980FD20E2E7B041900AE29EF /* GetPostThreadApi.swift */,
 				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
@@ -706,6 +712,8 @@
 				AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */,
 				FFFF00012F700001007FFFFF /* MuteBlockApiModel.swift in Sources */,
 				FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */,
+				9A9A00012F900001009A9A9A /* ModerationReportApiModel.swift in Sources */,
+				9A9A00032F900002009A9A9A /* ModerationReportApi.swift in Sources */,
 				FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */,
 				FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */,
 				FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */,

@@ -33,9 +33,16 @@ class ContentLabelManager: ObservableObject {
 
   private init() {
     let ud = UserDefaults.standard
-    sexualPolicy = LabelPolicy(rawValue: ud.string(forKey: "labelPolicy_sexual") ?? "") ?? .blur
-    nudityPolicy = LabelPolicy(rawValue: ud.string(forKey: "labelPolicy_nudity") ?? "") ?? .blur
-    graphicPolicy = LabelPolicy(rawValue: ud.string(forKey: "labelPolicy_graphic") ?? "") ?? .blur
+    sexualPolicy = Self.loadPolicy(ud, key: "labelPolicy_sexual")
+    nudityPolicy = Self.loadPolicy(ud, key: "labelPolicy_nudity")
+    graphicPolicy = Self.loadPolicy(ud, key: "labelPolicy_graphic")
+  }
+
+  /// センシティブコンテンツを常時表示できてしまう `.show` はユーザー設定として選ばせない（App Store審査ガイドライン1.2対応）。
+  /// 過去に `.show` を選んでいた端末は `.blur` へ移行する。
+  private static func loadPolicy(_ ud: UserDefaults, key: String) -> LabelPolicy {
+    let policy = LabelPolicy(rawValue: ud.string(forKey: key) ?? "") ?? .blur
+    return policy == .show ? .blur : policy
   }
 
   func policy(for post: Post) -> LabelPolicy {
