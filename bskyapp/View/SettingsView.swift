@@ -179,18 +179,21 @@ private struct ContentLabelSettingsView: View {
   @ObservedObject private var manager = ContentLabelManager.shared
   @Environment(\.dismiss) private var dismiss
 
+  // NSFWコンテンツを常時表示できてしまう `.show` は選択肢に含めない（App Store審査ガイドライン1.2対応）
+  private static let selectablePolicies: [LabelPolicy] = [.hide, .blur]
+
   var body: some View {
     NavigationStack {
       List {
         Section {
           Picker("性的コンテンツ", selection: $manager.sexualPolicy) {
-            ForEach(LabelPolicy.allCases, id: \.self) { Text($0.label).tag($0) }
+            ForEach(Self.selectablePolicies, id: \.self) { Text($0.label).tag($0) }
           }
           Picker("ヌード", selection: $manager.nudityPolicy) {
-            ForEach(LabelPolicy.allCases, id: \.self) { Text($0.label).tag($0) }
+            ForEach(Self.selectablePolicies, id: \.self) { Text($0.label).tag($0) }
           }
           Picker("グロテスク", selection: $manager.graphicPolicy) {
-            ForEach(LabelPolicy.allCases, id: \.self) { Text($0.label).tag($0) }
+            ForEach(Self.selectablePolicies, id: \.self) { Text($0.label).tag($0) }
           }
         } footer: {
           Text("「警告付き」はタイムラインに表示されますが、タップするまで内容が隠れます。「非表示」はタイムラインから除外されます。")

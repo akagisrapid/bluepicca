@@ -7,6 +7,7 @@ class LoginViewModel: ObservableObject {
   @Published var isLoggingIn: Bool = false
   @Published var errorMessage: String = ""
   @Published var isLoggedIn: Bool = false
+  @Published var hasAgreedToTerms: Bool = false
 
   private var cancellables = Set<AnyCancellable>()
 
@@ -18,6 +19,10 @@ class LoginViewModel: ObservableObject {
   func login() async {
     if identifier.isEmpty || password.isEmpty {
       await setErrorMessage(String(localized: "ユーザー名とアプリパスワードを入力してください"))
+      return
+    }
+    if !hasAgreedToTerms {
+      await setErrorMessage(String(localized: "利用規約に同意してください"))
       return
     }
 
