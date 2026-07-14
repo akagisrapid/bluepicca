@@ -7,6 +7,10 @@ struct ContentView: View {
   @StateObject var viewModel: ContentViewModel
   @Binding var isLoggedIn: Bool
   @ObservedObject private var toastManager = ToastManager.shared
+  @ObservedObject private var mutedUsersManager = MutedUsersManager.shared
+  @ObservedObject private var rtFilterManager = RTFilterManager.shared
+  @ObservedObject private var muteWordManager = MuteWordManager.shared
+  @ObservedObject private var labelManager = ContentLabelManager.shared
   @State private var isShowReplies = false
   @State private var isShowLikes = false
   @State private var isShowSettings = false

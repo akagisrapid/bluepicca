@@ -14,13 +14,13 @@ class ToastManager: ObservableObject {
   @Published var message: ToastMessage?
   private var hideTask: Task<Void, Never>?
 
-  func show(icon: String, text: String) {
+  func show(icon: String, text: String, durationMilliseconds: Int = 800) {
     hideTask?.cancel()
     withAnimation(.easeOut(duration: 0.2)) {
       message = ToastMessage(icon: icon, text: text)
     }
     hideTask = Task {
-      try? await Task.sleep(for: .milliseconds(800))
+      try? await Task.sleep(for: .milliseconds(durationMilliseconds))
       guard !Task.isCancelled else { return }
       withAnimation(.easeIn(duration: 0.25)) {
         message = nil

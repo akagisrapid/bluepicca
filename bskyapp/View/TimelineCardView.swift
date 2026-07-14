@@ -11,6 +11,9 @@ struct TimelineCardView: View {
   @State private var isSensitiveRevealed = false
   @State private var showHighlightPicker = false
   @State private var viewingImageIndex: Int? = nil
+  @State private var showMuteUserConfirm = false
+  @State private var showMuteWordPicker = false
+  @State private var mutedOverride: Bool? = nil
   @AppStorage("swipeLeadingAction") private var swipeLeadingActionRaw: String = SwipeAction.like
     .rawValue
   @AppStorage("swipeTrailingAction") private var swipeTrailingActionRaw: String = SwipeAction.repost
@@ -46,6 +49,47 @@ struct TimelineCardView: View {
   private var authorHighlightColor: Color? {
     guard let did = viewModel.post.author?.did else { return nil }
     return highlightManager.color(for: did)
+  }
+
+  private var isAuthorMuted: Bool {
+    mutedOverride ?? (viewModel.post.author?.viewer?.muted ?? false)
+  }
+
+  private func toggleUserMute() {
+    guard let did = viewModel.post.author?.did else { return }
+    let wasMuted = isAuthorMuted
+    mutedOverride = !wasMuted
+    if wasMuted {
+      MutedUsersManager.shared.remove(did: did)
+    } else {
+      MutedUsersManager.shared.add(did: did)
+    }
+    Task {
+      do {
+        if wasMuted {
+          try await MuteBlockApi.unmuteActor(did: did)
+        } else {
+          try await MuteBlockApi.muteActor(did: did)
+        }
+        ToastManager.shared.show(
+          icon: wasMuted ? "speaker.wave.2.fill" : "speaker.slash.fill",
+          text: wasMuted ? "ミュートを解除" : "ユーザーをミュート"
+        )
+      } catch {
+        dlog("toggleUserMute error: \(error)")
+        mutedOverride = wasMuted
+        if wasMuted {
+          MutedUsersManager.shared.add(did: did)
+        } else {
+          MutedUsersManager.shared.remove(did: did)
+        }
+        ToastManager.shared.show(
+          icon: "exclamationmark.triangle",
+          text: "\(wasMuted ? "ミュート解除" : "ミュート")失敗: \(error.localizedDescription)",
+          durationMilliseconds: 4000
+        )
+      }
+    }
   }
 
   private func toggleBookmark() {
@@ -146,8 +190,28 @@ struct TimelineCardView: View {
       }
     }
     rtFilterMenuItems
+    muteMenuItems
     highlightMenuItems
     shareMenuItem
+  }
+
+  @ViewBuilder
+  private var muteMenuItems: some View {
+    if viewModel.post.author?.did != nil {
+      Divider()
+      Button(role: isAuthorMuted ? .none : .destructive) {
+        showMuteUserConfirm = true
+      } label: {
+        SwiftUI.Label(
+          isAuthorMuted ? "ミュートを解除" : "このユーザーをミュート",
+          systemImage: isAuthorMuted ? "speaker.wave.2.fill" : "speaker.slash.fill")
+      }
+      Button {
+        showMuteWordPicker = true
+      } label: {
+        SwiftUI.Label("ミュートワードを追加", systemImage: "text.badge.xmark")
+      }
+    }
   }
 
   @ViewBuilder
@@ -520,6 +584,16 @@ struct TimelineCardView: View {
         .presentationDetents([.height(280)])
       }
     }
+    .modifier(
+      MuteControlsModifier(
+        showMuteWordPicker: $showMuteWordPicker,
+        showMuteUserConfirm: $showMuteUserConfirm,
+        text: viewModel.text,
+        authorName: viewModel.authorName,
+        isAuthorMuted: isAuthorMuted,
+        onToggleMute: toggleUserMute
+      )
+    )
     .fullScreenCover(
       item: Binding(
         get: { viewingImageIndex.map { IdentifiableInt(value: $0) } },
@@ -530,6 +604,33 @@ struct TimelineCardView: View {
         FullScreenImageView(images: images, initialIndex: item.value)
       }
     }
+  }
+}
+
+private struct MuteControlsModifier: ViewModifier {
+  @Binding var showMuteWordPicker: Bool
+  @Binding var showMuteUserConfirm: Bool
+  let text: String
+  let authorName: String
+  let isAuthorMuted: Bool
+  let onToggleMute: () -> Void
+
+  private var alertTitle: String {
+    isAuthorMuted ? "ミュートを解除しますか？" : "\(authorName) をミュートしますか？"
+  }
+
+  func body(content: Content) -> some View {
+    content
+      .sheet(isPresented: $showMuteWordPicker) {
+        MuteWordQuickAddView(text: text)
+          .presentationDetents([.medium])
+      }
+      .alert(alertTitle, isPresented: $showMuteUserConfirm) {
+        Button(isAuthorMuted ? "解除" : "ミュート", role: isAuthorMuted ? .none : .destructive) {
+          onToggleMute()
+        }
+        Button("キャンセル", role: .cancel) {}
+      }
   }
 }
 
@@ -544,4 +645,3 @@ private struct IdentifiableInt: Identifiable {
   let value: Int
   var id: Int { value }
 }
-

@@ -18,8 +18,15 @@ struct BookmarksView: View {
         } else {
           List {
             ForEach(bookmarks) { bookmark in
-              BookmarkRowView(bookmark: bookmark)
-                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+              NavigationLink {
+                PostDetailView(
+                  viewModel: PostDetailViewModel(
+                    post: Post(
+                      uri: bookmark.postUri, cid: bookmark.postCid, author: nil, record: nil)))
+              } label: {
+                BookmarkRowView(bookmark: bookmark)
+              }
+              .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
             .onDelete { indexSet in
               indexSet.map { bookmarks[$0] }.forEach { modelContext.delete($0) }
