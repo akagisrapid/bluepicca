@@ -11,6 +11,7 @@ struct PostDetailView: View {
   @State private var viewingImageIndex: Int? = nil
   @Environment(\.dismiss) private var dismiss
   @State private var profileNavActor: String?
+  @ObservedObject private var toastManager = ToastManager.shared
 
   var body: some View {
     ScrollView {
@@ -33,6 +34,9 @@ struct PostDetailView: View {
         // MARK: リプライ一覧
         repliesSection
       }
+    }
+    .overlay(alignment: .bottom) {
+      ToastOverlay(toastManager: toastManager)
     }
     .navigationDestination(
       isPresented: Binding(
@@ -173,6 +177,7 @@ struct PostDetailView: View {
           }
           .font(.title3)
           .fixedSize(horizontal: false, vertical: true)
+          .textSelection(.enabled)
           .padding(.bottom, 12)
         }
 
@@ -269,10 +274,45 @@ struct PostDetailView: View {
         )
 
         Spacer()
+
+        shareMenu
       }
       .padding(.bottom, 4)
     }
     .padding(.horizontal, 16)
+  }
+
+  // MARK: - 共有メニュー
+
+  @ViewBuilder
+  private var shareMenu: some View {
+    Menu {
+      if !viewModel.text.isEmpty {
+        Button {
+          UIPasteboard.general.string = viewModel.text
+          ToastManager.shared.show(icon: "doc.on.doc", text: "テキストをコピーしました")
+        } label: {
+          SwiftUI.Label("テキストをコピー", systemImage: "doc.on.doc")
+        }
+      }
+      if let url = viewModel.shareUrl {
+        Button {
+          UIPasteboard.general.string = url.absoluteString
+          ToastManager.shared.show(icon: "link", text: "URLをコピーしました")
+        } label: {
+          SwiftUI.Label("URLをコピー", systemImage: "link")
+        }
+        Divider()
+        ShareLink(item: url) {
+          SwiftUI.Label("シェア", systemImage: "square.and.arrow.up")
+        }
+      }
+    } label: {
+      Image(systemName: "square.and.arrow.up")
+        .font(.subheadline)
+        .foregroundColor(.secondary)
+        .frame(minWidth: 44, minHeight: 44)
+    }
   }
 
   // MARK: - リプライ一覧

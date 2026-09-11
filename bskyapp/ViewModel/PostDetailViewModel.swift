@@ -112,6 +112,16 @@ class PostDetailViewModel: ObservableObject {
 
   var isOwnPost: Bool { post.author?.did == SessionManager.shared.currentDid }
 
+  /// bsky.app 上のこのポストの URL（共有・URLコピー用）
+  var shareUrl: URL? {
+    guard let uri = post.uri,
+      let handle = post.author?.handle
+    else { return nil }
+    let rkey = String(uri.split(separator: "/").last ?? "")
+    guard !rkey.isEmpty else { return nil }
+    return URL(string: "https://bsky.app/profile/\(handle)/post/\(rkey)")
+  }
+
   var isReplyDisabled: Bool { post.viewer?.replyDisabled == true }
   var isLiked: Bool { post.viewer?.like != nil }
   var likeCount: Int { post.likeCount ?? 0 }
