@@ -1,5 +1,6 @@
 import Alamofire
 import Foundation
+import UIKit
 
 class PostCreationService {
   static let shared = PostCreationService()
@@ -69,6 +70,8 @@ class PostCreationService {
 
     if let images = images, !images.isEmpty {
       recordDict["embed"] = buildImageEmbed(images)
+    } else if let externalEmbed = await buildExternalEmbedIfPresent(in: text) {
+      recordDict["embed"] = externalEmbed
     }
 
     let paramDict: [String: Any] = [
@@ -161,6 +164,8 @@ class PostCreationService {
 
     if let images = images, !images.isEmpty {
       recordDict["embed"] = buildImageEmbed(images)
+    } else if let externalEmbed = await buildExternalEmbedIfPresent(in: text) {
+      recordDict["embed"] = externalEmbed
     }
 
     let paramDict: [String: Any] = [
@@ -170,6 +175,71 @@ class PostCreationService {
     ]
 
     try await sendCreateRecord(paramDict: paramDict, session: session)
+  }
+
+  // MARK: - Link Card (external embed) Generation
+
+  /// テキスト中の最初のURLからOGPを取得し、app.bsky.embed.external を組み立てる。
+  /// 取得に失敗した場合は nil を返し、呼び出し側は埋め込みなしで投稿を続行する。
+  private func buildExternalEmbedIfPresent(in text: String) async -> [String: Any]? {
+    guard let url = firstURL(in: text) else { return nil }
+
+    guard let html = try? await fetchString(url: url) else { return nil }
+    let metadata = OpenGraphParser.parse(html: html)
+
+    var external: [String: Any] = [
+      "uri": url.absoluteString,
+      "title": metadata.title ?? url.host ?? url.absoluteString,
+      "description": metadata.description ?? "",
+    ]
+
+    if let imageURLString = metadata.imageURL,
+      let imageURL = URL(string: imageURLString, relativeTo: url),
+      let imageData = try? await fetchData(url: imageURL),
+      let thumbImage = UIImage(data: imageData),
+      let compressed = ImageCompressionHelper.compressImage(thumbImage),
+      let blobResponse = try? await uploadBlob(imageData: compressed)
+    {
+      external["thumb"] = [
+        "$type": "blob",
+        "ref": ["$link": blobResponse.blob.cid],
+        "mimeType": blobResponse.blob.mimeType,
+        "size": compressed.count,
+      ]
+    }
+
+    return ["$type": "app.bsky.embed.external", "external": external]
+  }
+
+  private func firstURL(in text: String) -> URL? {
+    guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+    else { return nil }
+    let range = NSRange(text.startIndex..., in: text)
+    return detector.matches(in: text, range: range).first?.url
+  }
+
+  private func fetchString(url: URL) async throws -> String {
+    var request = URLRequest(url: url)
+    request.timeoutInterval = 8
+    let response = await AF.request(request).validate()
+      .serializingString(encoding: .utf8)
+      .response
+    switch response.result {
+    case .success(let value): return value
+    case .failure(let error): throw error
+    }
+  }
+
+  private func fetchData(url: URL) async throws -> Data {
+    var request = URLRequest(url: url)
+    request.timeoutInterval = 8
+    let response = await AF.request(request).validate()
+      .serializingData()
+      .response
+    switch response.result {
+    case .success(let value): return value
+    case .failure(let error): throw error
+    }
   }
 
   // MARK: - Private Helpers
