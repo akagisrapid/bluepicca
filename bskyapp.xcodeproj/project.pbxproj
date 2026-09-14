@@ -120,6 +120,7 @@
 		EEEE00112F600001007EEEEE /* GetFeedApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00102F600001007EEEEE /* GetFeedApi.swift */; };
 		BBBB00052F400001007BBBBB /* HashtagPreferenceApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00042F400001007BBBBB /* HashtagPreferenceApi.swift */; };
 		FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F600001007FFFFF /* PostTextView.swift */; };
+		SELT00012F800001007SELT1 /* SelectablePostTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SELT00002F800001007SELT0 /* SelectablePostTextView.swift */; };
 		FFFF00012F700001007FFFFF /* MuteBlockApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */; };
 		FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00022F700002007FFFFF /* MuteBlockApi.swift */; };
 		FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */; };
@@ -252,6 +253,7 @@
 		EEEE00102F600001007EEEEE /* GetFeedApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFeedApi.swift; sourceTree = "<group>"; };
 		BBBB00042F400001007BBBBB /* HashtagPreferenceApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagPreferenceApi.swift; sourceTree = "<group>"; };
 		FFFF00002F600001007FFFFF /* PostTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTextView.swift; sourceTree = "<group>"; };
+		SELT00002F800001007SELT0 /* SelectablePostTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectablePostTextView.swift; sourceTree = "<group>"; };
 		FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApiModel.swift; sourceTree = "<group>"; };
 		FFFF00022F700002007FFFFF /* MuteBlockApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApi.swift; sourceTree = "<group>"; };
 		FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListViewModel.swift; sourceTree = "<group>"; };
@@ -474,6 +476,7 @@
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
 				TOAST0012F000001007TOAST1 /* ToastManager.swift */,
 				FFFF00002F600001007FFFFF /* PostTextView.swift */,
+				SELT00002F800001007SELT0 /* SelectablePostTextView.swift */,
 				CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */,
 				CCCC00022F600001007CCCCC /* FullScreenImageView.swift */,
 				98CC34362FCC8AC000AA162D /* QuotePostCardView.swift */,
@@ -716,6 +719,7 @@
 				98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */,
 				TOAST0022F000001007TOAST2 /* ToastManager.swift in Sources */,
 				FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */,
+				SELT00012F800001007SELT1 /* SelectablePostTextView.swift in Sources */,
 				CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */,
 				CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */,
 				CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */,

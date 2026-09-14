@@ -77,6 +77,15 @@ struct PostDetailView: View {
     }
   }
 
+  private var shareUrl: URL? {
+    guard let uri = viewModel.post.uri,
+      let handle = viewModel.post.author?.handle
+    else { return nil }
+    let rkey = String(uri.split(separator: "/").last ?? "")
+    guard !rkey.isEmpty else { return nil }
+    return URL(string: "https://bsky.app/profile/\(handle)/post/\(rkey)")
+  }
+
   // MARK: - フォーカス投稿
 
   @ViewBuilder
@@ -144,11 +153,9 @@ struct PostDetailView: View {
       } else {
         // 本文
         if !viewModel.text.isEmpty {
-          PostTextView(text: viewModel.text) { tag in
+          SelectablePostTextView(text: viewModel.text) { tag in
             hashtagSearchItem = HashtagSearchItem(query: tag)
           }
-          .font(.title3)
-          .fixedSize(horizontal: false, vertical: true)
           .padding(.bottom, 12)
         }
 
@@ -241,6 +248,26 @@ struct PostDetailView: View {
           }
           Button("引用ポスト") { isShowingQuoteSheet = true }
           Button("キャンセル", role: .cancel) {}
+        }
+
+        Spacer()
+
+        Menu {
+          if let url = shareUrl {
+            ShareLink(item: url) {
+              SwiftUI.Label("シェア", systemImage: "square.and.arrow.up")
+            }
+          }
+          Button {
+            UIPasteboard.general.string = viewModel.text
+          } label: {
+            SwiftUI.Label("全文をコピー", systemImage: "doc.on.doc")
+          }
+        } label: {
+          Image(systemName: "square.and.arrow.up")
+            .font(.subheadline)
+            .foregroundColor(.secondary)
+            .frame(minWidth: 44, minHeight: 44)
         }
 
         Spacer()
