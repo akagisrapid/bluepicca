@@ -10,7 +10,7 @@ struct TimelineCardView: View {
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
   @State private var showHighlightPicker = false
-  @State private var viewingImageIndex: Int? = nil
+  @State private var isShowingPostDetailFromImage = false
   @AppStorage("swipeLeadingAction") private var swipeLeadingActionRaw: String = SwipeAction.like
     .rawValue
   @AppStorage("swipeTrailingAction") private var swipeTrailingActionRaw: String = SwipeAction.repost
@@ -391,8 +391,8 @@ struct TimelineCardView: View {
               }
               .padding(.bottom, 6)
             } else {
-              ImageGridView(images: images) { index in
-                viewingImageIndex = index
+              ImageGridView(images: images) { _ in
+                isShowingPostDetailFromImage = true
               }
               .padding(.bottom, 6)
             }
@@ -519,15 +519,8 @@ struct TimelineCardView: View {
         .presentationDetents([.height(280)])
       }
     }
-    .fullScreenCover(
-      item: Binding(
-        get: { viewingImageIndex.map { IdentifiableInt(value: $0) } },
-        set: { viewingImageIndex = $0?.value }
-      )
-    ) { item in
-      if let images = viewModel.post.embed?.resolvedImages {
-        FullScreenImageView(images: images, initialIndex: item.value)
-      }
+    .navigationDestination(isPresented: $isShowingPostDetailFromImage) {
+      PostDetailView(viewModel: PostDetailViewModel(post: post))
     }
   }
 }
@@ -964,13 +957,6 @@ struct HighlightColorPickerView: View {
       Spacer()
     }
   }
-}
-
-// MARK: - IdentifiableInt（fullScreenCover用）
-
-private struct IdentifiableInt: Identifiable {
-  let value: Int
-  var id: Int { value }
 }
 
 // MARK: - Color(hex:) extension（HighlightColorPickerView用）
