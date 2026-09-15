@@ -7,6 +7,10 @@ struct ContentView: View {
   @StateObject var viewModel: ContentViewModel
   @Binding var isLoggedIn: Bool
   @ObservedObject private var toastManager = ToastManager.shared
+  @ObservedObject private var mutedUsersManager = MutedUsersManager.shared
+  @ObservedObject private var rtFilterManager = RTFilterManager.shared
+  @ObservedObject private var muteWordManager = MuteWordManager.shared
+  @ObservedObject private var labelManager = ContentLabelManager.shared
   @State private var isShowReplies = false
   @State private var isShowLikes = false
   @State private var isShowSettings = false
@@ -15,6 +19,7 @@ struct ContentView: View {
   @State private var isShowMyProfile = false
   @State private var selectedPostForLikes: Post?
   @State private var navigationTarget: Post?
+  @State private var profileNavActor: String?
   @State private var scrollProxy: ScrollViewProxy? = nil
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
@@ -32,6 +37,19 @@ struct ContentView: View {
             PostDetailView(viewModel: PostDetailViewModel(post: post))
           }
         }
+        .navigationDestination(
+          isPresented: Binding(
+            get: { profileNavActor != nil },
+            set: { if !$0 { profileNavActor = nil } })
+        ) {
+          if let actor = profileNavActor {
+            ProfileView(
+              viewModel: ProfileViewModel(
+                actor: actor,
+                profile: .init(did: "", handle: "", labels: [])))
+          }
+        }
+        .environment(\.navigateToProfile, { actor in profileNavActor = actor })
         .overlay(alignment: .bottom) {
           ToastOverlay(toastManager: toastManager)
         }
@@ -194,7 +212,7 @@ struct ContentView: View {
     ScrollView(.horizontal, showsIndicators: false) {
       HStack(spacing: 0) {
         ForEach(viewModel.feedTabs) { tab in
-          FeedTabButton(
+          UnderlineTabButton(
             name: tab.name,
             isSelected: viewModel.selectedTab.id == tab.id,
             action: { viewModel.selectTab(tab) }
@@ -319,31 +337,6 @@ private struct FeedTabStripModifier<Strip: View>: ViewModifier {
     } else {
       content
     }
-  }
-}
-
-// MARK: - Feed tab button
-
-private struct FeedTabButton: View {
-  let name: String
-  let isSelected: Bool
-  let action: () -> Void
-
-  var body: some View {
-    Button(action: action) {
-      VStack(spacing: 0) {
-        Text(name)
-          .font(.subheadline)
-          .fontWeight(isSelected ? .semibold : .regular)
-          .foregroundColor(isSelected ? .primary : .secondary)
-          .padding(.horizontal, 16)
-          .padding(.vertical, 10)
-        Rectangle()
-          .fill(isSelected ? Color.accentColor : Color.clear)
-          .frame(height: 2)
-      }
-    }
-    .buttonStyle(.plain)
   }
 }
 

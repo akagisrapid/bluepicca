@@ -10,6 +10,8 @@
 		980FD1D62E77149600AE29EF /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1D52E77149600AE29EF /* LoginView.swift */; };
 		980FD1D82E7714B500AE29EF /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1D72E7714B500AE29EF /* LoginViewModel.swift */; };
 		980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E12E77B95300AE29EF /* LinkCardView.swift */; };
+		CCCC00172F601700007CCCCC /* UnderlineTabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */; };
+		CCCC00152F601500007CCCCC /* PostActionModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00142F601400007CCCCC /* PostActionModifiers.swift */; };
 		980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */; };
 		980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */; };
 		A278176E386E97676CE5AC8B /* OpenGraphParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13706BA14E09F599469103D /* OpenGraphParser.swift */; };
@@ -53,6 +55,7 @@
 		987153452C08ADFC00E08633 /* DefsModListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153442C08ADFC00E08633 /* DefsModListItem.swift */; };
 		987153472C08AF6300E08633 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153462C08AF6300E08633 /* DateExtension.swift */; };
 		987153492C08B06B00E08633 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153482C08B06B00E08633 /* StringExtension.swift */; };
+		CCCC001D2F601D00007CCCCC /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC001C2F601C00007CCCCC /* ColorExtension.swift */; };
 		9871534E2C08C39200E08633 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9871534D2C08C39200E08633 /* ContentViewModel.swift */; };
 		987153502C08C96A00E08633 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9871534F2C08C96A00E08633 /* Item.swift */; };
 		987153522C29ADBD00E08633 /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987153512C29ADBD00E08633 /* PostDetailViewModel.swift */; };
@@ -94,6 +97,7 @@
 		AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */; };
 		B01C96C52BA4210F0077D572 /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C42BA4210F0077D572 /* PostCardView.swift */; };
 		B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */; };
+		CCCC00132F601300007CCCCC /* PostComposerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */; };
 		B01C96CA2BAC12FA0077D572 /* CreateSessionApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */; };
 		B0C057702B8712D80066AD91 /* bskyappApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C0576F2B8712D80066AD91 /* bskyappApp.swift */; };
 		B0C057722B8712D80066AD91 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C057712B8712D80066AD91 /* ContentView.swift */; };
@@ -103,8 +107,11 @@
 		BBBB00032F400003007BBBBB /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00022F400003007BBBBB /* VideoPlayerView.swift */; };
 		C1772E34F525C2DA893CD935 /* Pods_bskyapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63E146412EA2391CB04A39B5 /* Pods_bskyapp.framework */; };
 		CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */; };
+		CCCC00192F601900007CCCCC /* PostCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00182F601800007CCCCC /* PostCards.swift */; };
+		CCCC00112F601100007CCCCC /* PostImageGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00102F601000007CCCCC /* PostImageGrid.swift */; };
 		CCCC00082F600001007CCCCC /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CCCC00092F600001007CCCCC /* Localizable.xcstrings */; };
 		CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00022F600001007CCCCC /* FullScreenImageView.swift */; };
+		CCCC001B2F601B00007CCCCC /* HighlightColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC001A2F601A00007CCCCC /* HighlightColorPickerView.swift */; };
 		CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */; };
 		CCCC00072F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00062F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift */; };
 		ABCD00012F700001007ABCD0 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCD00002F700001007ABCD0 /* ImageCache.swift */; };
@@ -127,8 +134,12 @@
 		FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */; };
 		FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00062F700004007FFFFF /* MuteBlockListView.swift */; };
 		FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00082F700005007FFFFF /* MuteWordManager.swift */; };
+		9A9A00012F900001009A9A9A /* ModerationReportApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9A00002F900001009A9A9A /* ModerationReportApiModel.swift */; };
+		9A9A00032F900002009A9A9A /* ModerationReportApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A9A00022F900002009A9A9A /* ModerationReportApi.swift */; };
 		FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF000A2F700006007FFFFF /* MuteWordsView.swift */; };
+		DDDD00042F500001007DDDDD /* MuteWordQuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00052F500001007DDDDD /* MuteWordQuickAddView.swift */; };
 		FFFF00112F700007007FFFFF /* RTFilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00102F700007007FFFFF /* RTFilterManager.swift */; };
+		DDDD00062F500001007DDDDD /* MutedUsersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDD00072F500001007DDDDD /* MutedUsersManager.swift */; };
 		FFFF00182F70000A007FFFFF /* UserHighlightManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00172F70000A007FFFFF /* UserHighlightManager.swift */; };
 		FFFF00132F700008007FFFFF /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00122F700008007FFFFF /* AppLogger.swift */; };
 		FFFF00152F700009007FFFFF /* SwipeActionSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00142F700009007FFFFF /* SwipeActionSetting.swift */; };
@@ -142,6 +153,8 @@
 		980FD1D52E77149600AE29EF /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		980FD1D72E7714B500AE29EF /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		980FD1E12E77B95300AE29EF /* LinkCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkCardView.swift; sourceTree = "<group>"; };
+		CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineTabButton.swift; sourceTree = "<group>"; };
+		CCCC00142F601400007CCCCC /* PostActionModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostActionModifiers.swift; sourceTree = "<group>"; };
 		980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadBlobApi.swift; sourceTree = "<group>"; };
 		980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressionHelper.swift; sourceTree = "<group>"; };
 		C13706BA14E09F599469103D /* OpenGraphParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenGraphParser.swift; sourceTree = "<group>"; };
@@ -186,6 +199,7 @@
 		987153442C08ADFC00E08633 /* DefsModListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefsModListItem.swift; sourceTree = "<group>"; };
 		987153462C08AF6300E08633 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		987153482C08B06B00E08633 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		CCCC001C2F601C00007CCCCC /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		9871534D2C08C39200E08633 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		9871534F2C08C96A00E08633 /* Item.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		987153512C29ADBD00E08633 /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
@@ -229,6 +243,7 @@
 		AE636E9731DACE2F948589FC /* Pods-bskyapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bskyapp.debug.xcconfig"; path = "Target Support Files/Pods-bskyapp/Pods-bskyapp.debug.xcconfig"; sourceTree = "<group>"; };
 		B01C96C42BA4210F0077D572 /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardViewModel.swift; sourceTree = "<group>"; };
+		CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostComposerViewModel.swift; sourceTree = "<group>"; };
 		B01C96C92BAC12FA0077D572 /* CreateSessionApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSessionApi.swift; sourceTree = "<group>"; };
 		B0C0576C2B8712D80066AD91 /* bskyapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bskyapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0C0576F2B8712D80066AD91 /* bskyappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bskyappApp.swift; sourceTree = "<group>"; };
@@ -238,8 +253,11 @@
 		BBBB00002F400001007BBBBB /* EmbedVideoViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbedVideoViewItem.swift; sourceTree = "<group>"; };
 		BBBB00022F400003007BBBBB /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
+		CCCC00182F601800007CCCCC /* PostCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCards.swift; sourceTree = "<group>"; };
+		CCCC00102F601000007CCCCC /* PostImageGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostImageGrid.swift; sourceTree = "<group>"; };
 		CCCC00092F600001007CCCCC /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CCCC00022F600001007CCCCC /* FullScreenImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageView.swift; sourceTree = "<group>"; };
+		CCCC001A2F601A00007CCCCC /* HighlightColorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightColorPickerView.swift; sourceTree = "<group>"; };
 		CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedGeneratorTimelineView.swift; sourceTree = "<group>"; };
 		CCCC00062F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedGeneratorTimelineViewModel.swift; sourceTree = "<group>"; };
 		DDDD00002F500001007DDDDD /* PostDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDraft.swift; sourceTree = "<group>"; };
@@ -262,7 +280,11 @@
 		FFFF00062F700004007FFFFF /* MuteBlockListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListView.swift; sourceTree = "<group>"; };
 		FFFF00082F700005007FFFFF /* MuteWordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordManager.swift; sourceTree = "<group>"; };
 		FFFF000A2F700006007FFFFF /* MuteWordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordsView.swift; sourceTree = "<group>"; };
+		DDDD00052F500001007DDDDD /* MuteWordQuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteWordQuickAddView.swift; sourceTree = "<group>"; };
 		FFFF00102F700007007FFFFF /* RTFilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTFilterManager.swift; sourceTree = "<group>"; };
+		DDDD00072F500001007DDDDD /* MutedUsersManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutedUsersManager.swift; sourceTree = "<group>"; };
+		9A9A00002F900001009A9A9A /* ModerationReportApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModerationReportApiModel.swift; sourceTree = "<group>"; };
+		9A9A00022F900002009A9A9A /* ModerationReportApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModerationReportApi.swift; sourceTree = "<group>"; };
 		FFFF00172F70000A007FFFFF /* UserHighlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserHighlightManager.swift; sourceTree = "<group>"; };
 		FFFF00122F700008007FFFFF /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		FFFF00142F700009007FFFFF /* SwipeActionSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionSetting.swift; sourceTree = "<group>"; };
@@ -327,6 +349,7 @@
 				98733E192EAE6BDE00177E2C /* PublishersExtension.swift */,
 				9874EC662E7C5B9100F116D0 /* HTTPHeadersExtension.swift */,
 				987153482C08B06B00E08633 /* StringExtension.swift */,
+				CCCC001C2F601C00007CCCCC /* ColorExtension.swift */,
 				98CCEE012C08B10000E08633 /* ErrorExtension.swift */,
 			);
 			path = Extension;
@@ -357,6 +380,7 @@
 				9874EC5C2E7C335F00F116D0 /* LikesViewModel.swift */,
 				980FD1D72E7714B500AE29EF /* LoginViewModel.swift */,
 				B01C96C72BAC11F00077D572 /* PostCardViewModel.swift */,
+				CCCC00122F601200007CCCCC /* PostComposerViewModel.swift */,
 				98289CC72BF76B09007EA3C5 /* TimelineCardViewModel.swift */,
 				987153592C29BC8200E08633 /* AsyncImageViewModel.swift */,
 				98D959592CAD9F0000E6A6B7 /* ProfileViewModel.swift */,
@@ -380,6 +404,7 @@
 				98AF4B972BC6F653007DE10F /* CreateSessionApiModel.swift */,
 				EEEE00042F600001007EEEEE /* SearchPostsApiModel.swift */,
 				EEEE000C2F600001007EEEEE /* GetUserFeedsApiModel.swift */,
+				9A9A00002F900001009A9A9A /* ModerationReportApiModel.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -398,6 +423,7 @@
 				9874EC5F2E7C59B800F116D0 /* DeleteRecordApi.swift */,
 				98697E9C2F1E4C9B007EFC2F /* InteractionService.swift */,
 				FFFF00022F700002007FFFFF /* MuteBlockApi.swift */,
+				9A9A00022F900002009A9A9A /* ModerationReportApi.swift */,
 				AAAA00002F000001007AAAAA /* PostCreationService.swift */,
 				980FD20E2E7B041900AE29EF /* GetPostThreadApi.swift */,
 				980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */,
@@ -454,6 +480,7 @@
 				AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */,
 				FFFF00082F700005007FFFFF /* MuteWordManager.swift */,
 				FFFF00102F700007007FFFFF /* RTFilterManager.swift */,
+				DDDD00072F500001007DDDDD /* MutedUsersManager.swift */,
 				FFFF00172F70000A007FFFFF /* UserHighlightManager.swift */,
 				FFFF00122F700008007FFFFF /* AppLogger.swift */,
 				FFFF00142F700009007FFFFF /* SwipeActionSetting.swift */,
@@ -472,6 +499,7 @@
 				DDDD00022F500001007DDDDD /* DraftsView.swift */,
 				FFFF00062F700004007FFFFF /* MuteBlockListView.swift */,
 				FFFF000A2F700006007FFFFF /* MuteWordsView.swift */,
+				DDDD00052F500001007DDDDD /* MuteWordQuickAddView.swift */,
 				EEEE00022F600001007EEEEE /* BookmarksView.swift */,
 				EEEE000A2F600001007EEEEE /* SearchView.swift */,
 				980FD2062E7AFAF700AE29EF /* RepliesView.swift */,
@@ -481,12 +509,17 @@
 				FFFF00002F600001007FFFFF /* PostTextView.swift */,
 				SELT00002F800001007SELT0 /* SelectablePostTextView.swift */,
 				CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */,
+				CCCC00182F601800007CCCCC /* PostCards.swift */,
+				CCCC00102F601000007CCCCC /* PostImageGrid.swift */,
 				CCCC00022F600001007CCCCC /* FullScreenImageView.swift */,
+				CCCC001A2F601A00007CCCCC /* HighlightColorPickerView.swift */,
 				98CC34362FCC8AC000AA162D /* QuotePostCardView.swift */,
 				CCCC00042F600001007CCCCC /* FeedGeneratorTimelineView.swift */,
 				987153532C29ADF300E08633 /* PostDetailView.swift */,
 				98C636352F33B6300064F497 /* SettingsView.swift */,
 				980FD1E12E77B95300AE29EF /* LinkCardView.swift */,
+				CCCC00162F601600007CCCCC /* UnderlineTabButton.swift */,
+				CCCC00142F601400007CCCCC /* PostActionModifiers.swift */,
 				980FD2132E7B044900AE29EF /* ReplyItemView.swift */,
 				980FD20C2E7B006200AE29EF /* ReplyPostCardView.swift */,
 				987153572C29BC4E00E08633 /* AsyncImageView.swift */,
@@ -675,6 +708,8 @@
 			files = (
 				98C635E02F2CCBEA0064F497 /* GetActorLikesApi.swift in Sources */,
 				980FD1E22E77B95300AE29EF /* LinkCardView.swift in Sources */,
+				CCCC00172F601700007CCCCC /* UnderlineTabButton.swift in Sources */,
+				CCCC00152F601500007CCCCC /* PostActionModifiers.swift in Sources */,
 				983B2C1B2BB29583004E20F3 /* FeedItem.swift in Sources */,
 				9871532B2C08A9A300E08633 /* PostRecord.swift in Sources */,
 				987153372C08ABD900E08633 /* FeedRequest.swift in Sources */,
@@ -683,16 +718,20 @@
 				AAAA00032F000003007AAAAA /* PostInteractionHelper.swift in Sources */,
 				FFFF00012F700001007FFFFF /* MuteBlockApiModel.swift in Sources */,
 				FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */,
+				9A9A00012F900001009A9A9A /* ModerationReportApiModel.swift in Sources */,
+				9A9A00032F900002009A9A9A /* ModerationReportApi.swift in Sources */,
 				FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */,
 				FFFF00072F700004007FFFFF /* MuteBlockListView.swift in Sources */,
 				FFFF00092F700005007FFFFF /* MuteWordManager.swift in Sources */,
 				FFFF00112F700007007FFFFF /* RTFilterManager.swift in Sources */,
+				DDDD00062F500001007DDDDD /* MutedUsersManager.swift in Sources */,
 				FFFF00182F70000A007FFFFF /* UserHighlightManager.swift in Sources */,
 				FFFF00132F700008007FFFFF /* AppLogger.swift in Sources */,
 				FFFF00152F700009007FFFFF /* SwipeActionSetting.swift in Sources */,
 				EEEE00102F800001007EEEEE /* HashtagFeedManager.swift in Sources */,
 				EEEE00122F800001007EEEEE /* ContentLabelManager.swift in Sources */,
 				FFFF000B2F700006007FFFFF /* MuteWordsView.swift in Sources */,
+				DDDD00042F500001007DDDDD /* MuteWordQuickAddView.swift in Sources */,
 				9874EC6D2E7C5DD700F116D0 /* FollowListViewModel.swift in Sources */,
 				987153502C08C96A00E08633 /* Item.swift in Sources */,
 				DDDD00012F500001007DDDDD /* PostDraft.swift in Sources */,
@@ -718,13 +757,17 @@
 				9871533B2C08ACA300E08633 /* Reply.swift in Sources */,
 				98C636362F33B6300064F497 /* SettingsView.swift in Sources */,
 				987153492C08B06B00E08633 /* StringExtension.swift in Sources */,
+				CCCC001D2F601D00007CCCCC /* ColorExtension.swift in Sources */,
 				987153232C08A90E00E08633 /* Viewer.swift in Sources */,
 				98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */,
 				TOAST0022F000001007TOAST2 /* ToastManager.swift in Sources */,
 				FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */,
 				SELT00012F800001007SELT1 /* SelectablePostTextView.swift in Sources */,
 				CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */,
+				CCCC00192F601900007CCCCC /* PostCards.swift in Sources */,
+				CCCC00112F601100007CCCCC /* PostImageGrid.swift in Sources */,
 				CCCC00032F600001007CCCCC /* FullScreenImageView.swift in Sources */,
+				CCCC001B2F601B00007CCCCC /* HighlightColorPickerView.swift in Sources */,
 				CCCC00052F600001007CCCCC /* FeedGeneratorTimelineView.swift in Sources */,
 				CCCC00072F600001007CCCCC /* FeedGeneratorTimelineViewModel.swift in Sources */,
 				980FD2092E7AFB0400AE29EF /* RepliesViewModel.swift in Sources */,
@@ -739,6 +782,7 @@
 				98733E042EA7A31A00177E2C /* GetNotificationsApi.swift in Sources */,
 				987153212C08A8E100E08633 /* MutedByListViewer.swift in Sources */,
 				B01C96C82BAC11F00077D572 /* PostCardViewModel.swift in Sources */,
+				CCCC00132F601300007CCCCC /* PostComposerViewModel.swift in Sources */,
 				987153312C08AAAD00E08633 /* EmbeddedRecordViewItem.swift in Sources */,
 				987153522C29ADBD00E08633 /* PostDetailViewModel.swift in Sources */,
 				98733E142EAE534500177E2C /* GetAuthorFeedApi.swift in Sources */,

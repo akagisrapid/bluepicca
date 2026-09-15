@@ -48,10 +48,12 @@ class ContentViewModel: ObservableObject {
     let muteWordManager = MuteWordManager.shared
     let rtFilterManager = RTFilterManager.shared
     let labelManager = ContentLabelManager.shared
+    let mutedUsersManager = MutedUsersManager.shared
     return feeds.filter { feedItem in
       guard let post = feedItem.post else { return false }
       let viewer = post.author?.viewer
       if viewer?.muted == true { return false }
+      if let did = post.author?.did, mutedUsersManager.isMuted(did) { return false }
       if viewer?.blocking != nil { return false }
       let text = post.record?.text ?? ""
       if muteWordManager.matches(text) { return false }

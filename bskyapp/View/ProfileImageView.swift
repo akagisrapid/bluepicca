@@ -1,9 +1,20 @@
 import SwiftUI
 
+private struct ProfileNavigationKey: EnvironmentKey {
+  static let defaultValue: (String) -> Void = { _ in }
+}
+
+extension EnvironmentValues {
+  var navigateToProfile: (String) -> Void {
+    get { self[ProfileNavigationKey.self] }
+    set { self[ProfileNavigationKey.self] = newValue }
+  }
+}
+
 struct ProfileImageView: View {
   let viewModel: AsyncImageViewModel
   let actor: String
-  @State private var navigateToProfile = false
+  @Environment(\.navigateToProfile) private var navigateToProfile
   @ScaledMetric(relativeTo: .subheadline) private var timelineSize: CGFloat = 30
   @ScaledMetric(relativeTo: .title) private var avatarSize: CGFloat = 60
 
@@ -17,7 +28,7 @@ struct ProfileImageView: View {
 
   var body: some View {
     Button {
-      navigateToProfile = true
+      navigateToProfile(actor)
     } label: {
       CachedAsyncImage(url: viewModel.url) { image in
         image
@@ -31,20 +42,6 @@ struct ProfileImageView: View {
       }
     }
     .buttonStyle(.plain)
-    .background(
-      NavigationLink(
-        isActive: $navigateToProfile,
-        destination: {
-          ProfileView(
-            viewModel: ProfileViewModel(
-              actor: actor,
-              profile: .init(did: "", handle: "", labels: [])
-            )
-          )
-        },
-        label: { EmptyView() }
-      )
-      .hidden()
-    )
+    .fixedSize()
   }
 }

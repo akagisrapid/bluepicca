@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>プライバシーポリシー - Bluepicca</title>
+  <title>プライバシーポリシー / Privacy Policy - Bluepicca</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -20,43 +20,128 @@
     ul { padding-left: 1.4em; }
     .updated { font-size: 0.85rem; color: #888; margin-bottom: 2em; }
     a { color: #0066cc; }
+    .lang-switch {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 2em;
+    }
+    .lang-btn {
+      padding: 6px 16px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #555;
+    }
+    .lang-btn.active {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+    #en { display: none; }
   </style>
 </head>
 <body>
-  <h1>プライバシーポリシー</h1>
-  <p class="updated">最終更新日：2026年6月24日</p>
 
-  <p>Bluepicca（以下「本アプリ」）は、AT Protocol を使用した iOS 向け Bluesky クライアントアプリです。本アプリの利用にあたり、以下のプライバシーポリシーをご確認ください。</p>
+  <div class="lang-switch">
+    <button class="lang-btn active" onclick="switchLang('ja')" id="btn-ja">日本語</button>
+    <button class="lang-btn" onclick="switchLang('en')" id="btn-en">English</button>
+  </div>
 
-  <h2>収集する情報</h2>
-  <p>本アプリは以下の情報を端末内にのみ保存します。</p>
-  <ul>
-    <li>Bluesky アカウントのハンドル名およびアプリパスワード（iOS Keychain に暗号化して保存）</li>
-    <li>AT Protocol 認証トークン（iOS Keychain に保存、12時間ごとに自動更新）</li>
-    <li>投稿へのいいね・リポスト状態（UserDefaults に保存）</li>
-  </ul>
+  <!-- Japanese -->
+  <div id="ja">
+    <h1>プライバシーポリシー</h1>
+    <p class="updated">最終更新日：2026年7月8日</p>
 
-  <h2>収集しない情報</h2>
-  <ul>
-    <li>本アプリは個人情報を開発者のサーバーに送信しません</li>
-    <li>アナリティクスや広告トラッキングは一切行いません</li>
-    <li>第三者への情報提供は行いません</li>
-  </ul>
+    <p>Bluepicca（以下「本アプリ」）は、AT Protocol を使用した iOS 向け Bluesky クライアントアプリです。本アプリの利用にあたり、以下のプライバシーポリシーをご確認ください。</p>
 
-  <h2>外部サービスとの通信</h2>
-  <p>本アプリはタイムラインの取得・投稿・いいね等の操作のため、Bluesky Social が提供する AT Protocol API（bsky.social）と通信します。通信内容および取り扱いは <a href="https://bsky.social/about/support/privacy-policy" target="_blank">Bluesky のプライバシーポリシー</a> に従います。</p>
+    <h2>収集する情報</h2>
+    <p>本アプリは以下の情報を端末内にのみ保存します。</p>
+    <ul>
+      <li>Bluesky アカウントのハンドル名およびアプリパスワード（iOS Keychain に暗号化して保存）</li>
+      <li>AT Protocol 認証トークン（iOS Keychain に保存、12時間ごとに自動更新）</li>
+      <li>投稿へのいいね・リポスト状態（UserDefaults に保存）</li>
+    </ul>
 
-  <h2>写真ライブラリへのアクセス</h2>
-  <p>本アプリは投稿に写真を添付する場合にのみ、ユーザーの許可を得た上で写真ライブラリにアクセスします。選択した画像は投稿目的でのみ使用し、外部に送信することはありません。</p>
+    <h2>収集しない情報</h2>
+    <ul>
+      <li>本アプリは個人情報を開発者のサーバーに送信しません</li>
+      <li>アナリティクスや広告トラッキングは一切行いません</li>
+      <li>第三者への情報提供は行いません</li>
+    </ul>
 
-  <h2>データの削除</h2>
-  <p>本アプリをアンインストールすることで、端末内に保存されたすべてのデータ（Keychain 含む）が削除されます。</p>
+    <h2>外部サービスとの通信</h2>
+    <p>本アプリはタイムラインの取得・投稿・いいね等の操作のため、Bluesky Social が提供する AT Protocol API（bsky.social）と通信します。通信内容および取り扱いは <a href="https://bsky.social/about/support/privacy-policy" target="_blank">Bluesky のプライバシーポリシー</a> に従います。</p>
 
-  <h2>お問い合わせ</h2>
-  <p>プライバシーポリシーに関するご質問は、以下までご連絡ください。</p>
-  <p><a href="mailto:akagisrapid@gmail.com">akagisrapid@gmail.com</a></p>
+    <h2>写真ライブラリへのアクセス</h2>
+    <p>本アプリは投稿に写真を添付する場合にのみ、ユーザーの許可を得た上で写真ライブラリにアクセスします。選択した画像は Bluesky への投稿目的でのみ使用します。</p>
 
-  <h2>ポリシーの変更</h2>
-  <p>本ポリシーは予告なく変更される場合があります。変更後のポリシーはこのページに掲載された時点で有効となります。</p>
+    <h2>サードパーティコンテンツ</h2>
+    <p>本アプリは AT Protocol ネットワーク上の他のユーザーが投稿したコンテンツ（テキスト・画像・動画）を表示します。これらのコンテンツの著作権は各投稿者に帰属します。不適切なコンテンツは Bluesky のモデレーション機能またはアカウントのブロック・ミュート機能により対処してください。</p>
+
+    <h2>データの削除</h2>
+    <p>本アプリをアンインストールすることで、端末内に保存されたすべてのデータ（Keychain 含む）が削除されます。</p>
+
+    <h2>お問い合わせ</h2>
+    <p>プライバシーポリシーに関するご質問は、以下までご連絡ください。</p>
+    <p><a href="mailto:akagisrapid@gmail.com">akagisrapid@gmail.com</a></p>
+
+    <h2>ポリシーの変更</h2>
+    <p>本ポリシーは予告なく変更される場合があります。変更後のポリシーはこのページに掲載された時点で有効となります。</p>
+  </div>
+
+  <!-- English -->
+  <div id="en">
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: July 8, 2026</p>
+
+    <p>Bluepicca is an iOS Bluesky client app built on the AT Protocol. Please read the following privacy policy before using the app.</p>
+
+    <h2>Information We Collect</h2>
+    <p>The app stores the following information on your device only:</p>
+    <ul>
+      <li>Your Bluesky handle and app password (encrypted in iOS Keychain)</li>
+      <li>AT Protocol authentication tokens (stored in iOS Keychain, auto-refreshed every 12 hours)</li>
+      <li>Like and repost state for posts (stored in UserDefaults)</li>
+    </ul>
+
+    <h2>Information We Do Not Collect</h2>
+    <ul>
+      <li>The app does not transmit personal information to any developer-operated server</li>
+      <li>No analytics, crash reporting, or advertising tracking is performed</li>
+      <li>No information is shared with third parties</li>
+    </ul>
+
+    <h2>Communication with External Services</h2>
+    <p>The app communicates with the AT Protocol API provided by Bluesky Social (bsky.social) to fetch timelines, create posts, send likes, and perform other operations. All data handling by Bluesky Social is governed by <a href="https://bsky.social/about/support/privacy-policy" target="_blank">Bluesky's Privacy Policy</a>.</p>
+
+    <h2>Photo Library Access</h2>
+    <p>The app requests access to your photo library only when you choose to attach a photo to a post. Selected images are used solely for the purpose of posting to Bluesky.</p>
+
+    <h2>Third-Party Content</h2>
+    <p>The app displays content (text, images, videos) posted by other users on the AT Protocol network. Copyright for that content belongs to its respective authors. To address inappropriate content, please use Bluesky's built-in moderation features or the block/mute functions.</p>
+
+    <h2>Data Deletion</h2>
+    <p>Uninstalling the app removes all locally stored data, including Keychain entries.</p>
+
+    <h2>Contact</h2>
+    <p>For questions about this privacy policy, please contact:</p>
+    <p><a href="mailto:akagisrapid@gmail.com">akagisrapid@gmail.com</a></p>
+
+    <h2>Changes to This Policy</h2>
+    <p>This policy may be updated without prior notice. Changes take effect when posted on this page.</p>
+  </div>
+
+  <script>
+    function switchLang(lang) {
+      document.getElementById('ja').style.display = lang === 'ja' ? 'block' : 'none';
+      document.getElementById('en').style.display = lang === 'en' ? 'block' : 'none';
+      document.getElementById('btn-ja').className = 'lang-btn' + (lang === 'ja' ? ' active' : '');
+      document.getElementById('btn-en').className = 'lang-btn' + (lang === 'en' ? ' active' : '');
+      document.documentElement.lang = lang;
+    }
+  </script>
+
 </body>
 </html>

@@ -96,9 +96,11 @@ class ProfileViewModel: ObservableObject {
       if isMuted {
         try await MuteBlockApi.unmuteActor(did: profile.did)
         isMuted = false
+        MutedUsersManager.shared.remove(did: profile.did)
       } else {
         try await MuteBlockApi.muteActor(did: profile.did)
         isMuted = true
+        MutedUsersManager.shared.add(did: profile.did)
       }
     } catch {
       dlog("toggleMute error: \(error)")
