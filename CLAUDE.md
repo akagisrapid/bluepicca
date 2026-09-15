@@ -18,7 +18,7 @@ cd rapipopo && pod install
 open rapipopo/bskyapp.xcworkspace
 ```
 
-Build and run from Xcode (⌘B / ⌘R). Requires iOS 16+ (uses NavigationStack, SwiftData).
+Build and run from Xcode (⌘B / ⌘R). Requires iOS 17+ (uses NavigationStack, SwiftData).
 
 There are no automated tests or linting configured in this project.
 
