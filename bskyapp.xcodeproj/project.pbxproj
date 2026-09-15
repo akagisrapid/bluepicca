@@ -14,6 +14,7 @@
 		CCCC00152F601500007CCCCC /* PostActionModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC00142F601400007CCCCC /* PostActionModifiers.swift */; };
 		980FD1E82E781BDE00AE29EF /* UploadBlobApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */; };
 		980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */; };
+		A278176E386E97676CE5AC8B /* OpenGraphParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C13706BA14E09F599469103D /* OpenGraphParser.swift */; };
 		980FD1FC2E7AF71F00AE29EF /* PostStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */; };
 		980FD2032E7AFACD00AE29EF /* NotificationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2012E7AFACD00AE29EF /* NotificationResponse.swift */; };
 		980FD2072E7AFAF700AE29EF /* RepliesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980FD2062E7AFAF700AE29EF /* RepliesView.swift */; };
@@ -127,6 +128,7 @@
 		EEEE00112F600001007EEEEE /* GetFeedApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE00102F600001007EEEEE /* GetFeedApi.swift */; };
 		BBBB00052F400001007BBBBB /* HashtagPreferenceApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00042F400001007BBBBB /* HashtagPreferenceApi.swift */; };
 		FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F600001007FFFFF /* PostTextView.swift */; };
+		SELT00012F800001007SELT1 /* SelectablePostTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SELT00002F800001007SELT0 /* SelectablePostTextView.swift */; };
 		FFFF00012F700001007FFFFF /* MuteBlockApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */; };
 		FFFF00032F700002007FFFFF /* MuteBlockApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00022F700002007FFFFF /* MuteBlockApi.swift */; };
 		FFFF00052F700003007FFFFF /* MuteBlockListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */; };
@@ -155,6 +157,7 @@
 		CCCC00142F601400007CCCCC /* PostActionModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostActionModifiers.swift; sourceTree = "<group>"; };
 		980FD1E72E781BDE00AE29EF /* UploadBlobApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadBlobApi.swift; sourceTree = "<group>"; };
 		980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressionHelper.swift; sourceTree = "<group>"; };
+		C13706BA14E09F599469103D /* OpenGraphParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenGraphParser.swift; sourceTree = "<group>"; };
 		ABCD00002F700001007ABCD0 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStateManager.swift; sourceTree = "<group>"; };
 		980FD2012E7AFACD00AE29EF /* NotificationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationResponse.swift; sourceTree = "<group>"; };
@@ -270,6 +273,7 @@
 		EEEE00102F600001007EEEEE /* GetFeedApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFeedApi.swift; sourceTree = "<group>"; };
 		BBBB00042F400001007BBBBB /* HashtagPreferenceApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagPreferenceApi.swift; sourceTree = "<group>"; };
 		FFFF00002F600001007FFFFF /* PostTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTextView.swift; sourceTree = "<group>"; };
+		SELT00002F800001007SELT0 /* SelectablePostTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectablePostTextView.swift; sourceTree = "<group>"; };
 		FFFF00002F700001007FFFFF /* MuteBlockApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApiModel.swift; sourceTree = "<group>"; };
 		FFFF00022F700002007FFFFF /* MuteBlockApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockApi.swift; sourceTree = "<group>"; };
 		FFFF00042F700003007FFFFF /* MuteBlockListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuteBlockListViewModel.swift; sourceTree = "<group>"; };
@@ -471,6 +475,7 @@
 				98289CC92BF772C3007EA3C5 /* Extension */,
 				980FD1FB2E7AF71F00AE29EF /* PostStateManager.swift */,
 				980FD1EB2E79B17200AE29EF /* ImageCompressionHelper.swift */,
+				C13706BA14E09F599469103D /* OpenGraphParser.swift */,
 				ABCD00002F700001007ABCD0 /* ImageCache.swift */,
 				AAAA00022F000003007AAAAA /* PostInteractionHelper.swift */,
 				FFFF00082F700005007FFFFF /* MuteWordManager.swift */,
@@ -502,6 +507,7 @@
 				98289CC52BF76AFA007EA3C5 /* TimelineCardView.swift */,
 				TOAST0012F000001007TOAST1 /* ToastManager.swift */,
 				FFFF00002F600001007FFFFF /* PostTextView.swift */,
+				SELT00002F800001007SELT0 /* SelectablePostTextView.swift */,
 				CCCC00002F600001007CCCCC /* CachedAsyncImage.swift */,
 				CCCC00182F601800007CCCCC /* PostCards.swift */,
 				CCCC00102F601000007CCCCC /* PostImageGrid.swift */,
@@ -756,6 +762,7 @@
 				98289CC62BF76AFA007EA3C5 /* TimelineCardView.swift in Sources */,
 				TOAST0022F000001007TOAST2 /* ToastManager.swift in Sources */,
 				FFFF00012F600001007FFFFF /* PostTextView.swift in Sources */,
+				SELT00012F800001007SELT1 /* SelectablePostTextView.swift in Sources */,
 				CCCC00012F600001007CCCCC /* CachedAsyncImage.swift in Sources */,
 				CCCC00192F601900007CCCCC /* PostCards.swift in Sources */,
 				CCCC00112F601100007CCCCC /* PostImageGrid.swift in Sources */,
@@ -766,6 +773,7 @@
 				980FD2092E7AFB0400AE29EF /* RepliesViewModel.swift in Sources */,
 				98D9595C2CADA22100E6A6B7 /* GetProfileApi.swift in Sources */,
 				980FD1EC2E79B17200AE29EF /* ImageCompressionHelper.swift in Sources */,
+				A278176E386E97676CE5AC8B /* OpenGraphParser.swift in Sources */,
 				ABCD00012F700001007ABCD0 /* ImageCache.swift in Sources */,
 				9874EC5D2E7C335F00F116D0 /* LikesViewModel.swift in Sources */,
 				98D959622CADA8CF00E6A6B7 /* ProfileImageView.swift in Sources */,

@@ -10,7 +10,7 @@ struct TimelineCardView: View {
   @State private var hashtagSearchItem: HashtagSearchItem? = nil
   @State private var isSensitiveRevealed = false
   @State private var showHighlightPicker = false
-  @State private var viewingImageIndex: Int? = nil
+  @State private var isShowingPostDetailFromImage = false
   @State private var showMuteUserConfirm = false
   @State private var showMuteWordPicker = false
   @State private var showReportReasonPicker = false
@@ -493,8 +493,8 @@ struct TimelineCardView: View {
               }
               .padding(.bottom, 6)
             } else {
-              PostImageGrid(images: images, quality: .thumbnail) { index in
-                viewingImageIndex = index
+              PostImageGrid(images: images, quality: .thumbnail) { _ in
+                isShowingPostDetailFromImage = true
               }
               .padding(.bottom, 6)
             }
@@ -617,25 +617,8 @@ struct TimelineCardView: View {
         .presentationDetents([.height(280)])
       }
     }
-    .modifier(
-      MuteControlsModifier(
-        showMuteWordPicker: $showMuteWordPicker,
-        showMuteUserConfirm: $showMuteUserConfirm,
-        text: viewModel.text,
-        authorName: viewModel.authorName,
-        isAuthorMuted: isAuthorMuted,
-        onToggleMute: toggleUserMute
-      )
-    )
-    .fullScreenCover(
-      item: Binding(
-        get: { viewingImageIndex.map { IdentifiableInt(value: $0) } },
-        set: { viewingImageIndex = $0?.value }
-      )
-    ) { item in
-      if let images = viewModel.post.embed?.resolvedImages {
-        FullScreenImageView(images: images, initialIndex: item.value)
-      }
+    .navigationDestination(isPresented: $isShowingPostDetailFromImage) {
+      PostDetailView(viewModel: PostDetailViewModel(post: post))
     }
   }
 }
@@ -670,11 +653,4 @@ private struct MuteControlsModifier: ViewModifier {
 struct HashtagSearchItem: Identifiable {
   let id = UUID()
   let query: String
-}
-
-// MARK: - IdentifiableInt（fullScreenCover用）
-
-private struct IdentifiableInt: Identifiable {
-  let value: Int
-  var id: Int { value }
 }
