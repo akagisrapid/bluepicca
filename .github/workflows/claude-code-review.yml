@@ -42,3 +42,14 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
+      # is_error:true だけでは 401（トークン無効）・429（利用上限）・起動時クラッシュの区別が付かないため、
+      # 失敗したときだけ実行ログからエラーの本文を出す（トークンはログに含まれない）
+      - name: Show Claude error details
+        if: failure()
+        env:
+          EXECUTION_FILE: ${{ steps.claude-review.outputs.execution_file || format('{0}/claude-execution-output.json', runner.temp) }}
+        run: |
+          [ -f "$EXECUTION_FILE" ] || { echo "execution file not found: $EXECUTION_FILE"; exit 0; }
+          jq -c 'if type == "array" then .[] else . end
+            | select(.type == "result" or .subtype == "api_retry")
+            | {subtype, api_error_status, error_status, error, terminal_reason, result: ((.result // "") | tostring | .[:500])}' "$EXECUTION_FILE"
