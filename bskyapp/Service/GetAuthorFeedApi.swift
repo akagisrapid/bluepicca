@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 struct GetAuthorFeedApi {
@@ -28,21 +27,13 @@ struct GetAuthorFeedApi {
 
     dlog("Making author feed request to: \(urlString)")
 
-    let response = await AF.request(
-      urlString, method: .get, parameters: parameters, headers: headers
-    )
-    .validate()
-    .serializingDecodable(FeedResponse.self).response
-
-    switch response.result {
-    case .success(let res):
+    do {
+      let res = try await HTTPClient.decode(
+        FeedResponse.self, urlString, query: parameters, headers: headers)
       dlog("Author feed API success: received \(res.feed.count) items for \(actor)")
       return res
-    case .failure(let error):
-      dlog("Author feed API error:")
-      dlog("URL: \(response.request?.url?.absoluteString ?? "unknown")")
-      dlog("Status Code: \(response.response?.statusCode ?? 0)")
-      dlog("Error: \(error)")
+    } catch {
+      dlog("Author feed API error: \(error)")
       throw error
     }
   }

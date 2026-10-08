@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 // HTTPHeadersExtensionからgetHeaders関数を使用するため
 // getHeaders関数はUtils/Extension/HTTPHeadersExtension.swiftで定義されている
@@ -26,18 +25,8 @@ class DeleteRecordApi {
             "Content-Type": "application/json",
             "Authorization": "Bearer \(session.accessJwt)"
         ]
-        return try await withCheckedThrowingContinuation { continuation in
-            AF.request(url, method: .post, parameters: requestBody, encoder: JSONParameterEncoder.default, headers: headers)
-                .validate()
-                .responseDecodable(of: DeleteRecordResponse.self) { response in
-                    switch response.result {
-                    case .success(let data):
-                        continuation.resume(returning: data)
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-        }
+        return try await HTTPClient.decode(
+            DeleteRecordResponse.self, url, method: .post, json: requestBody, headers: headers)
     }
 }
 

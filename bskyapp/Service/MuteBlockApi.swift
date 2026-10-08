@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 class MuteBlockApi {
@@ -11,22 +10,9 @@ class MuteBlockApi {
       "Content-Type": "application/json",
       "Authorization": "Bearer \(session.accessJwt)",
     ]
-    return try await withCheckedThrowingContinuation { continuation in
-      AF.request(
-        "https://bsky.social/xrpc/app.bsky.graph.muteActor",
-        method: .post,
-        parameters: MuteActorRequest(actor: did),
-        encoder: JSONParameterEncoder.default,
-        headers: headers
-      )
-      .validate()
-      .response { response in
-        switch response.result {
-        case .success: continuation.resume()
-        case .failure(let error): continuation.resume(throwing: error)
-        }
-      }
-    }
+    _ = try await HTTPClient.data(
+      "https://bsky.social/xrpc/app.bsky.graph.muteActor", method: .post,
+      json: MuteActorRequest(actor: did), headers: headers)
   }
 
   static func unmuteActor(did: String) async throws {
@@ -35,22 +21,9 @@ class MuteBlockApi {
       "Content-Type": "application/json",
       "Authorization": "Bearer \(session.accessJwt)",
     ]
-    return try await withCheckedThrowingContinuation { continuation in
-      AF.request(
-        "https://bsky.social/xrpc/app.bsky.graph.unmuteActor",
-        method: .post,
-        parameters: MuteActorRequest(actor: did),
-        encoder: JSONParameterEncoder.default,
-        headers: headers
-      )
-      .validate()
-      .response { response in
-        switch response.result {
-        case .success: continuation.resume()
-        case .failure(let error): continuation.resume(throwing: error)
-        }
-      }
-    }
+    _ = try await HTTPClient.data(
+      "https://bsky.social/xrpc/app.bsky.graph.unmuteActor", method: .post,
+      json: MuteActorRequest(actor: did), headers: headers)
   }
 
   static func getMutes(limit: Int = 50, cursor: String? = nil) async throws -> GetMutesResponse {
@@ -60,21 +33,9 @@ class MuteBlockApi {
       "Authorization": "Bearer \(session.accessJwt)",
     ]
     let params = GetMutesRequest(limit: limit, cursor: cursor)
-    return try await withCheckedThrowingContinuation { continuation in
-      AF.request(
-        "https://bsky.social/xrpc/app.bsky.graph.getMutes",
-        method: .get,
-        parameters: params,
-        headers: headers
-      )
-      .validate()
-      .responseDecodable(of: GetMutesResponse.self) { response in
-        switch response.result {
-        case .success(let data): continuation.resume(returning: data)
-        case .failure(let error): continuation.resume(throwing: error)
-        }
-      }
-    }
+    return try await HTTPClient.decode(
+      GetMutesResponse.self, "https://bsky.social/xrpc/app.bsky.graph.getMutes", method: .get,
+      query: params, headers: headers)
   }
 
   // MARK: - Block
@@ -87,22 +48,10 @@ class MuteBlockApi {
     ]
     let record = CreateBlockRecord(subject: did, createdAt: Date().ISO8601Format())
     let requestBody = CreateBlockRequest(repo: session.did, record: record)
-    return try await withCheckedThrowingContinuation { continuation in
-      AF.request(
-        "https://bsky.social/xrpc/com.atproto.repo.createRecord",
-        method: .post,
-        parameters: requestBody,
-        encoder: JSONParameterEncoder.default,
-        headers: headers
-      )
-      .validate()
-      .responseDecodable(of: CreateFollowResponse.self) { response in
-        switch response.result {
-        case .success(let data): continuation.resume(returning: data.uri)
-        case .failure(let error): continuation.resume(throwing: error)
-        }
-      }
-    }
+    return try await HTTPClient.decode(
+      CreateFollowResponse.self, "https://bsky.social/xrpc/com.atproto.repo.createRecord",
+      method: .post, json: requestBody, headers: headers
+    ).uri
   }
 
   static func unblockActor(uri: String) async throws {
@@ -113,22 +62,9 @@ class MuteBlockApi {
       "Authorization": "Bearer \(session.accessJwt)",
     ]
     let requestBody = DeleteBlockRequest(repo: session.did, rkey: String(rkey))
-    return try await withCheckedThrowingContinuation { continuation in
-      AF.request(
-        "https://bsky.social/xrpc/com.atproto.repo.deleteRecord",
-        method: .post,
-        parameters: requestBody,
-        encoder: JSONParameterEncoder.default,
-        headers: headers
-      )
-      .validate()
-      .response { response in
-        switch response.result {
-        case .success: continuation.resume()
-        case .failure(let error): continuation.resume(throwing: error)
-        }
-      }
-    }
+    _ = try await HTTPClient.data(
+      "https://bsky.social/xrpc/com.atproto.repo.deleteRecord", method: .post, json: requestBody,
+      headers: headers)
   }
 
   static func getBlocks(limit: Int = 50, cursor: String? = nil) async throws -> GetBlocksResponse {
@@ -138,20 +74,8 @@ class MuteBlockApi {
       "Authorization": "Bearer \(session.accessJwt)",
     ]
     let params = GetBlocksRequest(limit: limit, cursor: cursor)
-    return try await withCheckedThrowingContinuation { continuation in
-      AF.request(
-        "https://bsky.social/xrpc/app.bsky.graph.getBlocks",
-        method: .get,
-        parameters: params,
-        headers: headers
-      )
-      .validate()
-      .responseDecodable(of: GetBlocksResponse.self) { response in
-        switch response.result {
-        case .success(let data): continuation.resume(returning: data)
-        case .failure(let error): continuation.resume(throwing: error)
-        }
-      }
-    }
+    return try await HTTPClient.decode(
+      GetBlocksResponse.self, "https://bsky.social/xrpc/app.bsky.graph.getBlocks", method: .get,
+      query: params, headers: headers)
   }
 }

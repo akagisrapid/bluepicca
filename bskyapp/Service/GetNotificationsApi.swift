@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 struct GetNotificationsApi {
@@ -23,21 +22,13 @@ struct GetNotificationsApi {
 
     dlog("Making notifications request to: \(urlString)")
 
-    let response = await AF.request(
-      urlString, method: .get, parameters: parameters, headers: headers
-    )
-    .validate()
-    .serializingDecodable(NotificationResponse.self).response
-
-    switch response.result {
-    case .success(let res):
+    do {
+      let res = try await HTTPClient.decode(
+        NotificationResponse.self, urlString, query: parameters, headers: headers)
       dlog("Notifications API success: received \(res.notifications.count) items")
       return res
-    case .failure(let error):
-      dlog("Notifications API error:")
-      dlog("URL: \(response.request?.url?.absoluteString ?? "unknown")")
-      dlog("Status Code: \(response.response?.statusCode ?? 0)")
-      dlog("Error: \(error)")
+    } catch {
+      dlog("Notifications API error: \(error)")
       throw error
     }
   }

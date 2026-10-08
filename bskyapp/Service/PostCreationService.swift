@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 import UIKit
 
@@ -221,25 +220,17 @@ class PostCreationService {
   private func fetchString(url: URL) async throws -> String {
     var request = URLRequest(url: url)
     request.timeoutInterval = 8
-    let response = await AF.request(request).validate()
-      .serializingString(encoding: .utf8)
-      .response
-    switch response.result {
-    case .success(let value): return value
-    case .failure(let error): throw error
+    let data = try await HTTPClient.send(request)
+    guard let value = String(data: data, encoding: .utf8) else {
+      throw URLError(.cannotDecodeContentData)
     }
+    return value
   }
 
   private func fetchData(url: URL) async throws -> Data {
     var request = URLRequest(url: url)
     request.timeoutInterval = 8
-    let response = await AF.request(request).validate()
-      .serializingData()
-      .response
-    switch response.result {
-    case .success(let value): return value
-    case .failure(let error): throw error
-    }
+    return try await HTTPClient.send(request)
   }
 
   // MARK: - Private Helpers
@@ -253,17 +244,13 @@ class PostCreationService {
       "Authorization": "Bearer \(session.accessJwt)",
     ]
 
-    let response = await AF.upload(imageData, to: urlString, method: .post, headers: headers)
-      .validate()
-      .serializingDecodable(UploadBlobResponse.self)
-      .response
+    var request = URLRequest(url: URL(string: urlString)!)
+    request.httpMethod = "POST"
+    request.httpBody = imageData
+    headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
 
-    switch response.result {
-    case .success(let value):
-      return value
-    case .failure(let error):
-      throw error
-    }
+    let data = try await HTTPClient.send(request)
+    return try JSONDecoder().decode(UploadBlobResponse.self, from: data)
   }
 
   private func buildImageEmbed(_ images: [UploadedImage]) -> [String: Any] {
@@ -340,27 +327,8 @@ class PostCreationService {
       "Authorization": "Bearer \(session.accessJwt)",
     ]
 
-    let jsonData = try JSONSerialization.data(withJSONObject: paramDict, options: [])
-
-    var request = URLRequest(url: URL(string: urlString)!)
-    request.httpMethod = "POST"
-    request.httpBody = jsonData
-
-    headers.forEach { header in
-      request.setValue(header.value, forHTTPHeaderField: header.name)
-    }
-
-    let response = await AF.request(request)
-      .validate()
-      .serializingDecodable(CreateRecordResponse.self)
-      .response
-
-    switch response.result {
-    case .success(let value):
-      return value
-    case .failure(let error):
-      throw error
-    }
+    return try await HTTPClient.decode(
+      CreateRecordResponse.self, urlString, method: .post, json: paramDict, headers: headers)
   }
 }
 

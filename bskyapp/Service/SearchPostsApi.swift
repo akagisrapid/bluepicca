@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 struct SearchPostsApi {
@@ -12,18 +11,11 @@ struct SearchPostsApi {
       "Authorization": "Bearer \(session.accessJwt)",
     ]
 
-    let response = await AF.request(urlString, method: .get, parameters: params, headers: headers)
-      .validate()
-      .serializingDecodable(SearchPostsResponse.self).response
-
-    switch response.result {
-    case .success(let res):
-      return res
-    case .failure(let error):
-      dlog("SearchPosts API error:")
-      dlog("URL: \(response.request?.url?.absoluteString ?? "unknown")")
-      dlog("Status Code: \(response.response?.statusCode ?? 0)")
-      dlog("Error: \(error)")
+    do {
+      return try await HTTPClient.decode(
+        SearchPostsResponse.self, urlString, query: params, headers: headers)
+    } catch {
+      dlog("SearchPosts API error: \(error)")
       throw error
     }
   }

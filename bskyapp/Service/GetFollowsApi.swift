@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 class GetFollowsApi {
     static func getFollows(param: GetFollowsApiRequest) async throws -> GetFollowsApiResponse {
@@ -27,17 +26,6 @@ class GetFollowsApi {
             throw URLError(.badURL)
         }
         
-        return try await withCheckedThrowingContinuation { continuation in
-            AF.request(url, method: .get, headers: headers)
-                .validate()
-                .responseDecodable(of: GetFollowsApiResponse.self) { response in
-                    switch response.result {
-                    case .success(let data):
-                        continuation.resume(returning: data)
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-        }
+        return try await HTTPClient.decode(GetFollowsApiResponse.self, url.absoluteString, headers: headers)
     }
 }

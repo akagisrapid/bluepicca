@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 func createSession(identifier: String, password: String) async throws -> CreateSessionResponse {
@@ -17,44 +16,24 @@ func createSession(identifier: String, password: String) async throws -> CreateS
   decoder.keyDecodingStrategy = .convertFromSnakeCase
 
   do {
-    let response = await AF.request(
-      urlString,
-      method: .post,
-      parameters: param,
-      encoder: JSONParameterEncoder.default,
-      headers: headers
-    )
-    .validate()
-    .serializingDecodable(CreateSessionResponse.self)
-    .response
-
-    switch response.result {
-    case .success(let value):
-      return value
-    case .failure(let error):
-      dlog(response.request?.url ?? "No URL")
-      dlog(response.response?.statusCode ?? 0)
-      dlog(error)
-
-      // Throw more specific errors based on status code
-      if let statusCode = response.response?.statusCode {
-        switch statusCode {
-        case 401:
-          throw SessionError.invalidCredentials
-        case 500...599:
-          throw SessionError.networkError
-        default:
-          throw error
-        }
-      } else {
-        throw SessionError.networkError
-      }
-    }
-  } catch {
-    if let sessionError = error as? SessionError {
-      throw sessionError
-    } else {
+    return try await HTTPClient.decode(
+      CreateSessionResponse.self, urlString, method: .post, json: param, headers: headers)
+  } catch let error as HTTPError {
+    dlog(error)
+    // Throw more specific errors based on status code
+    switch error.statusCode {
+    case 401:
+      throw SessionError.invalidCredentials
+    case 500...599:
+      throw SessionError.networkError
+    default:
       throw SessionError.unknown
     }
+  } catch is URLError {
+    // 応答が返らなかった（圏外・タイムアウトなど）
+    throw SessionError.networkError
+  } catch {
+    // 応答は返ったがデコードできなかった
+    throw SessionError.unknown
   }
 }

@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 struct GetActorLikesApi {
@@ -16,20 +15,11 @@ struct GetActorLikesApi {
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = .iso8601
 
-    // Alamofire request
-    let response = await AF.request(urlString, method: .get, parameters: param, headers: headers)
-      .validate()
-      .serializingDecodable(FeedResponse.self, decoder: decoder)
-      .response
-
-    switch response.result {
-    case .success(let res):
-      return res
-    case .failure(let error):
+    do {
+      return try await HTTPClient.decode(
+        FeedResponse.self, urlString, query: param, headers: headers, decoder: decoder)
+    } catch {
       dlog("Error in GetActorLikesApi: \(error)")
-      if let data = response.data, let str = String(data: data, encoding: .utf8) {
-        dlog("Response body: \(str)")
-      }
       throw error
     }
   }

@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 // HTTPHeadersExtensionからgetHeaders関数を使用するため
 // getHeaders関数はUtils/Extension/HTTPHeadersExtension.swiftで定義されている
@@ -20,18 +19,8 @@ class CreateFollowApi {
         ]
         let url = "https://bsky.social/xrpc/com.atproto.repo.createRecord"
         
-        return try await withCheckedThrowingContinuation { continuation in
-            AF.request(url, method: .post, parameters: requestBody, encoder: JSONParameterEncoder.default, headers: headers)
-                .validate()
-                .responseDecodable(of: CreateFollowResponse.self) { response in
-                    switch response.result {
-                    case .success(let data):
-                        continuation.resume(returning: data)
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-        }
+        return try await HTTPClient.decode(
+            CreateFollowResponse.self, url, method: .post, json: requestBody, headers: headers)
     }
 }
 

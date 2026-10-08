@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 class InteractionService {
@@ -83,20 +82,12 @@ class InteractionService {
       "Content-Type": "application/json",
     ]
 
-    let response = await AF.request(
-      url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers
-    )
-    .serializingDecodable(CreateRecordResponse.self)  // 既存のレスポンス型を再利用
-    .response
-
-    switch response.result {
-    case .success(let value):
+    do {
+      let value = try await HTTPClient.decode(
+        CreateRecordResponse.self, url, method: .post, json: parameters, headers: headers)  // 既存のレスポンス型を再利用
       return value.uri ?? ""  // URIが存在しない場合は空文字を返す
-    case .failure(let error):
+    } catch {
       dlog("InteractionService createRecord error: \(error)")
-      if let data = response.data, let responseString = String(data: data, encoding: .utf8) {
-        dlog("Server response: \(responseString)")
-      }
       throw error
     }
   }
@@ -117,20 +108,10 @@ class InteractionService {
       "Content-Type": "application/json",
     ]
 
-    let response = await AF.request(
-      url, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers
-    )
-    .serializingData()
-    .response
-
-    switch response.result {
-    case .success:
-      return
-    case .failure(let error):
+    do {
+      _ = try await HTTPClient.data(url, method: .post, json: parameters, headers: headers)
+    } catch {
       dlog("InteractionService deleteRecord error: \(error)")
-      if let data = response.data, let responseString = String(data: data, encoding: .utf8) {
-        dlog("Server response: \(responseString)")
-      }
       throw error
     }
   }

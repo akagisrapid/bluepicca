@@ -1,4 +1,3 @@
-import Alamofire
 import Combine
 import Foundation
 
@@ -246,7 +245,7 @@ class ContentViewModel: ObservableObject {
           // タブ切り替えによるキャンセルは無視
         } catch {
           feedError =
-            (error as? AFError)?.responseCode == 429
+            (error as? HTTPError)?.statusCode == 429
             ? error.userFacingMessage
             : "フィードの読み込みに失敗しました: \(error.localizedDescription)"
           dlog("ContentViewModel: selectTab fetchTimeline error: \(error)")

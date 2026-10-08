@@ -11,20 +11,22 @@ The Xcode project lives in `rapipopo/`. All source code is under `rapipopo/bskya
 ## Build & Run
 
 ```bash
-# Install dependencies (CocoaPods)
-cd rapipopo && pod install
+open rapipopo/bskyapp.xcodeproj
 
-# Open workspace (must use .xcworkspace, not .xcodeproj, due to CocoaPods)
-open rapipopo/bskyapp.xcworkspace
+# CLI build
+xcodebuild -project bskyapp.xcodeproj -scheme bskyapp -destination 'generic/platform=iOS Simulator' build
 ```
 
 Build and run from Xcode (⌘B / ⌘R). Requires iOS 17+ (uses NavigationStack, SwiftData).
+
+The `bskyapp/` folder is a **file-system synchronized group**: adding a file under it adds it to the target automatically. Do not edit `project.pbxproj` to register files. Files that must stay out of the app bundle (e.g. `*.md` notes) are listed in the group's `membershipExceptions`.
 
 There are no automated tests or linting configured in this project.
 
 ## Dependencies
 
-- **Alamofire** — HTTP networking for all AT Protocol API calls
+No third-party dependencies. HTTP goes through `Service/HTTPClient.swift`, a thin URLSession wrapper (`HTTPClient.decode` / `data` / `send`). Non-2xx responses throw `HTTPError`; check `statusCode` (e.g. 429 rate limit) instead of parsing messages.
+
 - **SwiftUI** / **SwiftData** / **Combine** — UI, persistence, reactivity (all Apple built-in)
 
 ## Architecture
@@ -33,7 +35,7 @@ There are no automated tests or linting configured in this project.
 
 ```
 View/          →  ViewModel/          →  Service/          →  Model/
-(SwiftUI)         (@Observable)          (Alamofire API)      (Codable structs)
+(SwiftUI)         (@Observable)          (HTTPClient)        (Codable structs)
 ```
 
 - **Screen-level ViewModels** are `class` types conforming to `ObservableObject` (e.g., `ContentViewModel`, `PostDetailViewModel`)

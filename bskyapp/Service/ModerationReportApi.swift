@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 class ModerationReportApi {
@@ -21,21 +20,8 @@ class ModerationReportApi {
       reason: reason,
       subject: CreateReportSubject(type: "com.atproto.repo.strongRef", uri: uri, cid: cid)
     )
-    return try await withCheckedThrowingContinuation { continuation in
-      AF.request(
-        "https://bsky.social/xrpc/com.atproto.moderation.createReport",
-        method: .post,
-        parameters: requestBody,
-        encoder: JSONParameterEncoder.default,
-        headers: headers
-      )
-      .validate()
-      .responseDecodable(of: CreateReportResponse.self) { response in
-        switch response.result {
-        case .success: continuation.resume()
-        case .failure(let error): continuation.resume(throwing: error)
-        }
-      }
-    }
+    _ = try await HTTPClient.decode(
+      CreateReportResponse.self, "https://bsky.social/xrpc/com.atproto.moderation.createReport",
+      method: .post, json: requestBody, headers: headers)
   }
 }
