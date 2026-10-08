@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 import PhotosUI
 import SwiftUI
@@ -28,10 +27,7 @@ class PostCardViewModel: PostComposerViewModel {
       await MainActor.run {
         isUploading = false
         errorMessage = error.localizedDescription
-        if let afError = error as? AFError,
-          let statusCode = afError.responseCode,
-          statusCode == 429
-        {
+        if (error as? HTTPError)?.statusCode == 429 {
           errorMessage = String(localized: "投稿回数制限に達しました。しばらく待ってから再度お試しください。")
           SessionManager.shared.clearSession()
         }

@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 struct GetFeedApi {
@@ -17,14 +16,10 @@ struct GetFeedApi {
     let params = Params(feed: uri, limit: 50, cursor: cursor)
     let urlString = "https://bsky.social/xrpc/app.bsky.feed.getFeed"
 
-    let response = await AF.request(urlString, method: .get, parameters: params, headers: headers)
-      .validate()
-      .serializingDecodable(FeedResponse.self).response
-
-    switch response.result {
-    case .success(let res):
-      return res
-    case .failure(let error):
+    do {
+      return try await HTTPClient.decode(
+        FeedResponse.self, urlString, query: params, headers: headers)
+    } catch {
       dlog("GetFeedApi error: \(error)")
       throw error
     }

@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 struct GetLikesApi {
@@ -18,19 +17,10 @@ struct GetLikesApi {
     decoder.keyDecodingStrategy = .convertFromSnakeCase
 
     do {
-      let response = await AF.request(urlString, method: .get, parameters: param, headers: headers)
-        .validate()
-        .serializingDecodable(GetLikesApiResponse.self).response
-      switch response.result {
-      case .success(let res):
-        return res
-      case .failure(let error):
-        dlog(response.request?.url)
-        dlog(response.response?.statusCode)
-        dlog(error)
-        throw error
-      }
+      return try await HTTPClient.decode(
+        GetLikesApiResponse.self, urlString, query: param, headers: headers)
     } catch {
+      dlog(error)
       throw error
     }
   }

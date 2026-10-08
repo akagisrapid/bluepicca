@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 struct GetUserFeedsApi {
     /// ユーザーの保存済みフィード（ピン済み・未ピン）を FeedTab 配列で返す。
@@ -12,13 +11,7 @@ struct GetUserFeedsApi {
 
         // Step 1: getPreferences でフィードURIリストを取得
         let prefsUrl = "https://bsky.social/xrpc/app.bsky.actor.getPreferences"
-        let prefsResponse = await AF.request(prefsUrl, method: .get, headers: headers)
-            .validate()
-            .serializingDecodable(GetPreferencesResponse.self).response
-
-        guard case .success(let prefs) = prefsResponse.result else {
-            throw prefsResponse.error ?? URLError(.badServerResponse)
-        }
+        let prefs = try await HTTPClient.decode(GetPreferencesResponse.self, prefsUrl, headers: headers)
 
         // savedFeedsPrefV2 の items から type == "feed" のURIを抽出
         let feedUris = prefs.preferences
@@ -40,12 +33,10 @@ struct GetUserFeedsApi {
             return [.home]
         }
 
-        let generatorsResponse = await AF.request(generatorsUrl, method: .get, headers: headers)
-            .validate()
-            .serializingDecodable(GetFeedGeneratorsResponse.self).response
-
-        guard case .success(let generators) = generatorsResponse.result else {
-            // getFeedGenerators が失敗してもホームタブだけ返す
+        // getFeedGenerators が失敗してもホームタブだけ返す
+        guard let generators = try? await HTTPClient.decode(
+            GetFeedGeneratorsResponse.self, generatorsUrl.absoluteString, headers: headers)
+        else {
             return [.home]
         }
 

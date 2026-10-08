@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 struct HashtagPreferenceApi {
@@ -9,13 +8,7 @@ struct HashtagPreferenceApi {
     let headers: HTTPHeaders = ["Authorization": "Bearer \(session.accessJwt)"]
     let url = "https://bsky.social/xrpc/app.bsky.actor.getPreferences"
 
-    let response = await AF.request(url, method: .get, headers: headers)
-      .validate()
-      .serializingData().response
-
-    guard case .success(let data) = response.result else {
-      throw response.error ?? URLError(.badServerResponse)
-    }
+    let data = try await HTTPClient.data(url, headers: headers)
 
     guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
       let prefs = json["preferences"] as? [[String: Any]]
@@ -34,13 +27,7 @@ struct HashtagPreferenceApi {
     let headers: HTTPHeaders = ["Authorization": "Bearer \(session.accessJwt)"]
     let getUrl = "https://bsky.social/xrpc/app.bsky.actor.getPreferences"
 
-    let getResponse = await AF.request(getUrl, method: .get, headers: headers)
-      .validate()
-      .serializingData().response
-
-    guard case .success(let data) = getResponse.result else {
-      throw getResponse.error ?? URLError(.badServerResponse)
-    }
+    let data = try await HTTPClient.data(getUrl, headers: headers)
 
     guard var json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
       throw URLError(.cannotParseResponse)
@@ -53,24 +40,11 @@ struct HashtagPreferenceApi {
     }
     json["preferences"] = prefs
 
-    let body = try JSONSerialization.data(withJSONObject: json)
     let putUrl = "https://bsky.social/xrpc/app.bsky.actor.putPreferences"
     let putHeaders: HTTPHeaders = [
       "Authorization": "Bearer \(session.accessJwt)",
       "Content-Type": "application/json",
     ]
-
-    var request = URLRequest(url: URL(string: putUrl)!)
-    request.httpMethod = "POST"
-    request.httpBody = body
-    putHeaders.forEach { request.setValue($0.value, forHTTPHeaderField: $0.name) }
-
-    let putResponse = await AF.request(request)
-      .validate()
-      .serializingData().response
-
-    if case .failure(let error) = putResponse.result {
-      throw error
-    }
+    _ = try await HTTPClient.data(putUrl, method: .post, json: json, headers: putHeaders)
   }
 }

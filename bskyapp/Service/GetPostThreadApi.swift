@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 
 struct GetPostThreadApi {
@@ -22,22 +21,10 @@ struct GetPostThreadApi {
     decoder.keyDecodingStrategy = .convertFromSnakeCase
 
     do {
-      let response = await AF.request(
-        urlString, method: .get, parameters: parameters, headers: headers
-      )
-      .validate()
-      .serializingDecodable(PostThreadResponse.self).response
-
-      switch response.result {
-      case .success(let res):
-        return res
-      case .failure(let error):
-        dlog(response.request?.url)
-        dlog(response.response?.statusCode)
-        dlog(error)
-        throw error
-      }
+      return try await HTTPClient.decode(
+        PostThreadResponse.self, urlString, query: parameters, headers: headers)
     } catch {
+      dlog(error)
       throw error
     }
   }
