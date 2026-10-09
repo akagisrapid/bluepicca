@@ -41,6 +41,14 @@ enum HTTPClient {
     _ url: String, method: HTTPMethod = .get, query: Any? = nil, json: Any? = nil,
     headers: HTTPHeaders = [:]
   ) async throws -> Data {
+    try await send(makeRequest(url, method: method, query: query, json: json, headers: headers))
+  }
+
+  /// 送らずにリクエストだけを組み立てる（テストでクエリや本文を確かめるために分けてある）
+  static func makeRequest(
+    _ url: String, method: HTTPMethod = .get, query: Any? = nil, json: Any? = nil,
+    headers: HTTPHeaders = [:]
+  ) throws -> URLRequest {
     guard var components = URLComponents(string: url) else { throw URLError(.badURL) }
     if let query {
       let items = try dictionary(from: query).sorted { $0.key < $1.key }
@@ -59,7 +67,7 @@ enum HTTPClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
       }
     }
-    return try await send(request)
+    return request
   }
 
   static func decode<T: Decodable>(

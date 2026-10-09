@@ -15,5 +15,6 @@ struct Label: Codable {
     let neg: Bool?
     let cts: String?
     let exp: String?
-    let sig: UInt8?
+    // sig（署名）は仕様上 {"$bytes": "..."} のオブジェクトで届くが使わないので持たない。
+    // 以前の UInt8? 宣言では、sig 付きのラベルが来るとその投稿を含むフィードごとデコードに失敗する
 }
