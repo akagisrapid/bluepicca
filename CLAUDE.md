@@ -21,7 +21,20 @@ Build and run from Xcode (⌘B / ⌘R). Requires iOS 17+ (uses NavigationStack, 
 
 The `bskyapp/` folder is a **file-system synchronized group**: adding a file under it adds it to the target automatically. Do not edit `project.pbxproj` to register files. Files that must stay out of the app bundle (e.g. `*.md` notes) are listed in the group's `membershipExceptions`.
 
-There are no automated tests or linting configured in this project.
+## Tests
+
+Unit tests live in `bskyappTests/` (Swift Testing, file-system synchronized like `bskyapp/`). CI (`.github/workflows/ios.yml`) runs them on every PR.
+
+```bash
+# generic/platform=iOS Simulator does not work for test; pick a concrete simulator by UDID
+xcrun simctl list devices available | grep iPhone
+xcodebuild test -project bskyapp.xcodeproj -scheme bskyapp -destination 'platform=iOS Simulator,id=<UDID>' -testLanguage ja -testRegion JP
+```
+
+- After adding a test file, run `xcodebuild clean` first and confirm the new test names appear in the log. An incremental build can skip new files and still print `** TEST SUCCEEDED **`
+- Keep `-testLanguage ja -testRegion JP` (tests assert Japanese strings; CI does the same)
+- Singletons (`ContentLabelManager`, `MuteWordManager`, ...) persist to `UserDefaults.standard`. Tests that touch them save and restore the state and run in a `@Suite(.serialized)`
+- The shared scheme `bskyapp.xcscheme` is committed and lists `bskyappTests`. Xcode Cloud also needs the scheme to be shared
 
 ## Dependencies
 
