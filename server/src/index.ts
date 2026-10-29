@@ -44,8 +44,8 @@ const cursorTimer = setInterval(() => {
 }, CURSOR_SAVE_INTERVAL_MS);
 
 const server = createHttpServer({ store, serviceDid: config.serviceDid });
-server.listen(config.port, () => {
-  console.log(`Listening on :${config.port} (${store.deviceCount} devices)`);
+server.listen(config.port, config.host, () => {
+  console.log(`Listening on ${config.host ?? ""}:${config.port} (${store.deviceCount} devices)`);
 });
 
 function shutdown() {

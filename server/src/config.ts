@@ -11,6 +11,8 @@ export function loadConfig() {
   const apnsKey = process.env.APNS_KEY ?? readFileSync(required("APNS_KEY_PATH"), "utf8");
   return {
     port: Number(process.env.PORT ?? 8080),
+    /** 前段に Caddy などを置くときは 127.0.0.1 にして外から直接つながらないようにする */
+    host: process.env.HOST,
     /** アプリが getServiceAuth の aud に指定する DID（例: did:web:push.example.com） */
     serviceDid: required("SERVICE_DID"),
     dbPath: process.env.DB_PATH ?? "bluepicca-push.sqlite",

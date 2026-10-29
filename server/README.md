@@ -39,10 +39,13 @@ Bluesky のプッシュ通知は公式アプリの APNs にしか届かないた
 | `APNS_TEAM_ID` | ○ | Team ID |
 | `APNS_TOPIC` | | バンドル ID。既定は `lapipearpopo.bskyapp` |
 | `PORT` | | 既定は 8080 |
+| `HOST` | | 待ち受けるアドレス。前段に Caddy などを置くときは `127.0.0.1`。既定はすべてのアドレス |
 | `DB_PATH` | | SQLite のパス。既定は `bluepicca-push.sqlite`（Docker では `/data/bluepicca-push.sqlite`） |
 | `JETSTREAM_URL` | | 既定は `wss://jetstream2.us-east.bsky.network/subscribe` |
 
 ## 3. 動かす
+
+Google Cloud の無料枠（e2-micro）で動かす手順とスクリプトは [deploy/gce/README.md](deploy/gce/README.md) にある。以下は汎用の手順。
 
 ```bash
 npm ci
