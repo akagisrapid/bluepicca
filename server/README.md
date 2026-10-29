@@ -16,7 +16,7 @@ Bluesky のプッシュ通知は公式アプリの APNs にしか届かないた
 
 ## 必要なもの
 
-- Node.js 26（LTS）。`server/.nvmrc` で指定している
+- Node.js 26（LTS）。`server/.node-version`（nodenv が読む）で 26.13.0 を指定している
 - 常時動かせる場所（VPS、Fly.io、Railway など）。Jetstream に WebSocket をつなぎっぱなしにするので、
   Cloudflare Workers や Lambda のような短時間実行の環境では動かない
 - HTTPS で公開できるドメイン（例: `push.example.com`）
