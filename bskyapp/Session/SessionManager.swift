@@ -24,6 +24,7 @@ class SessionManager {
     }
     // Migrate credentials from UserDefaults to Keychain if they exist
     migrateCredentialsFromUserDefaults()
+    migrateKeychainAccessibility()
   }
 
   func getSession() async throws -> CreateSessionResponse {
@@ -146,6 +147,8 @@ class SessionManager {
       kSecAttrService as String: keychainService,
       kSecAttrAccount as String: account,
       kSecValueData as String: data,
+      // 通知のバックグラウンド確認は画面ロック中にも走るので、初回ロック解除後は読めるようにする
+      kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
     ]
 
     SecItemAdd(query as CFDictionary, nil)
@@ -181,6 +184,21 @@ class SessionManager {
   }
 
   // MARK: - Migration
+
+  /// 以前の既定（ロック解除中のみ読める）で保存した資格情報を、ロック中も読めるように付け替える
+  private func migrateKeychainAccessibility() {
+    for account in [keychainIdentifierAccount, keychainPasswordAccount] {
+      let query: [String: Any] = [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrService as String: keychainService,
+        kSecAttrAccount as String: account,
+      ]
+      let attributes: [String: Any] = [
+        kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
+      ]
+      SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+    }
+  }
 
   private func migrateCredentialsFromUserDefaults() {
     let oldIdentifierKey = "bsky_identifier"

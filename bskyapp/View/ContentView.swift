@@ -104,6 +104,16 @@ struct ContentView: View {
             try? await viewModel.fetchTimeline()
           }
         }
+        // 開いている間も新着の返信などを通知で知らせる（設定で通知がオフなら何もしない）
+        .task(id: scenePhase) {
+          guard scenePhase == .active else { return }
+          // 端末トークンやミュート設定が変わっていればプッシュの登録を更新する
+          await PushRegistrationService.shared.refresh()
+          while !Task.isCancelled {
+            await LocalNotificationService.shared.checkForNewNotifications()
+            try? await Task.sleep(for: .seconds(120))
+          }
+        }
         .alert(
           "エラー",
           isPresented: Binding(

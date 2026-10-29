@@ -1,0 +1,26 @@
+{
+  "name": "bluepicca-push",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@atproto/identity": "^0.5.20",
+    "@atproto/xrpc-server": "^0.13.7",
+    "@skyware/jetstream": "^0.2.5"
+  },
+  "devDependencies": {
+    "@atproto/crypto": "^0.5.7",
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

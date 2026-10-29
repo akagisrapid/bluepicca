@@ -29,6 +29,9 @@ struct SettingsView: View {
   @State private var showMuteBlockList = false
   @State private var showMuteWords = false
   @State private var showContentLabels = false
+  @State private var showNotificationPermissionAlert = false
+  @ObservedObject private var notificationSettings = NotificationSettings.shared
+  @Environment(\.openURL) private var openURL
   @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system
     .rawValue
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
@@ -64,6 +67,34 @@ struct SettingsView: View {
               Text("3分").tag(180)
               Text("5分").tag(300)
             }
+          }
+        }
+
+        Section {
+          Toggle(
+            "通知を受け取る",
+            isOn: Binding(
+              get: { notificationSettings.isEnabled },
+              set: { setNotificationsEnabled($0) }))
+          if notificationSettings.isEnabled {
+            ForEach(NotificationReason.allCases, id: \.self) { reason in
+              Toggle(
+                reason.label,
+                isOn: Binding(
+                  get: { notificationSettings.isSelected(reason) },
+                  set: {
+                    notificationSettings.setSelected(reason, $0)
+                    Task { await PushRegistrationService.shared.registerIfNeeded() }
+                  }))
+            }
+          }
+        } header: {
+          Text("通知")
+        } footer: {
+          if PushServerConfig.isConfigured {
+            Text("選んだ種類の自分宛の通知を知らせます。")
+          } else {
+            Text("選んだ種類の自分宛の通知を知らせます。アプリを閉じている間の確認は iOS が実行するタイミングに左右されるため、届くまで時間がかかることがあります。")
           }
         }
 
@@ -158,16 +189,53 @@ struct SettingsView: View {
       .sheet(isPresented: $showContentLabels) {
         ContentLabelSettingsView()
       }
+      .alert("通知が許可されていません", isPresented: $showNotificationPermissionAlert) {
+        Button("キャンセル", role: .cancel) {}
+        Button("設定を開く") {
+          if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+            openURL(url)
+          }
+        }
+      } message: {
+        Text("iOS の設定アプリで Bluepicca の通知を許可してください。")
+      }
       .alert("ログアウトしますか？", isPresented: $showLogoutConfirmation) {
         Button("キャンセル", role: .cancel) {}
         Button("ログアウト", role: .destructive) {
-          SessionManager.shared.logout()
-          isLoggedIn = false
-          dismiss()
+          Task { @MainActor in
+            // 登録解除には本人の JWT が要るので、ログアウトより先に済ませる
+            await PushRegistrationService.shared.unregister()
+            SessionManager.shared.logout()
+            LocalNotificationService.shared.resetBaseline()
+            isLoggedIn = false
+            dismiss()
+          }
         }
       }
     }
     .preferredColorScheme(appearanceMode.colorScheme)
+  }
+
+  private func setNotificationsEnabled(_ enabled: Bool) {
+    let service = LocalNotificationService.shared
+    guard enabled else {
+      notificationSettings.isEnabled = false
+      service.scheduleBackgroundRefresh()  // オフのときは予約を取り消す
+      Task { await PushRegistrationService.shared.unregister() }
+      return
+    }
+    Task { @MainActor in
+      guard await service.requestAuthorization() else {
+        showNotificationPermissionAlert = true
+        return
+      }
+      // オンにする前にたまっていた通知は出さず、ここから先の新着だけを知らせる
+      service.resetBaseline()
+      notificationSettings.isEnabled = true
+      service.scheduleBackgroundRefresh()
+      PushRegistrationService.shared.refresh()
+      await service.checkForNewNotifications()
+    }
   }
 }
 
