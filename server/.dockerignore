@@ -1,0 +1,6 @@
+node_modules
+dist
+*.sqlite
+*.p8
+.env
+test

@@ -2011,6 +2011,16 @@
           }
         }
       }
+    },
+    "選んだ種類の自分宛の通知を知らせます。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifies you of the selected kinds of activity directed at you."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

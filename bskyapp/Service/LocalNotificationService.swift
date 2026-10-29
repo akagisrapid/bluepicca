@@ -42,7 +42,8 @@ final class LocalNotificationService: NSObject, UNUserNotificationCenterDelegate
   /// 前回の確認以降に届いた通知のうち、設定で選んだものをローカル通知で出す
   @MainActor
   func checkForNewNotifications() async {
-    guard settings.isEnabled, !isChecking else { return }
+    // 中継サーバーからプッシュで届く状態なら、二重に出さないよう端末内では確認しない
+    guard settings.isEnabled, !PushRegistrationService.shared.isActive, !isChecking else { return }
     isChecking = true
     defer { isChecking = false }
     guard await isAuthorized() else { return }

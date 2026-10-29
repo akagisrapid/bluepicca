@@ -4,6 +4,7 @@ import UserNotifications
 
 @main
 struct bskyappApp: App {
+  @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
   var sharedModelContainer: ModelContainer = {
     let schema = Schema([
       Item.self,

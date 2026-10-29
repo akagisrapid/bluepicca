@@ -82,13 +82,20 @@ struct SettingsView: View {
                 reason.label,
                 isOn: Binding(
                   get: { notificationSettings.isSelected(reason) },
-                  set: { notificationSettings.setSelected(reason, $0) }))
+                  set: {
+                    notificationSettings.setSelected(reason, $0)
+                    Task { await PushRegistrationService.shared.registerIfNeeded() }
+                  }))
             }
           }
         } header: {
           Text("通知")
         } footer: {
-          Text("選んだ種類の自分宛の通知を知らせます。アプリを閉じている間の確認は iOS が実行するタイミングに左右されるため、届くまで時間がかかることがあります。")
+          if PushServerConfig.isConfigured {
+            Text("選んだ種類の自分宛の通知を知らせます。")
+          } else {
+            Text("選んだ種類の自分宛の通知を知らせます。アプリを閉じている間の確認は iOS が実行するタイミングに左右されるため、届くまで時間がかかることがあります。")
+          }
         }
 
         Section("スワイプ操作") {
@@ -195,10 +202,14 @@ struct SettingsView: View {
       .alert("ログアウトしますか？", isPresented: $showLogoutConfirmation) {
         Button("キャンセル", role: .cancel) {}
         Button("ログアウト", role: .destructive) {
-          SessionManager.shared.logout()
-          LocalNotificationService.shared.resetBaseline()
-          isLoggedIn = false
-          dismiss()
+          Task { @MainActor in
+            // 登録解除には本人の JWT が要るので、ログアウトより先に済ませる
+            await PushRegistrationService.shared.unregister()
+            SessionManager.shared.logout()
+            LocalNotificationService.shared.resetBaseline()
+            isLoggedIn = false
+            dismiss()
+          }
         }
       }
     }
@@ -210,6 +221,7 @@ struct SettingsView: View {
     guard enabled else {
       notificationSettings.isEnabled = false
       service.scheduleBackgroundRefresh()  // オフのときは予約を取り消す
+      Task { await PushRegistrationService.shared.unregister() }
       return
     }
     Task { @MainActor in
@@ -221,6 +233,7 @@ struct SettingsView: View {
       service.resetBaseline()
       notificationSettings.isEnabled = true
       service.scheduleBackgroundRefresh()
+      PushRegistrationService.shared.refresh()
       await service.checkForNewNotifications()
     }
   }
