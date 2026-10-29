@@ -27,7 +27,6 @@
 			membershipExceptions = (
 				bskyapp.entitlements,
 				Codebase_Analysis.md,
-				GoogleService-Info.plist,
 				Info.plist,
 				README_API_OPTIMIZATION.md,
 			);
