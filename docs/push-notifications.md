@@ -70,6 +70,8 @@ Bluepicca に通知機能を入れたときの設計と、本番で動かすま�
 
 ## 構築した手順（振り返り）
 
+各手順の目的・成功の目安・つまずきやすい点は [push-notifications-setup.md](push-notifications-setup.md) に詳しく書いてある。
+
 1. **APNs キー**：Apple Developer → Keys で APNs キーを作り、.p8 と Key ID を控えた（.p8 は再ダウンロード不可なので保管する）
 2. **手元の環境**：anyenv の nodenv で Node 26.13.0 を入れ、`server/` で `npm ci` と `npm test` を確認した
 3. **Google Cloud の準備**：`brew install --cask google-cloud-sdk` → `gcloud init` でプロジェクト作成 →
