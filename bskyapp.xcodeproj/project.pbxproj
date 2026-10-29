@@ -27,6 +27,7 @@
 			membershipExceptions = (
 				Codebase_Analysis.md,
 				GoogleService-Info.plist,
+				Info.plist,
 				README_API_OPTIMIZATION.md,
 			);
 			target = B0C0576B2B8712D80066AD91 /* bskyapp */;
@@ -344,6 +345,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = bskyapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Bluepicca;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "投稿に写真を添付するために使用します";
@@ -375,6 +377,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = bskyapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Bluepicca;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "投稿に写真を添付するために使用します";

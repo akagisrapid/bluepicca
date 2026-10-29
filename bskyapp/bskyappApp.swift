@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import UserNotifications
 
 @main
 struct bskyappApp: App {
@@ -21,6 +22,7 @@ struct bskyappApp: App {
   var contentViewModel = ContentViewModel()
 
   @State private var isLoggedIn: Bool = false
+  @Environment(\.scenePhase) private var scenePhase
   @AppStorage("appearanceMode") private var appearanceModeRaw: String = AppearanceMode.system
     .rawValue
 
@@ -34,6 +36,7 @@ struct bskyappApp: App {
       memoryCapacity: 50 * 1024 * 1024,
       diskCapacity: 200 * 1024 * 1024
     )
+    UNUserNotificationCenter.current().delegate = LocalNotificationService.shared
   }
 
   @MainActor
@@ -51,6 +54,14 @@ struct bskyappApp: App {
           .preferredColorScheme(preferredColorScheme)
           .modelContainer(sharedModelContainer)
       }
+    }
+    .onChange(of: scenePhase) { _, newPhase in
+      if newPhase == .background {
+        LocalNotificationService.shared.scheduleBackgroundRefresh()
+      }
+    }
+    .backgroundTask(.appRefresh(LocalNotificationService.refreshTaskIdentifier)) {
+      await LocalNotificationService.shared.handleBackgroundRefresh()
     }
   }
 }

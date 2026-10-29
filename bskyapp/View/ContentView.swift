@@ -104,6 +104,14 @@ struct ContentView: View {
             try? await viewModel.fetchTimeline()
           }
         }
+        // 開いている間も新着の返信などを通知で知らせる（設定で通知がオフなら何もしない）
+        .task(id: scenePhase) {
+          guard scenePhase == .active else { return }
+          while !Task.isCancelled {
+            await LocalNotificationService.shared.checkForNewNotifications()
+            try? await Task.sleep(for: .seconds(120))
+          }
+        }
         .alert(
           "エラー",
           isPresented: Binding(
