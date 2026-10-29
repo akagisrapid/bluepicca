@@ -44,7 +44,7 @@ No third-party dependencies. HTTP goes through `Service/HTTPClient.swift`, a thi
 
 ## Push server
 
-`server/` is a small TypeScript (Node 22) service that relays Bluesky activity from Jetstream to APNs, because Bluesky only pushes to the official app. See `server/README.md`. Run `npm test` / `npm run typecheck` in `server/` (CI: `.github/workflows/server.yml`). The app registers through `Service/PushRegistrationService.swift`; when `PushServerConfig` is empty it falls back to local polling in `LocalNotificationService`.
+`server/` is a small TypeScript (Node 26) service that relays Bluesky activity from Jetstream to APNs, because Bluesky only pushes to the official app. See `server/README.md`. Run `npm test` / `npm run typecheck` in `server/` (CI: `.github/workflows/server.yml`). The app registers through `Service/PushRegistrationService.swift`; when `PushServerConfig` is empty it falls back to local polling in `LocalNotificationService`.
 
 ## Architecture
 
