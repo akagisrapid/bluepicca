@@ -128,11 +128,26 @@ class ContentViewModel: ObservableObject {
       dlog("ContentViewModel: fetchTimeline called (tab: \(self.selectedTab.name))")
       self.isFetchingTimeline = true
       self.timelineCursor = nil
+      // TL を置き換える前に、いま見ている位置を保存する（手動・自動更新どちらも）
+      if let uri = self.currentReadUri { self.saveReadPosition(uri: uri) }
+      let key = self.lastReadUriKey(for: self.selectedTab.id)
+      let savedUri = UserDefaults.standard.string(forKey: key)
 
       do {
-        let response = try await self.fetchFeed(cursor: nil)
+        var response = try await self.fetchFeed(cursor: nil)
         try Task.checkCancellation()
-        self.feeds = response.feed
+        var fetched = response.feed
+        // ponytail: 既読位置まで最大 5 ページ（約 250 件）さかのぼる。超えたら位置は諦める
+        var pages = 1
+        while let uri = savedUri, pages < 5, let cursor = response.cursor,
+          !fetched.contains(where: { $0.post?.uri == uri })
+        {
+          response = try await self.fetchFeed(cursor: cursor)
+          try Task.checkCancellation()
+          fetched += response.feed
+          pages += 1
+        }
+        self.feeds = fetched
         self.posts = self.feeds.compactMap { $0.post }
         self.timelineCursor = response.cursor
         self.feedsCache[self.selectedTab.id] = FeedCache(
@@ -143,8 +158,6 @@ class ContentViewModel: ObservableObject {
 
         // 既読位置が保存されていればスクロールターゲットとしてセット
         self.unreadCount = 0
-        let key = self.lastReadUriKey(for: self.selectedTab.id)
-        let savedUri = UserDefaults.standard.string(forKey: key)
         if let uri = savedUri,
           let index = self.feeds.firstIndex(where: { $0.post?.uri == uri })
         {
