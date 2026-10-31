@@ -3,6 +3,13 @@
 Bluepicca に通知機能を入れたときの設計と、本番で動かすまでに行った設定の記録。
 秘密の値（APNs キー、DuckDNS の token など）はここに書かず、`<...>` で示す。
 
+| 資料 | 内容 |
+|---|---|
+| このファイル | しくみ・本番環境の概要・日々の運用 |
+| [push-notifications-settings.md](push-notifications-settings.md) | どのサービスのどこに何を設定したかの一覧と、つまずいた点の記録 |
+| [push-notifications-setup.md](push-notifications-setup.md) | 構築手順の詳細（各手順の目的・成功の目安・注意） |
+| [testflight.md](testflight.md) | TestFlight（本番環境の APNs）での確認手順 |
+
 ## なぜ自前のサーバーが要るのか
 
 - iOS のプッシュは Apple の APNs を通して送る。送るには、そのアプリの開発者アカウントで作った APNs キーが要る
@@ -50,11 +57,11 @@ Bluepicca に通知機能を入れたときの設計と、本番で動かすま�
 |---|---|
 | ホスティング | Google Cloud Compute Engine の無料枠 |
 | VM | `bluepicca-push`・e2-micro・`us-east1-b`・Debian 13・標準永続ディスク 30GB |
-| ドメイン | DuckDNS の `<サブドメイン>.duckdns.org`（VM の IP を 5 分ごとに自動更新） |
+| ドメイン | DuckDNS の `bluepicca-push.duckdns.org`（VM の IP を 5 分ごとに自動更新） |
 | HTTPS | Caddy（Let's Encrypt の証明書を自動取得・更新） |
-| サーバーの DID | `did:web:<サブドメイン>.duckdns.org` |
+| サーバーの DID | `did:web:bluepicca-push.duckdns.org` |
 | 常時起動 | systemd の `bluepicca-push.service`（落ちても 5 秒後に再起動） |
-| APNs | トークン認証の .p8 キー。Team ID は `TPXR4FNVUK`、トピックは `lapipearpopo.bskyapp` |
+| APNs | トークン認証の .p8 キー（Environment は Sandbox & Production）。Team ID は `TPXR4FNVUK`、トピックは `lapipearpopo.bskyapp` |
 | Node.js | 26.13.0（`server/.node-version`） |
 
 ### VM 上のファイル
@@ -81,9 +88,11 @@ Bluepicca に通知機能を入れたときの設計と、本番で動かすま�
 6. **初回デプロイ**：`bash server/deploy/gce/deploy.sh`（Node と Caddy を入れ、設定の雛形を作って止まる）
 7. **設定**：.p8 を `gcloud compute scp` で送って `/etc/bluepicca-push/AuthKey.p8` に置き、
    `env` の `SERVICE_DID` と `APNS_KEY_ID` を埋め、`duckdns.env` を作った
-8. **再デプロイ**：`deploy.sh` をもう一度実行し、`https://<サブドメイン>.duckdns.org/health` が `{"ok":true,...}` を返すことを確認した
+8. **再デプロイ**：`deploy.sh` をもう一度実行し、`https://bluepicca-push.duckdns.org/health` が `{"ok":true,...}` を返すことを確認した
 9. **アプリ**：`PushServerConfig` に `baseURL` と `serviceDid` を入れて実機でビルドし、通知をオンにした
-10. **動作確認**：別アカウントからのリプライで、アプリを閉じた状態でもプッシュ通知が届いた
+10. **動作確認**：別アカウントからのリプライで、アプリを閉じた状態でもプッシュ通知が届いた（開発ビルド・sandbox）
+11. **TestFlight**：バージョンを 1.2 に上げて Archive し、TestFlight にアップロードした。最初は APNs キーが Sandbox だけで
+    `403 BadEnvironmentKeyInToken` になったため、Sandbox & Production のキーに差し替えて届くことを確認した（本番・production）
 
 ## 日々の運用
 
@@ -99,10 +108,10 @@ bash server/deploy/gce/deploy.sh
 gcloud compute ssh bluepicca-push --zone=us-east1-b --command='sudo journalctl -u bluepicca-push -n 50 --no-pager'
 ```
 
-登録されている端末の数を見る。
+登録されている端末の数と、APNs の環境（sandbox / production）ごとの内訳を見る。
 
 ```bash
-curl https://<サブドメイン>.duckdns.org/health
+curl https://bluepicca-push.duckdns.org/health
 ```
 
 ### 困ったとき
@@ -112,6 +121,9 @@ curl https://<サブドメイン>.duckdns.org/health
 | 通知が来ない | ログに `Jetstream connected` があるか。`APNs 400 ...` があれば理由が書いてある |
 | `devices` が 0 のまま | アプリの通知がオンか、`PushServerConfig` が入っているか。Xcode のログに `Push registration failed` が出ていないか |
 | `APNs 400 BadDeviceToken` | 端末の環境と APNs の環境が合っていない。Xcode から入れたビルドは sandbox、TestFlight・App Store は production（アプリが自動で送り分ける） |
+| `APNs 403 BadEnvironmentKeyInToken` | APNs キーが今の環境で使えない（Sandbox だけのキーで本番に送ったなど）。Sandbox & Production のキーに差し替える |
+| `APNs 403 InvalidProviderToken` | `APNS_KEY_ID` と `AuthKey.p8` が別のキーのもの、または Team ID の間違い |
+| 設定画面に「登録に失敗しました（…）」 | 括弧内のエラーを見る。`HTTP 401` ならアプリの `serviceDid` とサーバーの `SERVICE_DID` が一致していない |
 | `/health` に外からつながらない | DuckDNS の IP が VM の外部 IP と一致しているか。VM で `systemctl status caddy` |
 | VM を止めて起動したら IP が変わった | 5 分以内に DuckDNS の自動更新で直る |
 
@@ -123,9 +135,11 @@ curl https://<サブドメイン>.duckdns.org/health
 
 ## 残っている作業
 
-- [ ] `PushServerConfig` の値をコミットする（手元で入れただけなら）
-- [ ] プライバシーポリシー（`docs/privacy-policy.html`）に、端末トークン・DID・ミュート中のユーザー・ミュートワードを中継サーバーに保存することを追記する（App Store 提出前に必須）
-- [ ] TestFlight のビルドで、production の APNs 経由でも届くか確認する（手順は [testflight.md](testflight.md)）
+- [x] `PushServerConfig` の値をコミットする
+- [x] プライバシーポリシー（`docs/privacy-policy.html`）に、通知サーバーに保存する情報を追記する（公開は main へのマージ時）
+- [x] TestFlight のビルドで、production の APNs 経由でも届くか確認する
+- [ ] 旧 APNs キー（Sandbox のみ）を Revoke する
+- [ ] App Store Connect の「App のプライバシー」を更新する（App Store 提出前に必須）
 - [ ] 通知をタップしたときに該当の投稿やリプライ画面を開く
 - [ ] ブロックした相手からの通知を弾く（アプリからブロック一覧も送る）
 - [ ] `npm audit` が警告している zod の脆弱性（Bluesky 公式ライブラリ経由）は、ライブラリの更新を待つ
