@@ -23,6 +23,7 @@ final class PushRegistrationService {
   private let deviceTokenKey = "pushDeviceToken"
   private let lastRegisteredBodyKey = "pushLastRegisteredBody"
   private let lastRegisteredAtKey = "pushLastRegisteredAt"
+  private let lastErrorKey = "pushLastError"
   /// 内容が変わらなくても、サーバー側で消えていたときのためにこの間隔で登録し直す
   private let reregisterInterval: TimeInterval = 24 * 60 * 60
 
@@ -38,6 +39,23 @@ final class PushRegistrationService {
   var isActive: Bool {
     PushServerConfig.isConfigured && NotificationSettings.shared.isEnabled
       && defaults.data(forKey: lastRegisteredBodyKey) != nil
+  }
+
+  /// 設定画面に出す登録状態。TestFlight では Xcode のログが見られないので、ここで確かめる
+  var statusText: String? {
+    guard PushServerConfig.isConfigured, NotificationSettings.shared.isEnabled else { return nil }
+    if let error = defaults.string(forKey: lastErrorKey) {
+      return String(localized: "プッシュ通知の登録に失敗しました（\(error)）")
+    }
+    guard isActive else { return String(localized: "プッシュ通知を登録しています") }
+    return environment == "production"
+      ? String(localized: "プッシュ通知を登録済み（本番環境）")
+      : String(localized: "プッシュ通知を登録済み（開発環境）")
+  }
+
+  /// 端末トークンの発行に失敗したとき（Push Notifications の権限がないビルドなど）
+  func didFailToRegister(_ error: Error) {
+    defaults.set(error.localizedDescription, forKey: lastErrorKey)
   }
 
   /// 端末トークンを取り直す。届いたら `didReceiveDeviceToken` から登録する。
@@ -81,6 +99,8 @@ final class PushRegistrationService {
       let last = defaults.object(forKey: lastRegisteredAtKey) as? Date,
       Date().timeIntervalSince(last) < reregisterInterval
     {
+      // 登録は最新なので、端末トークンの発行で前に失敗していた分の表示も消す
+      defaults.removeObject(forKey: lastErrorKey)
       return
     }
 
@@ -88,8 +108,10 @@ final class PushRegistrationService {
       try await call(registerMethod, body: body)
       defaults.set(body, forKey: lastRegisteredBodyKey)
       defaults.set(Date(), forKey: lastRegisteredAtKey)
+      defaults.removeObject(forKey: lastErrorKey)
       dlog("Registered push token")
     } catch {
+      defaults.set(error.localizedDescription, forKey: lastErrorKey)
       dlog("Push registration failed: \(error)")
     }
   }
@@ -101,6 +123,7 @@ final class PushRegistrationService {
     else { return }
     defaults.removeObject(forKey: lastRegisteredBodyKey)
     defaults.removeObject(forKey: lastRegisteredAtKey)
+    defaults.removeObject(forKey: lastErrorKey)
     do {
       try await call(unregisterMethod, body: JSONEncoder().encode(["token": token]))
     } catch {
@@ -147,6 +170,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
   func application(
     _ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error
   ) {
+    PushRegistrationService.shared.didFailToRegister(error)
     dlog("Failed to register for remote notifications: \(error)")
   }
 }

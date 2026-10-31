@@ -62,7 +62,7 @@ docker run -d --restart=always -p 8080:8080 -v bluepicca-push:/data \
   -e APNS_KEY_ID=XXXX -e APNS_TEAM_ID=TPXR4FNVUK bluepicca-push
 ```
 
-前段に Caddy や nginx などを置いて HTTPS で公開する。`GET /health` で登録端末数が返る。
+前段に Caddy や nginx などを置いて HTTPS で公開する。`GET /health` で登録端末数と、APNs の環境（sandbox / production）ごとの内訳が返る。
 
 ## 4. アプリ側の設定
 

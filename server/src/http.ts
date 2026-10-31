@@ -61,7 +61,11 @@ export function createHttpServer(options: {
     const path = new URL(req.url ?? "/", "http://localhost").pathname;
 
     if (req.method === "GET" && path === "/health") {
-      return json(res, 200, { ok: true, devices: store.deviceCount });
+      return json(res, 200, {
+        ok: true,
+        devices: store.deviceCount,
+        environments: store.environmentCounts(),
+      });
     }
     if (req.method !== "POST") throw new HttpError(404, "not found");
 

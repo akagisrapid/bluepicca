@@ -92,7 +92,12 @@ struct SettingsView: View {
           Text("通知")
         } footer: {
           if PushServerConfig.isConfigured {
-            Text("選んだ種類の自分宛の通知を知らせます。")
+            VStack(alignment: .leading, spacing: 4) {
+              Text("選んだ種類の自分宛の通知を知らせます。")
+              if let status = PushRegistrationService.shared.statusText {
+                Text(status)
+              }
+            }
           } else {
             Text("選んだ種類の自分宛の通知を知らせます。アプリを閉じている間の確認は iOS が実行するタイミングに左右されるため、届くまで時間がかかることがあります。")
           }

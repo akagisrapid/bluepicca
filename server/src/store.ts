@@ -55,6 +55,15 @@ export class DeviceStore {
     return count;
   }
 
+  /** APNs の環境ごとの端末数。TestFlight の端末が production で登録されたかを /health で確かめる */
+  environmentCounts(): Record<ApnsEnvironment, number> {
+    const counts: Record<ApnsEnvironment, number> = { sandbox: 0, production: 0 };
+    for (const devices of this.byDid.values()) {
+      for (const device of devices.values()) counts[device.environment] += 1;
+    }
+    return counts;
+  }
+
   isWatched(did: string): boolean {
     return this.byDid.has(did);
   }

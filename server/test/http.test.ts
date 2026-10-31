@@ -62,6 +62,15 @@ test("正しい JWT で登録・解除できる", async () => {
   assert.equal(store.isWatched(USER_DID), false);
 });
 
+test("/health は環境ごとの端末数を返す", async () => {
+  const res = await fetch(`${baseUrl}/health`);
+  assert.deepEqual(await res.json(), {
+    ok: true,
+    devices: 0,
+    environments: { sandbox: 0, production: 0 },
+  });
+});
+
 test("JWT がない・宛先違い・メソッド違いは 401", async () => {
   assert.equal((await post(REGISTER_METHOD, registration)).status, 401);
   assert.equal((await post(REGISTER_METHOD, registration, await jwt(REGISTER_METHOD, "did:web:evil"))).status, 401);

@@ -23,6 +23,15 @@ test("同じ端末を別アカウントで登録し直すと付け替わる", ()
   store.close();
 });
 
+test("APNs の環境ごとに端末を数える", () => {
+  const store = new DeviceStore(":memory:");
+  store.register(device("t1", "did:plc:a"));
+  store.register({ ...device("t2", "did:plc:a"), environment: "sandbox" });
+  store.register(device("t3", "did:plc:b"));
+  assert.deepEqual(store.environmentCounts(), { sandbox: 1, production: 2 });
+  store.close();
+});
+
 test("他人の端末は解除できない", () => {
   const store = new DeviceStore(":memory:");
   store.register(device("t1", "did:plc:a"));

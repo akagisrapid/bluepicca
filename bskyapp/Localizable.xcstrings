@@ -2021,6 +2021,46 @@
           }
         }
       }
+    },
+    "プッシュ通知の登録に失敗しました（%@）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Push notification registration failed (%@)"
+          }
+        }
+      }
+    },
+    "プッシュ通知を登録しています" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registering for push notifications"
+          }
+        }
+      }
+    },
+    "プッシュ通知を登録済み（本番環境）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registered for push notifications (production)"
+          }
+        }
+      }
+    },
+    "プッシュ通知を登録済み（開発環境）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registered for push notifications (development)"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

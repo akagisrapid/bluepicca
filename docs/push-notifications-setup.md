@@ -523,6 +523,6 @@ Xcode でプロジェクトを開き、ターゲットの **Signing & Capabiliti
 - `PushServerConfig` の値をコミットする
 - プライバシーポリシー（`docs/privacy-policy.html`）に、端末トークン・DID・ミュート中のユーザー・
   ミュートワードを中継サーバーに保存することを追記する（App Store 提出前に必須）
-- TestFlight のビルドで、production の APNs 経由でも届くか確認する
+- TestFlight のビルドで、production の APNs 経由でも届くか確認する（手順は [testflight.md](testflight.md)）
 
 運用（更新・ログ・困ったとき）は [push-notifications.md](push-notifications.md) を参照。

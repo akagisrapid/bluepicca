@@ -125,7 +125,7 @@ curl https://<サブドメイン>.duckdns.org/health
 
 - [ ] `PushServerConfig` の値をコミットする（手元で入れただけなら）
 - [ ] プライバシーポリシー（`docs/privacy-policy.html`）に、端末トークン・DID・ミュート中のユーザー・ミュートワードを中継サーバーに保存することを追記する（App Store 提出前に必須）
-- [ ] TestFlight のビルドで、production の APNs 経由でも届くか確認する
+- [ ] TestFlight のビルドで、production の APNs 経由でも届くか確認する（手順は [testflight.md](testflight.md)）
 - [ ] 通知をタップしたときに該当の投稿やリプライ画面を開く
 - [ ] ブロックした相手からの通知を弾く（アプリからブロック一覧も送る）
 - [ ] `npm audit` が警告している zod の脆弱性（Bluesky 公式ライブラリ経由）は、ライブラリの更新を待つ

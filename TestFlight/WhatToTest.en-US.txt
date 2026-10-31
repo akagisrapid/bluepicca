@@ -1,0 +1,8 @@
+Please try push notifications.
+
+1. Settings > Notifications: turn on "Receive notifications" and allow notifications
+2. Check that "Registered for push notifications (production)" appears under the Notifications section
+3. Close the app and have another account reply to one of your posts
+4. Check that a "... replied to you" notification arrives within a few seconds
+
+If registration fails, the error is shown in the Notifications section of Settings. Please include it in your report.
