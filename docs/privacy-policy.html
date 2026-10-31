@@ -52,23 +52,36 @@
   <!-- Japanese -->
   <div id="ja">
     <h1>プライバシーポリシー</h1>
-    <p class="updated">最終更新日：2026年7月8日</p>
+    <p class="updated">最終更新日：2026年10月31日</p>
 
     <p>Bluepicca（以下「本アプリ」）は、AT Protocol を使用した iOS 向け Bluesky クライアントアプリです。本アプリの利用にあたり、以下のプライバシーポリシーをご確認ください。</p>
 
-    <h2>収集する情報</h2>
-    <p>本アプリは以下の情報を端末内にのみ保存します。</p>
+    <h2>端末内に保存する情報</h2>
+    <p>本アプリは以下の情報を端末内に保存します。</p>
     <ul>
       <li>Bluesky アカウントのハンドル名およびアプリパスワード（iOS Keychain に暗号化して保存）</li>
-      <li>AT Protocol 認証トークン（iOS Keychain に保存、12時間ごとに自動更新）</li>
-      <li>投稿へのいいね・リポスト状態（UserDefaults に保存）</li>
+      <li>AT Protocol 認証トークン（12時間ごとに自動更新）</li>
+      <li>投稿へのいいね・リポスト状態、ミュートワード、通知の設定などのアプリの設定（UserDefaults に保存）</li>
     </ul>
 
-    <h2>収集しない情報</h2>
+    <h2>プッシュ通知のために送信・保存する情報</h2>
+    <p>設定で通知を有効にした場合に限り、自分宛ての返信・メンションなどをプッシュ通知で届けるため、開発者が運営する通知用サーバー（以下「通知サーバー」）に以下の情報を送信し、保存します。通知を有効にしていない場合、通知サーバーには何も送信しません。</p>
     <ul>
-      <li>本アプリは個人情報を開発者のサーバーに送信しません</li>
-      <li>アナリティクスや広告トラッキングは一切行いません</li>
-      <li>第三者への情報提供は行いません</li>
+      <li>端末のプッシュ通知トークン（Apple が発行する、通知の宛先を示す識別子）</li>
+      <li>Bluesky アカウントの DID（アカウントを識別する公開の ID）</li>
+      <li>選択した通知の種類（返信・メンション・引用・いいね・リポスト・フォロー）</li>
+      <li>ミュート中のアカウントの DID およびミュートワード（ミュートした相手や語句を含む通知を送らないため）</li>
+    </ul>
+    <p>アプリパスワードや認証トークンは通知サーバーに送信しません。本人確認には、Bluesky が発行する有効期限の短い証明（数十秒で失効し、通知サーバーには保存しません）を使用します。</p>
+    <p>通知サーバーは、Bluesky のネットワーク上で公開されている投稿・いいね・リポスト・フォローの情報を受信し、上記の DID 宛てのものだけを選んで通知します。受信した公開情報のうち、通知の送信に使わないものは保存しません。</p>
+    <p>これらの情報はプッシュ通知の送信にのみ使用し、それ以外の目的には使用しません。</p>
+
+    <h2>情報の保存場所と第三者への提供</h2>
+    <ul>
+      <li>通知サーバーは Google Cloud（米国のデータセンター）上で運用しています。上記の情報は通知サーバーに保存されます。</li>
+      <li>プッシュ通知は Apple Push Notification service（APNs）を通じて配信されます。通知の内容（送り主の表示名、返信などの本文）は配信のため Apple に送信され、<a href="https://www.apple.com/legal/privacy/" target="_blank">Apple のプライバシーポリシー</a>に従って取り扱われます。</li>
+      <li>上記の配信およびサーバーの運用に必要な範囲を除き、第三者への情報提供は行いません。</li>
+      <li>アナリティクスや広告トラッキングは一切行いません。</li>
     </ul>
 
     <h2>外部サービスとの通信</h2>
@@ -82,6 +95,7 @@
 
     <h2>データの削除</h2>
     <p>本アプリをアンインストールすることで、端末内に保存されたすべてのデータ（Keychain 含む）が削除されます。</p>
+    <p>通知サーバーに保存された情報は、本アプリで通知を無効にしたとき、またはログアウトしたときに削除されます。通知を無効にせずにアンインストールした場合は、次に通知を送ろうとした時点で Apple から宛先が無効と通知され、自動的に削除されます。お問い合わせ先にご連絡いただければ、手動での削除にも対応します。</p>
 
     <h2>お問い合わせ</h2>
     <p>プライバシーポリシーに関するご質問は、以下までご連絡ください。</p>
@@ -94,23 +108,36 @@
   <!-- English -->
   <div id="en">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: July 8, 2026</p>
+    <p class="updated">Last updated: October 31, 2026</p>
 
     <p>Bluepicca is an iOS Bluesky client app built on the AT Protocol. Please read the following privacy policy before using the app.</p>
 
-    <h2>Information We Collect</h2>
-    <p>The app stores the following information on your device only:</p>
+    <h2>Information Stored on Your Device</h2>
+    <p>The app stores the following information on your device:</p>
     <ul>
       <li>Your Bluesky handle and app password (encrypted in iOS Keychain)</li>
-      <li>AT Protocol authentication tokens (stored in iOS Keychain, auto-refreshed every 12 hours)</li>
-      <li>Like and repost state for posts (stored in UserDefaults)</li>
+      <li>AT Protocol authentication tokens (auto-refreshed every 12 hours)</li>
+      <li>App settings such as like and repost state, mute words, and notification settings (stored in UserDefaults)</li>
     </ul>
 
-    <h2>Information We Do Not Collect</h2>
+    <h2>Information Sent and Stored for Push Notifications</h2>
+    <p>Only if you turn on notifications in Settings, the app sends the following information to a notification server operated by the developer (the "Notification Server") and stores it there, so that replies, mentions, and other activity directed at you can be delivered as push notifications. If notifications are off, nothing is sent to the Notification Server.</p>
     <ul>
-      <li>The app does not transmit personal information to any developer-operated server</li>
-      <li>No analytics, crash reporting, or advertising tracking is performed</li>
-      <li>No information is shared with third parties</li>
+      <li>Your device's push notification token (an identifier issued by Apple that specifies where to deliver notifications)</li>
+      <li>Your Bluesky account's DID (a public identifier for your account)</li>
+      <li>The notification types you selected (replies, mentions, quotes, likes, reposts, follows)</li>
+      <li>The DIDs of accounts you have muted and your mute words (so that notifications involving them are not sent)</li>
+    </ul>
+    <p>Your app password and authentication tokens are never sent to the Notification Server. To verify your identity, the app uses a short-lived proof issued by Bluesky, which expires within seconds and is not stored by the Notification Server.</p>
+    <p>The Notification Server receives public posts, likes, reposts, and follows from the Bluesky network and selects only those directed at the DIDs above. Public information that is not used to send a notification is not stored.</p>
+    <p>This information is used solely to send push notifications and for no other purpose.</p>
+
+    <h2>Where Information Is Stored and Sharing with Third Parties</h2>
+    <ul>
+      <li>The Notification Server runs on Google Cloud (data centers in the United States). The information above is stored on the Notification Server.</li>
+      <li>Push notifications are delivered through the Apple Push Notification service (APNs). Notification content (the sender's display name and the text of replies and similar posts) is sent to Apple for delivery and is handled under <a href="https://www.apple.com/legal/privacy/" target="_blank">Apple's Privacy Policy</a>.</li>
+      <li>Except as needed for this delivery and for operating the server, no information is shared with third parties.</li>
+      <li>No analytics or advertising tracking is performed.</li>
     </ul>
 
     <h2>Communication with External Services</h2>
@@ -124,6 +151,7 @@
 
     <h2>Data Deletion</h2>
     <p>Uninstalling the app removes all locally stored data, including Keychain entries.</p>
+    <p>Information stored on the Notification Server is deleted when you turn off notifications or log out in the app. If you uninstall the app without turning off notifications, the information is deleted automatically the next time a notification is attempted, when Apple reports that the destination is no longer valid. You can also request manual deletion by contacting us at the address below.</p>
 
     <h2>Contact</h2>
     <p>For questions about this privacy policy, please contact:</p>
