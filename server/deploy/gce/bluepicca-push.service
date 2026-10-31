@@ -1,0 +1,22 @@
+[Unit]
+Description=Bluepicca push relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=bluepicca
+WorkingDirectory=/opt/bluepicca-push
+EnvironmentFile=/etc/bluepicca-push/env
+Environment=NODE_ENV=production
+Environment=DB_PATH=/var/lib/bluepicca-push/bluepicca-push.sqlite
+StateDirectory=bluepicca-push
+ExecStart=/usr/local/bin/node dist/index.js
+Restart=always
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

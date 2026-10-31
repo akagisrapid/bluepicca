@@ -1871,6 +1871,196 @@
           }
         }
       }
+    },
+    "%@さんがいいねしました" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ liked your post"
+          }
+        }
+      }
+    },
+    "%@さんがメンションしました" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ mentioned you"
+          }
+        }
+      }
+    },
+    "%@さんがリポストしました" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ reposted your post"
+          }
+        }
+      }
+    },
+    "%@さんが引用しました" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ quoted your post"
+          }
+        }
+      }
+    },
+    "%@さんが返信しました" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ replied to you"
+          }
+        }
+      }
+    },
+    "%@さんにフォローされました" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ followed you"
+          }
+        }
+      }
+    },
+    "iOS の設定アプリで Bluepicca の通知を許可してください。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow notifications for Bluepicca in the iOS Settings app."
+          }
+        }
+      }
+    },
+    "ほかに%lld件の新しい通知があります" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld more new notifications"
+          }
+        }
+      }
+    },
+    "メンション" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mention"
+          }
+        }
+      }
+    },
+    "設定を開く" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        }
+      }
+    },
+    "通知" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications"
+          }
+        }
+      }
+    },
+    "通知が許可されていません" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications are not allowed"
+          }
+        }
+      }
+    },
+    "通知を受け取る" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Receive notifications"
+          }
+        }
+      }
+    },
+    "選んだ種類の自分宛の通知を知らせます。アプリを閉じている間の確認は iOS が実行するタイミングに左右されるため、届くまで時間がかかることがあります。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifies you of the selected kinds of activity directed at you. While the app is closed, checks run when iOS schedules them, so notifications may be delayed."
+          }
+        }
+      }
+    },
+    "選んだ種類の自分宛の通知を知らせます。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifies you of the selected kinds of activity directed at you."
+          }
+        }
+      }
+    },
+    "プッシュ通知の登録に失敗しました（%@）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Push notification registration failed (%@)"
+          }
+        }
+      }
+    },
+    "プッシュ通知を登録しています" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registering for push notifications"
+          }
+        }
+      }
+    },
+    "プッシュ通知を登録済み（本番環境）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registered for push notifications (production)"
+          }
+        }
+      }
+    },
+    "プッシュ通知を登録済み（開発環境）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registered for push notifications (development)"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

@@ -1,0 +1,10 @@
+[Unit]
+Description=Update DuckDNS record with this VM's external IP
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/bluepicca-push/duckdns.env
+# ip を空にすると DuckDNS がリクエスト元の IP を登録する
+ExecStart=/bin/sh -c 'curl -fsS "https://www.duckdns.org/update?domains=${DUCKDNS_SUBDOMAIN}&token=${DUCKDNS_TOKEN}&ip=" | grep -q OK'
