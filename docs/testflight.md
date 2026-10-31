@@ -40,7 +40,30 @@ APNs キーは、作るときに使える環境（Sandbox / Production / 両方�
 1. [Apple Developer → Keys](https://developer.apple.com/account/resources/authkeys/list) で、サーバーに置いたキー（Key ID が `/etc/bluepicca-push/env` の `APNS_KEY_ID` と同じもの）を開く
 2. Apple Push Notifications service (APNs) の環境が **Production** を含んでいるか確認する
 
-Sandbox だけだった場合は、Production を含むキーを作り直し、`push-notifications-setup.md` の手順 7 と同じ要領でサーバーのキーと `APNS_KEY_ID` を差し替えて、`deploy.sh` を実行する。
+**既存のキーの環境はあとから変えられない。** Sandbox だけだった場合は、新しいキーを「Sandbox & Production」で作り直し
+（「＋」→ APNs にチェック →「Configure」で Environment を選ぶ）、サーバーのキーと `APNS_KEY_ID` を差し替える。
+
+```bash
+gcloud compute scp AuthKey_新しいKeyID.p8 bluepicca-push:~/AuthKey.p8 --zone=us-east1-b
+```
+
+VM 上で実行する（`gcloud compute ssh bluepicca-push --zone=us-east1-b` で入る）。
+
+```bash
+sudo mv ~/AuthKey.p8 /etc/bluepicca-push/AuthKey.p8
+```
+
+```bash
+sudo chown root:bluepicca /etc/bluepicca-push/AuthKey.p8 && sudo chmod 640 /etc/bluepicca-push/AuthKey.p8
+```
+
+`/etc/bluepicca-push/env` の `APNS_KEY_ID` を新しい Key ID に書き換えてから、再起動する。
+
+```bash
+sudo systemctl restart bluepicca-push
+```
+
+新しいキーで届くことを確かめたら、古いキーは Apple Developer で「Revoke」する。
 
 ### App ID に Push Notifications が付いているか
 

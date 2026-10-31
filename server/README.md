@@ -25,7 +25,8 @@ Bluesky のプッシュ通知は公式アプリの APNs にしか届かないた
 ## 1. APNs キーを作る
 
 1. [Certificates, Identifiers & Profiles → Keys](https://developer.apple.com/account/resources/authkeys/list) で
-   「Apple Push Notifications service (APNs)」にチェックを入れてキーを作る
+   「Apple Push Notifications service (APNs)」にチェックを入れてキーを作る。Environment は **「Sandbox & Production」** にする
+   （Sandbox だけだと本番ビルドへの送信が `403 BadEnvironmentKeyInToken` になる。あとから変えられない）
 2. .p8 をダウンロードする（再ダウンロードできないので保管する）。Key ID を控える
 3. Team ID（Membership ページ。アプリは `TPXR4FNVUK`）を控える
 

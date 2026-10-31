@@ -47,7 +47,9 @@ APNs は「このアプリの開発者だけが、このアプリに送れる」
 1. [Apple Developer → Certificates, Identifiers & Profiles → Keys](https://developer.apple.com/account/resources/authkeys/list) を開く
 2. 「Keys」の横の「＋」を押す
 3. Key Name に分かりやすい名前を入れる（例: `Bluepicca Push`）
-4. 「Apple Push Notifications service (APNs)」にチェックを入れる。環境を選べる場合は「Sandbox & Production」にする
+4. 「Apple Push Notifications service (APNs)」にチェックを入れ、「Configure」で Environment を **「Sandbox & Production」** にする。
+   Sandbox だけにすると、開発ビルドでは届くのに TestFlight・App Store のビルドでは `APNs 403 BadEnvironmentKeyInToken` で届かない。
+   **環境はあとから変えられない**ので、間違えたらキーを作り直す
 5. 「Continue」→「Register」
 6. 「Download」で `AuthKey_XXXXXXXXXX.p8` をダウンロードする
 7. 画面に出る **Key ID**（10 文字の英数字）を控える。ファイル名の `AuthKey_` の後ろと同じ
