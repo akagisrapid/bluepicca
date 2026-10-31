@@ -61,9 +61,13 @@ Capabilities の **Push Notifications** にチェックが入っているか確�
 1. Xcode で「Report Navigator（⌘9）」→「Cloud」タブ、または App Store Connect の「Xcode Cloud」を開く
 2. ワークフローを開いて「Edit Workflow」
    - **Actions** に「Archive - iOS」があり、Deployment Preparation が「TestFlight (Internal Testing Only)」か「TestFlight and App Store」になっていること
-   - **Post-Actions** に「TestFlight Internal Testing」を追加し、配信先のテスターグループを選ぶ（初回はグループを作って自分を入れておく）
-3. ビルドを始める。PR がまだマージされていなければ、ブランチ `claude/nice-heisenberg-mwckva` を指定して手動で始める
-   （Xcode のメニュー「Product → Xcode Cloud → Start Build」でワークフローとブランチを選ぶ）
+   - **Post-Actions** に「TestFlight Internal Testing」を追加し、配信先のテスターグループを選ぶ
+   - グループを選ばずに保存すると「デプロイメントのコンフィグレーションにはテスターが必要です」と出て保存できない。
+     先に App Store Connect → TestFlight →「内部テスト」の「＋」でグループを作り、自分をテスターに入れておく
+3. ビルドを始める。PR がまだマージされていなければ、ブランチ `claude/nice-heisenberg-mwckva` を指定して手動で始める。次のどれでもよい
+   - Xcode のメニュー「Integrate → Xcode Cloud → Start Build」（Xcode 14 以降は Product メニューではなく Integrate メニューにある）
+   - Report Navigator（⌘9）の「Cloud」タブで、ワークフローを右クリックして「Start Build」
+   - App Store Connect の「Xcode Cloud」タブで、ワークフローを選んで「ビルドを開始」（Mac がなくてもできる）
 
 ビルド番号は Xcode Cloud が自動で増やす。テストのメモは `TestFlight/WhatToTest.ja.txt`（英語は `WhatToTest.en-US.txt`）から自動で入る。
 
