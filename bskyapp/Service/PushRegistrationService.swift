@@ -4,9 +4,9 @@ import UIKit
 /// プッシュ通知の中継サーバー（リポジトリの server/）の接続先
 enum PushServerConfig {
   /// 例: "https://push.example.com"。空のあいだはプッシュを使わず、端末内の定期確認だけで通知する
-  static let baseURL = ""
+  static let baseURL = "https://bluepicca-push.duckdns.org"
   /// サーバーの環境変数 SERVICE_DID と同じ値（例: "did:web:push.example.com"）
-  static let serviceDid = ""
+  static let serviceDid = "did:web:bluepicca-push.duckdns.org"
 
   static var isConfigured: Bool { !baseURL.isEmpty && !serviceDid.isEmpty }
 }
