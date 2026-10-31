@@ -307,7 +307,7 @@ struct TimelineCardView: View {
       .tint(.yellow)
     case .repost:
       Button {
-        showRepostMenu = true
+        repostWithToast()
       } label: {
         Image(systemName: "arrow.rectanglepath")
       }
@@ -596,7 +596,7 @@ struct TimelineCardView: View {
     .swipeActions(edge: .leading, allowsFullSwipe: true) {
       swipeButton(for: SwipeAction(rawValue: swipeLeadingActionRaw) ?? .like)
     }
-    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
       swipeButton(for: SwipeAction(rawValue: swipeTrailingActionRaw) ?? .repost)
     }
     .sheet(isPresented: $isShowingReplySheet) {
@@ -617,6 +617,16 @@ struct TimelineCardView: View {
         .presentationDetents([.height(280)])
       }
     }
+    .modifier(
+      MuteControlsModifier(
+        showMuteWordPicker: $showMuteWordPicker,
+        showMuteUserConfirm: $showMuteUserConfirm,
+        text: viewModel.text,
+        authorName: viewModel.authorName,
+        isAuthorMuted: isAuthorMuted,
+        onToggleMute: toggleUserMute
+      )
+    )
     .navigationDestination(isPresented: $isShowingPostDetailFromImage) {
       PostDetailView(viewModel: PostDetailViewModel(post: post))
     }
