@@ -1,8 +1,11 @@
-Please try push notifications.
+Please try the following two things.
 
-1. Settings > Notifications: turn on "Receive notifications" and allow notifications
-2. Check that "Registered for push notifications (production)" appears under the Notifications section
-3. Close the app and have another account reply to one of your posts
-4. Check that a "... replied to you" notification arrives within a few seconds
+1. Profile button (top right)
+   - Right after launching the app, tap the profile button at the top right and check that your profile appears
+   - Open it a few more times and check that it never shows a blank screen
 
-If registration fails, the error is shown in the Notifications section of Settings. Please include it in your report.
+2. Posting images
+   - Post a photo taken with your iPhone and check that it looks sharper than before
+   - Post tall and wide photos and check that they are not stretched or squashed
+
+If anything looks wrong, please include what you did in your report.
