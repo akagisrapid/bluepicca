@@ -2,94 +2,42 @@ import Foundation
 import UIKit
 
 public class ImageCompressionHelper {
-  // ファイルサイズ制限（976.56KB）
-  public static let maxFileSizeBytes: Int = 1_000_000  // 約976.56KB
+  // app.bsky.embed.images の上限（2026-04 に 1MB から 2MB、長辺 2000px から 4000px に緩和）
+  public static let maxFileSizeBytes: Int = 2_000_000
+  public static let maxDimension: CGFloat = 4000
 
   /// 画像を指定されたファイルサイズ以下に圧縮する
-  /// - Parameters:
-  ///   - image: 圧縮する画像
-  ///   - maxSizeBytes: 最大ファイルサイズ（バイト）
-  /// - Returns: 圧縮された画像データ
+  /// 長辺 4000px から始め、品質を下げても収まらなければ長辺を半分ずつ縮める
   public static func compressImage(_ image: UIImage, maxSizeBytes: Int = maxFileSizeBytes) -> Data?
   {
-    // 最初に画像のサイズを調整（大きすぎる場合）
-    let resizedImage = resizeImageIfNeeded(image)
-
-    // 圧縮品質を段階的に下げながら試行
     let compressionQualities: [CGFloat] = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]
+    var smallest: UIImage = image
 
-    for quality in compressionQualities {
-      if let compressedData = resizedImage.jpegData(compressionQuality: quality) {
-        dlog("圧縮品質 \(quality): \(compressedData.count)バイト")
-
-        if compressedData.count <= maxSizeBytes {
-          dlog("圧縮成功: \(compressedData.count)バイト (品質: \(quality))")
-          return compressedData
+    for dimension in [maxDimension, maxDimension / 2, maxDimension / 4] {
+      smallest = resizeImage(image, maxDimension: dimension)
+      for quality in compressionQualities {
+        if let data = smallest.jpegData(compressionQuality: quality), data.count <= maxSizeBytes {
+          dlog("圧縮成功: \(data.count)バイト (長辺: \(dimension), 品質: \(quality))")
+          return data
         }
       }
     }
 
-    // 品質を下げても制限を超える場合、画像サイズをさらに小さくして再試行
-    let smallerImage = resizeImage(resizedImage, targetSize: CGSize(width: 800, height: 600))
-
-    for quality in compressionQualities {
-      if let compressedData = smallerImage.jpegData(compressionQuality: quality) {
-        dlog("小さいサイズで圧縮品質 \(quality): \(compressedData.count)バイト")
-
-        if compressedData.count <= maxSizeBytes {
-          dlog("小さいサイズで圧縮成功: \(compressedData.count)バイト (品質: \(quality))")
-          return compressedData
-        }
-      }
-    }
-
-    // さらに小さくして最終試行
-    let verySmallImage = resizeImage(resizedImage, targetSize: CGSize(width: 600, height: 450))
-
-    for quality in compressionQualities {
-      if let compressedData = verySmallImage.jpegData(compressionQuality: quality) {
-        dlog("とても小さいサイズで圧縮品質 \(quality): \(compressedData.count)バイト")
-
-        if compressedData.count <= maxSizeBytes {
-          dlog("とても小さいサイズで圧縮成功: \(compressedData.count)バイト (品質: \(quality))")
-          return compressedData
-        }
-      }
-    }
-
-    // 最後の手段として最低品質で返す
     dlog("警告: ファイルサイズ制限内に収まりませんでした")
-    return verySmallImage.jpegData(compressionQuality: 0.1)
+    return smallest.jpegData(compressionQuality: 0.1)
   }
 
-  /// 画像が大きすぎる場合にリサイズする
-  /// - Parameter image: リサイズする画像
-  /// - Returns: リサイズされた画像
-  private static func resizeImageIfNeeded(_ image: UIImage) -> UIImage {
-    let maxDimension: CGFloat = 1920  // 最大幅・高さ
-    let size = image.size
+  /// 縦横比を保ったまま、長辺が maxDimension ピクセル以下になるように描き直す
+  /// 画面の倍率（3x など）で描くとピクセル数が増えるので scale は 1 に固定する
+  static func resizeImage(_ image: UIImage, maxDimension: CGFloat) -> UIImage {
+    let pixelSize = CGSize(width: image.size.width * image.scale, height: image.size.height * image.scale)
+    let ratio = min(1, maxDimension / max(pixelSize.width, pixelSize.height))
+    let targetSize = CGSize(
+      width: (pixelSize.width * ratio).rounded(), height: (pixelSize.height * ratio).rounded())
 
-    // 画像が既に小さい場合はそのまま返す
-    if size.width <= maxDimension && size.height <= maxDimension {
-      return image
-    }
-
-    // アスペクト比を保持してリサイズ
-    let scale = min(maxDimension / size.width, maxDimension / size.height)
-    let newSize = CGSize(width: size.width * scale, height: size.height * scale)
-
-    return resizeImage(image, targetSize: newSize)
-  }
-
-  /// 画像を指定されたサイズにリサイズする
-  /// - Parameters:
-  ///   - image: リサイズする画像
-  ///   - targetSize: 目標サイズ
-  /// - Returns: リサイズされた画像
-  private static func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage {
-    let renderer = UIGraphicsImageRenderer(size: targetSize)
-
-    return renderer.image { _ in
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = 1
+    return UIGraphicsImageRenderer(size: targetSize, format: format).image { _ in
       image.draw(in: CGRect(origin: .zero, size: targetSize))
     }
   }
