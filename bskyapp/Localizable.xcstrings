@@ -929,6 +929,16 @@
         }
       }
     },
+    "プロフィールを読み込めませんでした" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't load the profile"
+          }
+        }
+      }
+    },
     "プロフィールを開けませんでした" : {
       "localizations" : {
         "en" : {

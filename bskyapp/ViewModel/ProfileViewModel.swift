@@ -8,6 +8,8 @@ class ProfileViewModel: ObservableObject {
   @Published var followUri: String?
   @Published var isProcessingFollow: Bool = false
   @Published var isOwnProfile: Bool = false
+  /// 読み込みに失敗したときの理由。画面はこれを出して閉じる（空のプロフィールを見せない）
+  @Published var loadErrorMessage: String?
 
   // ミュート・ブロック状態
   @Published var isMuted: Bool = false
@@ -58,6 +60,8 @@ class ProfileViewModel: ObservableObject {
     } catch {
       self.isFetching = false
       dlog(error)
+      // 画面を閉じて task が止まった場合は知らせない
+      if !Task.isCancelled { self.loadErrorMessage = error.localizedDescription }
     }
   }
 
