@@ -76,6 +76,16 @@ struct ProfileView: View {
       }
       Button("キャンセル", role: .cancel) {}
     }
+    .alert(
+      "プロフィールを読み込めませんでした",
+      isPresented: Binding(
+        get: { viewModel.loadErrorMessage != nil },
+        set: { if !$0 { viewModel.loadErrorMessage = nil } })
+    ) {
+      Button("OK") { dismiss() }
+    } message: {
+      Text(viewModel.loadErrorMessage ?? "")
+    }
     .onChange(of: selectedTab) { _, tab in
       lazyLoadTab(tab)
     }
