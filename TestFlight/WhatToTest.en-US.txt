@@ -1,11 +1,11 @@
 Please try the following two things.
 
-1. Profile button (top right)
-   - Right after launching the app, tap the profile button at the top right and check that your profile appears
-   - Open it a few more times and check that it never shows a blank screen
+1. Profiles after leaving the app open for a while
+   - Leave the app open for more than 2 hours without closing it, then open your own or another user's profile
+   - Check that the name, follower counts, and so on appear (they used to show a blank screen)
 
-2. Posting images
-   - Post a photo taken with your iPhone and check that it looks sharper than before
-   - Post tall and wide photos and check that they are not stretched or squashed
+2. When a profile fails to load
+   - Turn on Airplane Mode and open a profile
+   - Check that "Couldn't load the profile" appears and that tapping OK takes you back to the previous screen
 
 If anything looks wrong, please include what you did in your report.
