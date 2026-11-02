@@ -28,10 +28,10 @@ class SessionManager {
   }
 
   func getSession() async throws -> CreateSessionResponse {
-    // If we have a valid session that's not expired, return it
-    if let session = currentSession, let lastTime = lastSessionTime,
-      Date().timeIntervalSince(lastTime) < sessionExpiryTime
-    {
+    // アクセストークンは 2 時間で切れる（PDS の既定）。12 時間の sessionExpiryTime で使い回すと、
+    // アプリを開いたまま 2 時間を過ぎたところで全 API が ExpiredToken で失敗する
+    // ponytail: 切れたらアプリパスワードで createSession し直す（1 日十数回で上限 300 回/日には届かない）。増えるなら refreshJwt で refreshSession にする
+    if let session = currentSession, Self.isAccessTokenValid(session.accessJwt) {
       return session
     }
 
@@ -95,6 +95,19 @@ class SessionManager {
   }
 
   var currentDid: String? { currentSession?.did }
+
+  /// JWT の exp を読み、1 分以上の余裕があれば有効とみなす。読めないトークンは無効として取り直す
+  static func isAccessTokenValid(_ jwt: String, now: Date = Date()) -> Bool {
+    let parts = jwt.split(separator: ".")
+    guard parts.count == 3 else { return false }
+    var base64 = parts[1].replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
+    base64 += String(repeating: "=", count: (4 - base64.count % 4) % 4)
+    guard let data = Data(base64Encoded: base64),
+      let payload = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+      let exp = payload["exp"] as? Double
+    else { return false }
+    return Date(timeIntervalSince1970: exp).timeIntervalSince(now) > 60
+  }
 
   func isLoggedIn() -> Bool {
     if currentSession != nil && lastSessionTime != nil
