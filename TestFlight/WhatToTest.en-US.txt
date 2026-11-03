@@ -1,4 +1,11 @@
-Please try push notifications.
+Fixed jittering when swiping down to close the photo viewer.
+
+1. Open a post with photos and tap a photo to view it full screen
+2. Swipe down to close it. Check that the photo follows your finger smoothly, even when swiping slightly diagonally
+3. Drag down a little and let go. Check that the photo returns to its original position
+4. On a post with multiple photos, check that swiping left and right still pages between them
+
+Please also keep trying push notifications.
 
 1. Settings > Notifications: turn on "Receive notifications" and allow notifications
 2. Check that "Registered for push notifications (production)" appears under the Notifications section
