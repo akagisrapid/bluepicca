@@ -22,10 +22,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		980FD1CB2E770BE900AE29EF /* Exceptions for "bskyapp" folder in "bskyapp" target */ = {
+		980FD1CB2E770BE900AE29EF /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				bskyapp.entitlements,
 				Codebase_Analysis.md,
 				Info.plist,
 				README_API_OPTIMIZATION.md,
@@ -35,30 +34,19 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		980FD1CA2E770BE900AE29EF /* bskyapp */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				980FD1CB2E770BE900AE29EF /* Exceptions for "bskyapp" folder in "bskyapp" target */,
-			);
-			path = bskyapp;
-			sourceTree = "<group>";
-		};
-		1BBF84CADF207A69AF62511C /* bskyappTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = bskyappTests;
-			sourceTree = "<group>";
-		};
+		1BBF84CADF207A69AF62511C /* bskyappTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = bskyappTests; sourceTree = "<group>"; };
+		980FD1CA2E770BE900AE29EF /* bskyapp */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (980FD1CB2E770BE900AE29EF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = bskyapp; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		B0C057692B8712D80066AD91 /* Frameworks */ = {
+		3EBDE710BABF2B623EAD5B2E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3EBDE710BABF2B623EAD5B2E /* Frameworks */ = {
+		B0C057692B8712D80066AD91 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -89,26 +77,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B0C0576B2B8712D80066AD91 /* bskyapp */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B0C0577C2B8712D90066AD91 /* Build configuration list for PBXNativeTarget "bskyapp" */;
-			buildPhases = (
-				B0C057682B8712D80066AD91 /* Sources */,
-				B0C057692B8712D80066AD91 /* Frameworks */,
-				B0C0576A2B8712D80066AD91 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				980FD1CA2E770BE900AE29EF /* bskyapp */,
-			);
-			name = bskyapp;
-			productName = bskyapp;
-			productReference = B0C0576C2B8712D80066AD91 /* bskyapp.app */;
-			productType = "com.apple.product-type.application";
-		};
 		8DCF382B5C26932464C263FE /* bskyappTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5F1424AA9763163A41709FD6 /* Build configuration list for PBXNativeTarget "bskyappTests" */;
@@ -130,6 +98,26 @@
 			productReference = B885B93A936F3C1D8512B3CA /* bskyappTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		B0C0576B2B8712D80066AD91 /* bskyapp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0C0577C2B8712D90066AD91 /* Build configuration list for PBXNativeTarget "bskyapp" */;
+			buildPhases = (
+				B0C057682B8712D80066AD91 /* Sources */,
+				B0C057692B8712D80066AD91 /* Frameworks */,
+				B0C0576A2B8712D80066AD91 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				980FD1CA2E770BE900AE29EF /* bskyapp */,
+			);
+			name = bskyapp;
+			productName = bskyapp;
+			productReference = B0C0576C2B8712D80066AD91 /* bskyapp.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -140,12 +128,12 @@
 				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					B0C0576B2B8712D80066AD91 = {
-						CreatedOnToolsVersion = 15.2;
-					};
 					8DCF382B5C26932464C263FE = {
 						CreatedOnToolsVersion = 26.0;
 						TestTargetID = B0C0576B2B8712D80066AD91;
+					};
+					B0C0576B2B8712D80066AD91 = {
+						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
@@ -170,14 +158,14 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		B0C0576A2B8712D80066AD91 /* Resources */ = {
+		1C271F13F5379B1F54B14D28 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1C271F13F5379B1F54B14D28 /* Resources */ = {
+		B0C0576A2B8712D80066AD91 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -212,6 +200,44 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		88E48C281BAA24B0538CFCF2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TPXR4FNVUK;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = lapipearpopo.bskyappTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/bskyapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/bskyapp";
+			};
+			name = Debug;
+		};
+		8C7CE0B80C96B314CA9624D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TPXR4FNVUK;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = lapipearpopo.bskyappTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/bskyapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/bskyapp";
+			};
+			name = Release;
+		};
 		B0C0577A2B8712D90066AD91 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -401,47 +427,18 @@
 			};
 			name = Release;
 		};
-		88E48C281BAA24B0538CFCF2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TPXR4FNVUK;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = lapipearpopo.bskyappTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/bskyapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/bskyapp";
-			};
-			name = Debug;
-		};
-		8C7CE0B80C96B314CA9624D2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = TPXR4FNVUK;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = lapipearpopo.bskyappTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/bskyapp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/bskyapp";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5F1424AA9763163A41709FD6 /* Build configuration list for PBXNativeTarget "bskyappTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				88E48C281BAA24B0538CFCF2 /* Debug */,
+				8C7CE0B80C96B314CA9624D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B0C057672B8712D80066AD91 /* Build configuration list for PBXProject "bskyapp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -456,15 +453,6 @@
 			buildConfigurations = (
 				B0C0577D2B8712D90066AD91 /* Debug */,
 				B0C0577E2B8712D90066AD91 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		5F1424AA9763163A41709FD6 /* Build configuration list for PBXNativeTarget "bskyappTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				88E48C281BAA24B0538CFCF2 /* Debug */,
-				8C7CE0B80C96B314CA9624D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
