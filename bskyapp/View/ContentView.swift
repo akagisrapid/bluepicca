@@ -16,7 +16,7 @@ struct ContentView: View {
   @State private var isShowSettings = false
   @State private var isShowBookmarks = false
   @State private var isShowSearch = false
-  @State private var isShowMyProfile = false
+  @State private var myProfileDid: String?
   @State private var selectedPostForLikes: Post?
   @State private var navigationTarget: Post?
   @State private var profileNavActor: String?
@@ -72,8 +72,12 @@ struct ContentView: View {
         .sheet(isPresented: $isShowBookmarks) { BookmarksView() }
         .sheet(isPresented: $isShowSettings) { SettingsView(isLoggedIn: $isLoggedIn) }
         .sheet(isPresented: $isShowSearch) { SearchView() }
-        .sheet(isPresented: $isShowMyProfile) {
-          if let did = SessionManager.shared.currentDid {
+        .sheet(
+          isPresented: Binding(
+            get: { myProfileDid != nil },
+            set: { if !$0 { myProfileDid = nil } })
+        ) {
+          if let did = myProfileDid {
             ProfileView(
               viewModel: ProfileViewModel(
                 actor: did, profile: .init(did: "", handle: "", labels: [])))
@@ -264,10 +268,21 @@ struct ContentView: View {
     }
   }
 
+  /// メモリ上のセッションは起動直後や 429 の後に空になるので、DID は必要なら取り直す
+  private func showMyProfile() {
+    Task {
+      do {
+        myProfileDid = try await SessionManager.shared.getSession().did
+      } catch {
+        toastManager.show(icon: "exclamationmark.triangle", text: String(localized: "プロフィールを開けませんでした"))
+      }
+    }
+  }
+
   @ToolbarContentBuilder
   private var trailingToolbarItem: some ToolbarContent {
     ToolbarItem(placement: .navigationBarTrailing) {
-      Button(action: { isShowMyProfile = true }) {
+      Button(action: showMyProfile) {
         SwiftUI.Label("プロフィール", systemImage: "person.circle").labelStyle(.iconOnly)
       }
     }

@@ -88,6 +88,18 @@ struct ImageCompressionHelperTests {
     let data = try #require(ImageCompressionHelper.compressImage(image))
     #expect(data.count <= ImageCompressionHelper.maxFileSizeBytes)
   }
+
+  /// 画面の倍率で描くと 3 倍のピクセルになり、縦横比を無視すると画像が歪む
+  @Test func resizeKeepsAspectRatioInPixels() throws {
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = 1
+    let image = UIGraphicsImageRenderer(size: CGSize(width: 3024, height: 8000), format: format)
+      .image { _ in }
+    let resized = ImageCompressionHelper.resizeImage(image, maxDimension: 4000)
+    let cgImage = try #require(resized.cgImage)
+    #expect(cgImage.height == 4000)
+    #expect(cgImage.width == 1512)
+  }
 }
 
 /// 文言は日本語を原文に、英訳を String Catalog に持たせている。カタログがバンドルに入っていないと

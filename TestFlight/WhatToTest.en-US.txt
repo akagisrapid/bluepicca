@@ -1,15 +1,17 @@
-Fixed jittering when swiping in the photo viewer (swipe down to close, swipe left and right to page).
+Please try the following three things.
 
-1. Open a post with photos and tap a photo to view it full screen
-2. Swipe down to close it. Check that the photo follows your finger smoothly, even when swiping slightly diagonally
-3. Drag down a little and let go. Check that the photo returns to its original position
-4. On a post with multiple photos, swipe left and right and check that pages change smoothly. Also check that the photo does not jump when you swipe quickly several times in a row
+1. Profiles after leaving the app open for a while
+   - Leave the app open for more than 2 hours without closing it, then open your own or another user's profile
+   - Check that the name, follower counts, and so on appear (they used to show a blank screen)
 
-Please also keep trying push notifications.
+2. When a profile fails to load
+   - Turn on Airplane Mode and open a profile
+   - Check that "Couldn't load the profile" appears and that tapping OK takes you back to the previous screen
 
-1. Settings > Notifications: turn on "Receive notifications" and allow notifications
-2. Check that "Registered for push notifications (production)" appears under the Notifications section
-3. Close the app and have another account reply to one of your posts
-4. Check that a "... replied to you" notification arrives within a few seconds
+3. Swiping in the photo viewer
+   - Open a post with photos and tap a photo to view it full screen
+   - Swipe down to close it. Check that the photo follows your finger smoothly, even when swiping slightly diagonally
+   - Drag down a little and let go. Check that the photo returns to its original position
+   - On a post with multiple photos, swipe left and right and check that pages change smoothly. Also check that the photo does not jump when you swipe quickly several times in a row
 
-If registration fails, the error is shown in the Notifications section of Settings. Please include it in your report.
+If anything looks wrong, please include what you did in your report.
