@@ -89,7 +89,11 @@ struct FullScreenImageView: View {
       let atEdge =
         (currentIndex == 0 && dx > 0)
         || (currentIndex == images.count - 1 && dx < 0)
-      pageOffset = atEdge ? dx / 3 : dx
+      // ページ送りのアニメーション中に掴み直すと、アニメーションなしの代入で
+      // 残りの移動量ぶん一気に飛ぶ。interactiveSpring で今の位置から指に追従させる
+      withAnimation(.interactiveSpring()) {
+        pageOffset = atEdge ? dx / 3 : dx
+      }
     case .vertical:
       // 上方向は抵抗をつけて少しだけ動かす
       dismissOffset = dy > 0 ? dy : dy / 4

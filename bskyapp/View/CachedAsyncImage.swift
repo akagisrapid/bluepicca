@@ -38,14 +38,18 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
     }
     let request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad)
     if let cached = URLCache.shared.cachedResponse(for: request),
-      let img = UIImage(data: cached.data)
+      let decoded = UIImage(data: cached.data)
     {
+      let img = await decoded.byPreparingForDisplay() ?? decoded
       ImageCache.shared[url] = img
       uiImage = img
       return
     }
     guard let (data, response) = try? await URLSession.shared.data(for: request) else { return }
-    guard let img = UIImage(data: data) else { return }
+    guard let decoded = UIImage(data: data) else { return }
+    // UIImage(data:) は描画時にメインスレッドでデコードされる。大きな画像だと
+    // 写真ビューアで隣のページが画面に入った瞬間に引っかかるので、先にデコードしておく
+    let img = await decoded.byPreparingForDisplay() ?? decoded
     URLCache.shared.storeCachedResponse(
       CachedURLResponse(response: response, data: data), for: request)
     ImageCache.shared[url] = img
