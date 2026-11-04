@@ -8,6 +8,9 @@ struct FullScreenImageView: View {
   @State private var pageOffset: CGFloat = 0
   @State private var dismissOffset: CGFloat = 0
   @State private var isAnyImageZoomed: Bool = false
+  @State private var dragAxis: DragAxis?
+
+  private enum DragAxis { case horizontal, vertical }
 
   init(images: [EmbedImagesViewItem], initialIndex: Int = 0) {
     self.images = images
@@ -39,6 +42,9 @@ struct FullScreenImageView: View {
               },
               onDragEnd: { value in
                 handleDragEnd(value)
+              },
+              onDragCancel: {
+                cancelDrag()
               }
             )
             .frame(width: W, height: H)
@@ -72,22 +78,46 @@ struct FullScreenImageView: View {
   private func handleDrag(_ translation: CGSize) {
     let dx = translation.width
     let dy = translation.height
-    if abs(dx) >= abs(dy) {
+    // 方向はドラッグ開始時に一度だけ決める（毎フレーム判定すると
+    // 斜め気味の指の動きでページ送りと dismiss が切り替わりガタつく）
+    if dragAxis == nil {
+      dragAxis = abs(dx) >= abs(dy) ? .horizontal : .vertical
+    }
+    switch dragAxis {
+    case .horizontal:
       // 端のページでは抵抗感を持たせる
       let atEdge =
         (currentIndex == 0 && dx > 0)
         || (currentIndex == images.count - 1 && dx < 0)
-      pageOffset = atEdge ? dx / 3 : dx
-    } else if dy > 0 {
-      dismissOffset = dy
+      // ページ送りのアニメーション中に掴み直すと、アニメーションなしの代入で
+      // 残りの移動量ぶん一気に飛ぶ。interactiveSpring で今の位置から指に追従させる
+      withAnimation(.interactiveSpring()) {
+        pageOffset = atEdge ? dx / 3 : dx
+      }
+    case .vertical:
+      // 上方向は抵抗をつけて少しだけ動かす
+      dismissOffset = dy > 0 ? dy : dy / 4
+    case nil:
+      break
+    }
+  }
+
+  /// ピンチ割り込み等でドラッグが中断されたときに元へ戻す
+  private func cancelDrag() {
+    dragAxis = nil
+    withAnimation(.spring()) {
+      pageOffset = 0
+      dismissOffset = 0
     }
   }
 
   private func handleDragEnd(_ value: DragGesture.Value) {
-    let dx = value.translation.width
     let dy = value.translation.height
     let predicted = value.predictedEndTranslation
-    if abs(dx) >= abs(dy) {
+    let axis = dragAxis ?? .horizontal
+    dragAxis = nil
+    if axis == .horizontal {
+      let dx = value.translation.width
       var next = currentIndex
       if dx < -50 || predicted.width < -200 {
         next = min(currentIndex + 1, images.count - 1)
@@ -117,6 +147,7 @@ private struct ZoomableImageView: View {
   /// scale == 1 のときのドラッグ変位を通知（ページ切り替え・dismiss 用）
   var onDrag: (CGSize) -> Void
   var onDragEnd: (DragGesture.Value) -> Void
+  var onDragCancel: () -> Void
 
   @State private var scale: CGFloat = 1.0
   @State private var lastScale: CGFloat = 1.0
@@ -165,7 +196,9 @@ private struct ZoomableImageView: View {
                 isPinching = false
               }
             },
-          DragGesture(minimumDistance: 4)
+          // global 座標で測る：dismiss 中はビュー自体が指と一緒に動くため、
+          // ローカル座標だと translation が揺れてガタつく
+          DragGesture(minimumDistance: 4, coordinateSpace: .global)
             .onChanged { value in
               guard !isPinching else { return }
               if scale > 1 {
@@ -181,7 +214,10 @@ private struct ZoomableImageView: View {
               }
             }
             .onEnded { value in
-              guard !isPinching else { return }
+              guard !isPinching else {
+                onDragCancel()
+                return
+              }
               if scale > 1 {
                 lastOffset = offset
               } else {

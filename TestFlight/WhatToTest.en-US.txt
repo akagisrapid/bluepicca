@@ -1,4 +1,4 @@
-Please try the following two things.
+Please try the following three things.
 
 1. Profiles after leaving the app open for a while
    - Leave the app open for more than 2 hours without closing it, then open your own or another user's profile
@@ -7,5 +7,11 @@ Please try the following two things.
 2. When a profile fails to load
    - Turn on Airplane Mode and open a profile
    - Check that "Couldn't load the profile" appears and that tapping OK takes you back to the previous screen
+
+3. Swiping in the photo viewer
+   - Open a post with photos and tap a photo to view it full screen
+   - Swipe down to close it. Check that the photo follows your finger smoothly, even when swiping slightly diagonally
+   - Drag down a little and let go. Check that the photo returns to its original position
+   - On a post with multiple photos, swipe left and right and check that pages change smoothly. Also check that the photo does not jump when you swipe quickly several times in a row
 
 If anything looks wrong, please include what you did in your report.
