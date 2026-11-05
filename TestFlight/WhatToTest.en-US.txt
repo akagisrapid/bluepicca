@@ -1,4 +1,4 @@
-Please try the following four things.
+Please try the following five things.
 
 1. Profiles after leaving the app open for a while
    - Leave the app open for more than 2 hours without closing it, then open your own or another user's profile
@@ -18,5 +18,10 @@ Please try the following four things.
    - Scroll to the top of the home timeline, pull down, and let go
    - Check that new posts load and that you return to where you were reading
    - Check that the thin bar at the top of the screen does not also appear while pulling
+
+5. Languages to show
+   - In Settings, open Languages to Show and select only English
+   - Check that posts in other languages, such as Japanese, disappear from the home timeline
+   - Switch back to All Languages and check that all posts appear again
 
 If anything looks wrong, please include what you did in your report.

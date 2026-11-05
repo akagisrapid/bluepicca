@@ -10,6 +10,7 @@ struct ContentView: View {
   @ObservedObject private var mutedUsersManager = MutedUsersManager.shared
   @ObservedObject private var rtFilterManager = RTFilterManager.shared
   @ObservedObject private var muteWordManager = MuteWordManager.shared
+  @ObservedObject private var languageFilterManager = LanguageFilterManager.shared
   @ObservedObject private var labelManager = ContentLabelManager.shared
   @State private var isShowReplies = false
   @State private var isShowLikes = false

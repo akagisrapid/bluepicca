@@ -2081,6 +2081,46 @@
           }
         }
       }
+    },
+    "表示する言語" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Languages to Show"
+          }
+        }
+      }
+    },
+    "すべて" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
+    },
+    "すべての言語" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Languages"
+          }
+        }
+      }
+    },
+    "選んだ言語の投稿だけをタイムラインに表示します。言語が設定されていない投稿は常に表示します。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only posts in the selected languages appear in the timeline. Posts without a language are always shown."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
