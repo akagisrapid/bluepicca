@@ -21,6 +21,8 @@ struct ContentView: View {
   @State private var navigationTarget: Post?
   @State private var profileNavActor: String?
   @State private var scrollProxy: ScrollViewProxy? = nil
+  /// 引っ張って更新中は List 自身のインジケーターが出るので、上部のバーは出さない
+  @State private var isPullRefreshing = false
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
   @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
@@ -157,6 +159,15 @@ struct ContentView: View {
         }
       }
       .listStyle(.plain)
+      .refreshable {
+        isPullRefreshing = true
+        defer { isPullRefreshing = false }
+        do {
+          try await viewModel.fetchTimeline()
+        } catch {
+          dlog("Error refreshing timeline: \(error)")
+        }
+      }
       .onAppear { scrollProxy = proxy }
       .modifier(
         FeedTabStripModifier(
@@ -172,7 +183,7 @@ struct ContentView: View {
       }
     }
     .overlay(alignment: .top) {
-      if viewModel.isFetchingTimeline && !viewModel.validFeeds.isEmpty {
+      if viewModel.isFetchingTimeline && !viewModel.validFeeds.isEmpty && !isPullRefreshing {
         ProgressView()
           .progressViewStyle(LinearProgressViewStyle())
           .tint(.accentColor)
