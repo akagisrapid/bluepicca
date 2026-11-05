@@ -29,6 +29,8 @@ struct SettingsView: View {
   @State private var showMuteBlockList = false
   @State private var showMuteWords = false
   @State private var showContentLabels = false
+  @State private var showLanguageFilter = false
+  @ObservedObject private var languageFilter = LanguageFilterManager.shared
   @State private var showNotificationPermissionAlert = false
   @ObservedObject private var notificationSettings = NotificationSettings.shared
   @Environment(\.openURL) private var openURL
@@ -68,6 +70,24 @@ struct SettingsView: View {
               Text("5分").tag(300)
             }
           }
+          Button(action: { showLanguageFilter = true }) {
+            HStack {
+              Text("表示する言語")
+              Spacer()
+              if let summary = languageFilter.summary {
+                Text(summary)
+                  .foregroundColor(.secondary)
+                  .lineLimit(1)
+              } else {
+                Text("すべて")
+                  .foregroundColor(.secondary)
+              }
+              Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            }
+          }
+          .foregroundColor(.primary)
         }
 
         Section {
@@ -193,6 +213,9 @@ struct SettingsView: View {
       }
       .sheet(isPresented: $showContentLabels) {
         ContentLabelSettingsView()
+      }
+      .sheet(isPresented: $showLanguageFilter) {
+        LanguageFilterView()
       }
       .alert("通知が許可されていません", isPresented: $showNotificationPermissionAlert) {
         Button("キャンセル", role: .cancel) {}

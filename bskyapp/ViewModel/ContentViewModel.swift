@@ -42,12 +42,13 @@ class ContentViewModel: ObservableObject {
   }
   private var feedsCache: [String: FeedCache] = [:]
 
-  // ミュート・ブロック済みアカウント・ミュートワード・RTフィルタ・ラベルポリシーに該当する投稿を除外する
+  // ミュート・ブロック済みアカウント・ミュートワード・RTフィルタ・ラベルポリシー・言語フィルタに該当する投稿を除外する
   var validFeeds: [FeedItem] {
     let muteWordManager = MuteWordManager.shared
     let rtFilterManager = RTFilterManager.shared
     let labelManager = ContentLabelManager.shared
     let mutedUsersManager = MutedUsersManager.shared
+    let languageFilter = LanguageFilterManager.shared
     return feeds.filter { feedItem in
       guard let post = feedItem.post else { return false }
       let viewer = post.author?.viewer
@@ -62,6 +63,7 @@ class ContentViewModel: ObservableObject {
         return false
       }
       if labelManager.policy(for: post) == .hide { return false }
+      if !languageFilter.allows(post.record?.langs) { return false }
       return true
     }
   }

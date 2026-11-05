@@ -1,4 +1,4 @@
-Please try the following three things.
+Please try the following five things.
 
 1. Profiles after leaving the app open for a while
    - Leave the app open for more than 2 hours without closing it, then open your own or another user's profile
@@ -13,5 +13,15 @@ Please try the following three things.
    - Swipe down to close it. Check that the photo follows your finger smoothly, even when swiping slightly diagonally
    - Drag down a little and let go. Check that the photo returns to its original position
    - On a post with multiple photos, swipe left and right and check that pages change smoothly. Also check that the photo does not jump when you swipe quickly several times in a row
+
+4. Pull to refresh on the home timeline
+   - Scroll to the top of the home timeline, pull down, and let go
+   - Check that new posts load and that you return to where you were reading
+   - Check that the thin bar at the top of the screen does not also appear while pulling
+
+5. Languages to show
+   - In Settings, open Languages to Show and select only English
+   - Check that posts in other languages, such as Japanese, disappear from the home timeline
+   - Switch back to All Languages and check that all posts appear again
 
 If anything looks wrong, please include what you did in your report.
