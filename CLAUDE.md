@@ -6,12 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Bluepicca** is a native iOS Bluesky client built with SwiftUI. It implements the AT Protocol to interact with Bluesky's social networking features (timeline, posts, likes, reposts, profiles, replies, follows).
 
-The Xcode project lives in `rapipopo/`. All source code is under `rapipopo/bskyapp/`.
+The Xcode project (`bskyapp.xcodeproj`) is at the repository root. All app source code is under `bskyapp/`, unit tests under `bskyappTests/`, design notes under `docs/`.
 
 ## Build & Run
 
 ```bash
-open rapipopo/bskyapp.xcodeproj
+open bskyapp.xcodeproj
 
 # CLI build
 xcodebuild -project bskyapp.xcodeproj -scheme bskyapp -destination 'generic/platform=iOS Simulator' build
@@ -19,7 +19,7 @@ xcodebuild -project bskyapp.xcodeproj -scheme bskyapp -destination 'generic/plat
 
 Build and run from Xcode (⌘B / ⌘R). Requires iOS 17+ (uses NavigationStack, SwiftData).
 
-The `bskyapp/` folder is a **file-system synchronized group**: adding a file under it adds it to the target automatically. Do not edit `project.pbxproj` to register files. Files that must stay out of the app bundle (e.g. `*.md` notes) are listed in the group's `membershipExceptions`.
+The `bskyapp/` folder is a **file-system synchronized group**: adding a file under it adds it to the target automatically. Do not edit `project.pbxproj` to register files. Keep notes (`*.md`) in `docs/`, not under `bskyapp/`; a file that must stay there but out of the bundle goes in the group's `membershipExceptions`.
 
 ## Tests
 
