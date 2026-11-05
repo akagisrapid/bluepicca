@@ -25,7 +25,7 @@ struct SearchView: View {
         HStack {
           Image(systemName: "magnifyingglass")
             .foregroundColor(.secondary)
-          TextField("キーワードまたは #ハッシュタグ", text: $viewModel.query)
+          TextField("キーワード・#ハッシュタグ・@ユーザー", text: $viewModel.query)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
             .focused($isTextFieldFocused)
@@ -35,7 +35,7 @@ struct SearchView: View {
           if !viewModel.query.isEmpty {
             Button(action: {
               viewModel.query = ""
-              viewModel.posts = []
+              viewModel.clearResults()
             }) {
               Image(systemName: "xmark.circle.fill")
                 .foregroundColor(.secondary)
@@ -63,6 +63,18 @@ struct SearchView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
 
+        // "#" や "@" で始まるときは種類が決まるので出さない
+        if !viewModel.isHashtagQuery && !viewModel.query.hasPrefix("@") {
+          Picker("検索の種類", selection: $viewModel.scope) {
+            ForEach(SearchScope.allCases, id: \.self) { scope in
+              Text(scope.label).tag(scope)
+            }
+          }
+          .pickerStyle(.segmented)
+          .padding(.horizontal, 16)
+          .padding(.bottom, 10)
+        }
+
         Divider()
 
         // 検索結果
@@ -75,12 +87,12 @@ struct SearchView: View {
           Text(error)
             .foregroundColor(.secondary)
           Spacer()
-        } else if viewModel.posts.isEmpty && !viewModel.query.isEmpty {
+        } else if !viewModel.hasResults && !viewModel.query.isEmpty {
           Spacer()
           Text("検索結果がありません")
             .foregroundColor(.secondary)
           Spacer()
-        } else if viewModel.posts.isEmpty {
+        } else if !viewModel.hasResults {
           // 空状態：ハッシュタグ検索の導線
           ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -136,6 +148,8 @@ struct SearchView: View {
             .padding(.horizontal, 16)
             .padding(.top, 20)
           }
+        } else if viewModel.effectiveScope == .users {
+          actorList
         } else {
           List {
             ForEach(viewModel.posts, id: \.uri) { post in
@@ -192,6 +206,10 @@ struct SearchView: View {
           await viewModel.search()
         }
       }
+      .onChange(of: viewModel.scope) {
+        guard !viewModel.query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        Task { await viewModel.search() }
+      }
       .overlay(alignment: .bottomTrailing) {
         if viewModel.query.hasPrefix("#") {
           Button(action: { isShowPostCard = true }) {
@@ -214,6 +232,38 @@ struct SearchView: View {
         )
       }
     }
+  }
+
+  private var actorList: some View {
+    List {
+      ForEach(viewModel.actors, id: \.did) { actor in
+        NavigationLink(
+          destination: ProfileView(
+            viewModel: ProfileViewModel(
+              actor: actor.did, profile: .init(did: "", handle: "", labels: [])))
+        ) {
+          FollowListView.FollowItemRow(
+            handle: actor.handle,
+            displayName: actor.displayName,
+            avatar: actor.avatar
+          )
+        }
+        .onAppear {
+          if actor.did == viewModel.actors.last?.did {
+            Task { await viewModel.loadMore() }
+          }
+        }
+      }
+      if viewModel.isLoadingMore {
+        HStack {
+          Spacer()
+          ProgressView()
+          Spacer()
+        }
+        .listRowSeparator(.hidden)
+      }
+    }
+    .listStyle(.plain)
   }
 
   private func startHashtagSearch(_ tag: String) {
