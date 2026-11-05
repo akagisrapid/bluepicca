@@ -25,9 +25,7 @@
 		980FD1CB2E770BE900AE29EF /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Codebase_Analysis.md,
 				Info.plist,
-				README_API_OPTIMIZATION.md,
 			);
 			target = B0C0576B2B8712D80066AD91 /* bskyapp */;
 		};

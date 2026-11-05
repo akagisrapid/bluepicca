@@ -112,7 +112,7 @@ struct LinkCardContentView: View {
             thumb: nil
         ))
         
-        LinkCardView(uri: "https://github.com/akagisrapid/rapipopo")
+        LinkCardView(uri: "https://github.com/akagisrapid/bluepicca")
     }
     .padding()
 }
