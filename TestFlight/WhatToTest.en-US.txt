@@ -1,4 +1,4 @@
-Please try the following five things.
+Please try the following six things.
 
 1. Profiles after leaving the app open for a while
    - Leave the app open for more than 2 hours without closing it, then open your own or another user's profile
@@ -23,5 +23,10 @@ Please try the following five things.
    - In Settings, open Languages to Show and select only English
    - Check that posts in other languages, such as Japanese, disappear from the home timeline
    - Switch back to All Languages and check that all posts appear again
+
+6. User search
+   - On the search screen, select Users and search for part of a name or handle
+   - Check that matching users appear and that tapping one opens their profile
+   - Check that typing a query starting with "@" also searches for users
 
 If anything looks wrong, please include what you did in your report.

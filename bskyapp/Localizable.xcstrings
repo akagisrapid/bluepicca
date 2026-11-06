@@ -426,12 +426,12 @@
         }
       }
     },
-    "キーワードまたは #ハッシュタグ" : {
+    "キーワード・#ハッシュタグ・@ユーザー" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keyword or #hashtag"
+            "value" : "Keyword, #hashtag, or @user"
           }
         }
       }
@@ -2118,6 +2118,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Only posts in the selected languages appear in the timeline. Posts without a language are always shown."
+          }
+        }
+      }
+    },
+    "検索の種類" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Type"
+          }
+        }
+      }
+    },
+    "ユーザー" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Users"
           }
         }
       }

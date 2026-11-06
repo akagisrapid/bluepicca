@@ -87,7 +87,7 @@ Capabilities の **Push Notifications** にチェックが入っているか確�
    - **Post-Actions** に「TestFlight Internal Testing」を追加し、配信先のテスターグループを選ぶ
    - グループを選ばずに保存すると「デプロイメントのコンフィグレーションにはテスターが必要です」と出て保存できない。
      先に App Store Connect → TestFlight →「内部テスト」の「＋」でグループを作り、自分をテスターに入れておく
-3. ビルドを始める。PR がまだマージされていなければ、ブランチ `claude/nice-heisenberg-mwckva` を指定して手動で始める。次のどれでもよい
+3. ビルドを始める。PR がまだマージされていなければ、その PR のブランチ（GitHub の PR 画面の上部に出る `main ← <ブランチ名>` の右側）を指定して手動で始める。次のどれでもよい
    - Xcode のメニュー「Integrate → Xcode Cloud → Start Build」（Xcode 14 以降は Product メニューではなく Integrate メニューにある）
    - Report Navigator（⌘9）の「Cloud」タブで、ワークフローを右クリックして「Start Build」
    - App Store Connect の「Xcode Cloud」タブで、ワークフローを選んで「ビルドを開始」（Mac がなくてもできる）
