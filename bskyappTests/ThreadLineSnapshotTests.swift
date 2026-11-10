@@ -7,7 +7,10 @@ import Testing
 
 /// 縦線の見た目を確かめるため、シミュレーター上で TL のカードを画像にする（確認用・一時的）。
 /// 環境変数 SNAPSHOT_DIR があればそこへ PNG を書き出す
+/// 共有の設定（ContentLabelManager など）を書き換えるテストと並行して描くと落ちるので、
+/// 通常のテストでは動かさず、SNAPSHOT_DIR を渡した単独の実行でだけ動かす
 @MainActor
+@Suite(.serialized, .enabled(if: ProcessInfo.processInfo.environment["SNAPSHOT_DIR"] != nil))
 struct ThreadLineSnapshotTests {
   private func item(
     uri: String, name: String, text: String, parent: (uri: String, name: String, text: String)? = nil,
