@@ -1,18 +1,9 @@
-Please try the following three things.
+Please try the following.
 
-1. Pull to refresh on the home timeline
-   - Scroll to the top of the home timeline, pull down, and let go
-   - Check that new posts load and that you return to where you were reading
-   - Check that the thin bar at the top of the screen does not also appear while pulling
-
-2. Languages to show
-   - In Settings, open Languages to Show and select only English
-   - Check that posts in other languages, such as Japanese, disappear from the home timeline
-   - Switch back to All Languages and check that all posts appear again
-
-3. User search
-   - On the search screen, select Users and search for part of a name or handle
-   - Check that matching users appear and that tapping one opens their profile
-   - Check that typing a query starting with "@" also searches for users
+1. Indented thread replies
+   - On the home timeline, find a post with a reply to it directly below
+   - Check that the reply card is indented one step, and that it does not also show a preview of the post it replies to
+   - Check that this also works when either the post or the reply was reposted
+   - Check that unrelated posts are not indented
 
 If anything looks wrong, please include what you did in your report.

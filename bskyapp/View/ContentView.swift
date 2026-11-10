@@ -143,12 +143,10 @@ struct ContentView: View {
       List {
         ForEach(Array(viewModel.validFeeds.enumerated()), id: \.element.id) { index, feedItem in
           let prevItem = index > 0 ? viewModel.validFeeds[index - 1] : nil
-          let nextItem =
-            index + 1 < viewModel.validFeeds.count ? viewModel.validFeeds[index + 1] : nil
-          let connectsAbove = prevItem.map { areThreadConnected($0, feedItem) } ?? false
-          let connectsBelow = nextItem.map { areThreadConnected(feedItem, $0) } ?? false
-          feedRow(
-            feedItem, connectsToCardAbove: connectsAbove, connectsToCardBelow: connectsBelow)
+          let connectsAbove =
+            prevItem.map { TimelineCardViewModel.isThreadConnected(above: $0, below: feedItem) }
+            ?? false
+          feedRow(feedItem, connectsToCardAbove: connectsAbove)
         }
         if viewModel.isLoadingMore {
           HStack {
@@ -194,12 +192,12 @@ struct ContentView: View {
 
   @ViewBuilder
   private func feedRow(
-    _ feedItem: FeedItem, connectsToCardAbove: Bool = false, connectsToCardBelow: Bool = false
+    _ feedItem: FeedItem, connectsToCardAbove: Bool = false
   ) -> some View {
     if let post = feedItem.post {
       let cardVM = TimelineCardViewModel(
         post: post, reason: feedItem.reason, reply: feedItem.reply,
-        connectsToCardAbove: connectsToCardAbove, connectsToCardBelow: connectsToCardBelow)
+        connectsToCardAbove: connectsToCardAbove)
       TimelineCardView(viewModel: cardVM)
         .contentShape(Rectangle())
         .onTapGesture { navigationTarget = post }
@@ -215,14 +213,6 @@ struct ContentView: View {
           if let uri = post.uri { viewModel.cellDidDisappear(uri: uri) }
         }
     }
-  }
-
-  private func areThreadConnected(_ a: FeedItem, _ b: FeedItem) -> Bool {
-    guard a.reason == nil, b.reason == nil,
-      let uriA = a.post?.uri,
-      let parentUriB = b.reply?.parent?.uri
-    else { return false }
-    return uriA == parentUriB
   }
 
   // MARK: - Tab strip
