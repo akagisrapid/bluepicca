@@ -1,9 +1,9 @@
 Please try the following.
 
-1. Thread lines with reposts
-   - On the home timeline, find a reposted post with a reply to it directly below
-   - Check that the two cards' avatars are joined by a vertical line, and that the lower card does not also show a preview of the post it replies to
-   - Also check a reposted reply directly below the post it replies to. The line should pass through the "reposted" row without overlapping its text
-   - Check that the line is not drawn over the avatars
+1. Indented thread replies
+   - On the home timeline, find a post with a reply to it directly below
+   - Check that the reply card is indented one step, and that it does not also show a preview of the post it replies to
+   - Check that this also works when either the post or the reply was reposted
+   - Check that unrelated posts are not indented
 
 If anything looks wrong, please include what you did in your report.

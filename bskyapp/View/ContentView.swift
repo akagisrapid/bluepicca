@@ -143,16 +143,10 @@ struct ContentView: View {
       List {
         ForEach(Array(viewModel.validFeeds.enumerated()), id: \.element.id) { index, feedItem in
           let prevItem = index > 0 ? viewModel.validFeeds[index - 1] : nil
-          let nextItem =
-            index + 1 < viewModel.validFeeds.count ? viewModel.validFeeds[index + 1] : nil
           let connectsAbove =
             prevItem.map { TimelineCardViewModel.isThreadConnected(above: $0, below: feedItem) }
             ?? false
-          let connectsBelow =
-            nextItem.map { TimelineCardViewModel.isThreadConnected(above: feedItem, below: $0) }
-            ?? false
-          feedRow(
-            feedItem, connectsToCardAbove: connectsAbove, connectsToCardBelow: connectsBelow)
+          feedRow(feedItem, connectsToCardAbove: connectsAbove)
         }
         if viewModel.isLoadingMore {
           HStack {
@@ -198,12 +192,12 @@ struct ContentView: View {
 
   @ViewBuilder
   private func feedRow(
-    _ feedItem: FeedItem, connectsToCardAbove: Bool = false, connectsToCardBelow: Bool = false
+    _ feedItem: FeedItem, connectsToCardAbove: Bool = false
   ) -> some View {
     if let post = feedItem.post {
       let cardVM = TimelineCardViewModel(
         post: post, reason: feedItem.reason, reply: feedItem.reply,
-        connectsToCardAbove: connectsToCardAbove, connectsToCardBelow: connectsToCardBelow)
+        connectsToCardAbove: connectsToCardAbove)
       TimelineCardView(viewModel: cardVM)
         .contentShape(Rectangle())
         .onTapGesture { navigationTarget = post }

@@ -3,7 +3,7 @@ import Testing
 
 @testable import bskyapp
 
-/// TL のスレッド縦線。上のカードが下のカードの直接の返信先ならつなぎ、
+/// TL のスレッドの字下げ。上のカードが下のカードの直接の返信先ならつなぎ、
 /// リポストが混ざっても切らない
 struct ThreadLineTests {
   private func item(uri: String, parent: String? = nil, repostedBy: String? = nil) throws

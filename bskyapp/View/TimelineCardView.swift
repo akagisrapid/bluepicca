@@ -22,6 +22,7 @@ struct TimelineCardView: View {
   @AppStorage("hideImagePreview") private var hideImagePreview: Bool = false
   @AppStorage("hideAvatars") private var hideAvatars: Bool = false
   @Environment(\.modelContext) private var modelContext
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @Query private var bookmarks: [BookmarkedPost]
   @ObservedObject private var rtFilterManager = RTFilterManager.shared
   @ObservedObject private var highlightManager = UserHighlightManager.shared
@@ -338,24 +339,14 @@ struct TimelineCardView: View {
     }
   }
 
-  // MARK: - スレッドの縦線
-
-  private var showsThreadLine: Bool { !hideAvatars }
-
-  /// ヘッダーの上の余白。リポストはバナーがあるので詰める
-  private var avatarTopPadding: CGFloat { viewModel.isRepost ? 0 : 8 }
-
-  /// 縦線の左端（アバターの中心）
-  private var threadLineX: CGFloat { 12 + timelineAvatarSize / 2 - 1 }
-
-  /// 縦線がバナーを通るときは、バナーの文字を名前の列にそろえて線と重ねない
-  private var repostBannerLeading: CGFloat {
-    showsThreadLine && viewModel.connectsToCardAbove ? 12 + timelineAvatarSize + 10 : 12
+  private var postedTime: some View {
+    Text(viewModel.postedTimeRelative)
+      .font(.caption)
+      .foregroundColor(.secondary)
   }
 
-  private func threadLineSegment(visible: Bool) -> some View {
-    (visible ? Color.accentColor.opacity(0.35) : Color.clear).frame(width: 2)
-  }
+  /// 上のカードへの返信は字下げしてスレッドだと分かるようにする
+  private var replyIndent: CGFloat { viewModel.connectsToCardAbove ? 24 : 0 }
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
@@ -390,17 +381,10 @@ struct TimelineCardView: View {
           }
         }
         .foregroundColor(.secondary)
-        .padding(.leading, repostBannerLeading)
-        .padding(.trailing, 12)
+        .padding(.horizontal, 12)
+        .padding(.leading, replyIndent)
         .padding(.top, 6)
         .padding(.bottom, 2)
-        .overlay(alignment: .leading) {
-          // 上のカードからの縦線をバナーの中も通す
-          if showsThreadLine && viewModel.connectsToCardAbove {
-            threadLineSegment(visible: true)
-              .padding(.leading, threadLineX)
-          }
-        }
       }
 
       VStack(alignment: .leading, spacing: 0) {
@@ -416,35 +400,46 @@ struct TimelineCardView: View {
           }
 
           VStack(alignment: .leading, spacing: 1) {
-            HStack(spacing: 4) {
+            // 大きな文字では横に並べると名前が切れるので、返信先と時刻を次の行に回す
+            let nameRow =
+              dynamicTypeSize.isAccessibilitySize
+              ? AnyLayout(VStackLayout(alignment: .leading, spacing: 1))
+              : AnyLayout(HStackLayout(spacing: 4))
+            nameRow {
               Text(viewModel.authorName)
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.primary)
                 .lineLimit(1)
               if viewModel.isReply {
-                Image(systemName: "arrowshape.turn.up.left.fill")
-                  .font(.system(size: 9))
-                  .foregroundColor(.secondary)
-                Text(viewModel.replyTargetAuthorName)
-                  .font(.caption2)
-                  .foregroundColor(.secondary)
-                  .lineLimit(1)
+                HStack(spacing: 4) {
+                  Image(systemName: "arrowshape.turn.up.left.fill")
+                    .font(.system(size: 9))
+                    .foregroundColor(.secondary)
+                  Text(viewModel.replyTargetAuthorName)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                }
               }
             }
             Text(viewModel.authorHandle)
               .font(.caption)
               .foregroundColor(.secondary)
               .lineLimit(1)
+            if dynamicTypeSize.isAccessibilitySize {
+              postedTime
+            }
           }
 
           Spacer()
 
-          Text(viewModel.postedTimeRelative)
-            .font(.caption)
-            .foregroundColor(.secondary)
+          if !dynamicTypeSize.isAccessibilitySize {
+            postedTime
+              .fixedSize()  // 時刻は短いので切らず、名前のほうを縮める
+          }
         }
-        .padding(.top, avatarTopPadding)
+        .padding(.top, viewModel.isRepost ? 0 : 8)
         .padding(.bottom, 5)
 
         // リプライ先プレビュー
@@ -598,18 +593,7 @@ struct TimelineCardView: View {
         .padding(.bottom, 4)
       }  // body VStack
       .padding(.horizontal, 12)
-      .overlay(alignment: .topLeading) {
-        if showsThreadLine && (viewModel.connectsToCardAbove || viewModel.connectsToCardBelow) {
-          // アバターの上は上のカードから、下は下のカードへの線。アバターには重ねない
-          VStack(spacing: 0) {
-            threadLineSegment(visible: viewModel.connectsToCardAbove)
-              .frame(height: avatarTopPadding)
-            Color.clear.frame(width: 2, height: timelineAvatarSize)
-            threadLineSegment(visible: viewModel.connectsToCardBelow)
-          }
-          .padding(.leading, threadLineX)
-        }
-      }
+      .padding(.leading, replyIndent)
     }  // root VStack
     .background(authorHighlightColor?.opacity(0.12))
     .repostConfirmationDialog(

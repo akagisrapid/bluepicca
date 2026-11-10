@@ -5,7 +5,7 @@ import Testing
 
 @testable import bskyapp
 
-/// 縦線の見た目を確かめるため、シミュレーター上で TL のカードを画像にする（確認用・一時的）。
+/// スレッドの字下げの見た目を確かめるため、シミュレーター上で TL のカードを画像にする（確認用・一時的）。
 /// 環境変数 SNAPSHOT_DIR があればそこへ PNG を書き出す
 /// 共有の設定（ContentLabelManager など）を書き換えるテストと並行して描くと落ちるので、
 /// 通常のテストでは動かさず、SNAPSHOT_DIR を渡した単独の実行でだけ動かす
@@ -32,20 +32,16 @@ struct ThreadLineSnapshotTests {
     return try JSONDecoder().decode(FeedItem.self, from: Data(json.utf8))
   }
 
-  /// ContentView と同じく、隣どうしの関係から縦線のフラグを決めてカードを並べる
+  /// ContentView と同じく、上のカードとの関係から字下げを決めてカードを並べる
   private func timeline(_ items: [FeedItem]) -> some View {
     VStack(spacing: 0) {
       ForEach(Array(items.enumerated()), id: \.offset) { index, item in
         let above = index > 0 ? items[index - 1] : nil
-        let below = index + 1 < items.count ? items[index + 1] : nil
         TimelineCardView(
           viewModel: TimelineCardViewModel(
             post: item.post!, reason: item.reason, reply: item.reply,
             connectsToCardAbove: above.map {
               TimelineCardViewModel.isThreadConnected(above: $0, below: item)
-            } ?? false,
-            connectsToCardBelow: below.map {
-              TimelineCardViewModel.isThreadConnected(above: item, below: $0)
             } ?? false))
         Divider()
       }

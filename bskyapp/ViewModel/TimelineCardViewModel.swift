@@ -5,17 +5,15 @@ struct TimelineCardViewModel {
   let reason: Reason?
   let reply: Reply?
   let connectsToCardAbove: Bool
-  let connectsToCardBelow: Bool
 
   init(
     post: Post, reason: Reason? = nil, reply: Reply? = nil,
-    connectsToCardAbove: Bool = false, connectsToCardBelow: Bool = false
+    connectsToCardAbove: Bool = false
   ) {
     self.post = post
     self.reason = reason
     self.reply = reply
     self.connectsToCardAbove = connectsToCardAbove
-    self.connectsToCardBelow = connectsToCardBelow
     PostInteractionHelper.restorePersistedStates(for: post)
   }
   var authorName: String {
@@ -58,11 +56,11 @@ struct TimelineCardViewModel {
     return reason?.by?.avatarUrl
   }
 
-  // MARK: - スレッドの縦線
+  // MARK: - スレッドの字下げ
 
-  /// 上のカードの投稿が、下のカードの投稿の直接の返信先なら縦線でつなぐ。
+  /// 上のカードの投稿が、下のカードの投稿の直接の返信先なら、下のカードを字下げしてつなぐ。
   /// どちらかがリポストでも、投稿どうしの親子関係は変わらないのでつなぐ
-  /// （以前はリポストを挟むと線が切れ、下のカードに返信先のプレビューが重ねて出ていた）
+  /// （以前はリポストを挟むとつながらず、下のカードに返信先のプレビューが重ねて出ていた）
   static func isThreadConnected(above: FeedItem, below: FeedItem) -> Bool {
     guard let uri = above.post?.uri,
       let parentUri = below.reply?.parent?.uri
