@@ -36,6 +36,8 @@ jobs:
         env:
           scheme: ${{ 'default' }}
           platform: ${{ 'iOS Simulator' }}
+          # 確認用（一時的）: 縦線のカード画像をテストから書き出す
+          TEST_RUNNER_SNAPSHOT_DIR: ${{ github.workspace }}/snapshots
         run: |
           # name= destinations implicitly resolve to OS:latest, which can mismatch the
           # runtimes actually installed on the runner. Pick an installed iPhone simulator by id instead.
@@ -45,3 +47,11 @@ jobs:
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
           # テストは日本語の文言を検証するので、ランナーの言語（英語）ではなく日本語で走らせる
           xcodebuild test-without-building -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,id=$device" -testLanguage ja -testRegion JP
+      # 確認用（一時的）: 書き出したカード画像を成果物として残す
+      - name: Upload snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thread-line-snapshots
+          path: snapshots
+          if-no-files-found: warn
