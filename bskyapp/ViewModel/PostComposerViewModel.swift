@@ -22,6 +22,8 @@ class PostComposerViewModel: ObservableObject {
   @Published var selectedPhotoItems: [PhotosPickerItem] = []
   @Published var isUploading: Bool = false
   @Published var uploadProgress: Double = 0.0
+  /// 送信ボタンを押してから完了するまで true。リンクカードの OGP 取得中も連打を防ぐ
+  @Published var isPosting: Bool = false
 
   let maxTextCount: Int = 300
   let maxImageCount: Int = 4

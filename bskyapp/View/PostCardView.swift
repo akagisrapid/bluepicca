@@ -186,9 +186,12 @@ struct PostCardView: View {
 
   @ViewBuilder
   private var postButton: some View {
-    let canPost = viewModel.isTextValid && !viewModel.isUploading
+    let canPost = viewModel.isTextValid && !viewModel.isUploading && !viewModel.isPosting
     Button(action: {
+      guard !viewModel.isPosting else { return }
+      viewModel.isPosting = true
       Task {
+        defer { viewModel.isPosting = false }
         do {
           try await viewModel.postText()
           await MainActor.run {

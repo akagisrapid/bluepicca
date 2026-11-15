@@ -1,4 +1,4 @@
-Please try the following four things.
+Please try the following five things.
 
 1. Pull to refresh on the home timeline
    - Scroll to the top of the home timeline, pull down, and let go
@@ -21,5 +21,11 @@ Please try the following four things.
    - Check that this also works when either the post or the reply was reposted
    - Check that unrelated posts are not indented
    - With larger text in the device settings, check that names, reply targets and times can be read without being cut off
+
+5. No duplicate posts when tapping Post repeatedly
+   - In the new post screen, paste a web page link into the text and tap Post
+   - Check that the Post button turns gray and does nothing until sending finishes
+   - Tap it several times in a row and check that only one post is created
+   - Check the same for replies and quotes
 
 If anything looks wrong, please include what you did in your report.
