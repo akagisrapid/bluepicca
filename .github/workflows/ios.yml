@@ -45,3 +45,32 @@ jobs:
           file_to_build=`echo $file_to_build | awk '{$1=$1;print}'`
           # テストは日本語の文言を検証するので、ランナーの言語（英語）ではなく日本語で走らせる
           xcodebuild test-without-building -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,id=$device" -testLanguage ja -testRegion JP
+      # 確認用（一時的）: 縦線のカード画像を、ほかのテストと並行させずに単独で書き出す
+      - name: Snapshots
+        if: always()
+        env:
+          scheme: ${{ 'default' }}
+          platform: ${{ 'iOS Simulator' }}
+          TEST_RUNNER_SNAPSHOT_DIR: ${{ github.workspace }}/snapshots
+        run: |
+          device=`xcrun simctl list devices available -j | ruby -rjson -e 'd=JSON.parse(STDIN.read)["devices"].values.flatten.find{|x|x["name"].start_with?("iPhone")};puts d["udid"]'`
+          if [ $scheme = default ]; then scheme=$(cat default); fi
+          xcodebuild test-without-building -scheme "$scheme" -project bskyapp.xcodeproj -destination "platform=$platform,id=$device" -testLanguage ja -testRegion JP -only-testing:bskyappTests/ThreadLineSnapshotTests
+      # 確認用（一時的）: 成果物を取り出せない環境向けに、画像をログにも出す
+      - name: Print snapshots
+        if: always()
+        run: |
+          for f in snapshots/*.png; do
+            echo "SNAPSHOT-BEGIN $(basename "$f")"
+            base64 -i "$f" | tr -d '\n'
+            echo
+            echo "SNAPSHOT-END"
+          done
+      # 確認用（一時的）: 書き出したカード画像を成果物として残す
+      - name: Upload snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thread-line-snapshots
+          path: snapshots
+          if-no-files-found: warn
