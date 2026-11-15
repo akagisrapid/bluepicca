@@ -169,7 +169,10 @@ struct QuotePostCardView: View {
       Spacer()
 
       Button(action: {
+        guard !viewModel.isPosting else { return }
+        viewModel.isPosting = true
         Task {
+          defer { viewModel.isPosting = false }
           do {
             try await viewModel.postQuote()
             await MainActor.run {
@@ -183,9 +186,11 @@ struct QuotePostCardView: View {
         SwiftUI.Label("送信", systemImage: "paperplane.fill")
           .labelStyle(.iconOnly)
           .font(.title2)
-          .foregroundColor(viewModel.isTextValid && !viewModel.isUploading ? .blue : .gray)
+          .foregroundColor(
+            viewModel.isTextValid && !viewModel.isUploading && !viewModel.isPosting
+              ? .blue : .gray)
       }
-      .disabled(!viewModel.isTextValid || viewModel.isUploading)
+      .disabled(!viewModel.isTextValid || viewModel.isUploading || viewModel.isPosting)
     }
     .padding(.horizontal)
     .padding(.vertical, 12)
