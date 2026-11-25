@@ -40,16 +40,19 @@ struct PostImageGrid: View {
     }
   }
 
+  /// 実際に割り当てられた幅。画面幅ではなく自分の幅から高さを決める（分割表示・折りたたみ端末対応）。
+  @State private var width: CGFloat = 0
+
   var body: some View {
-    GeometryReader { geo in
-      let w = geo.size.width
-      layout
-        .frame(width: w, height: gridHeight(width: w))
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-    }
-    .frame(
-      maxWidth: .infinity,
-      minHeight: gridHeight(width: UIScreen.main.bounds.width - 32))
+    layout
+      .frame(maxWidth: .infinity)
+      .frame(height: gridHeight(width: width))
+      .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+      .onGeometryChange(for: CGFloat.self) {
+        $0.size.width
+      } action: {
+        width = $0
+      }
   }
 
   @ViewBuilder
