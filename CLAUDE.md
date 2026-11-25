@@ -21,6 +21,18 @@ Build and run from Xcode (⌘B / ⌘R). Requires iOS 17+ (uses NavigationStack, 
 
 The `bskyapp/` folder is a **file-system synchronized group**: adding a file under it adds it to the target automatically. Do not edit `project.pbxproj` to register files. Keep notes (`*.md`) in `docs/`, not under `bskyapp/`; a file that must stay there but out of the bundle goes in the group's `membershipExceptions`.
 
+### Demo timeline (layout checks without an account)
+
+DEBUG builds launched with `-demoTimeline` skip login and show fixed posts from `Utils/DemoTimeline.swift` (long text, unbroken words, 1–4 images at various aspect ratios, a repost). Images are `data:` URLs, so it works offline. Other screens that call the API (thread replies, profiles) still need a real login.
+
+```bash
+xcrun simctl launch --terminate-running-process <UDID> lapipearpopo.bskyapp -demoTimeline
+```
+
+In Xcode: Edit Scheme > Run > Arguments > add `-demoTimeline` (keep it unchecked in the shared scheme). Startup on the simulator can take ~10 s before the list appears.
+
+**Verify changes with the demo timeline by default**, not with a personal account's timeline (its contents change and may not include the case you need). Edit or add posts in `DemoTimeline.swift` to cover what you are checking (long text, image counts/ratios, reposts, quotes, ...), and update the expected counts in `ModelDecodingTests/demoTimelineDecodes` to match. Only screens the demo cannot show (thread replies, profiles, anything that calls the API) need a real login; say so when that is the case.
+
 ## Tests
 
 Unit tests live in `bskyappTests/` (Swift Testing, file-system synchronized like `bskyapp/`). CI (`.github/workflows/ios.yml`) runs them on every PR.

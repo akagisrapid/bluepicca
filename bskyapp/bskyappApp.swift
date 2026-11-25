@@ -32,7 +32,12 @@ struct bskyappApp: App {
   }
 
   init() {
-    _isLoggedIn = State(initialValue: SessionManager.shared.isLoggedIn())
+    var loggedIn = SessionManager.shared.isLoggedIn()
+    #if DEBUG
+      // デモ TL はログインせずに開く
+      loggedIn = loggedIn || DemoTimeline.isEnabled
+    #endif
+    _isLoggedIn = State(initialValue: loggedIn)
     URLCache.shared = URLCache(
       memoryCapacity: 50 * 1024 * 1024,
       diskCapacity: 200 * 1024 * 1024

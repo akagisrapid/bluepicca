@@ -273,6 +273,9 @@ class ContentViewModel: ObservableObject {
 
   @MainActor
   private func fetchFeed(cursor: String?) async throws -> FeedResponse {
+    #if DEBUG
+      if DemoTimeline.isEnabled { return try DemoTimeline.response() }
+    #endif
     if let hashtag = selectedTab.hashtag {
       let response = try await SearchPostsApi().searchPosts(query: hashtag, cursor: cursor)
       let feedItems = response.posts.map { FeedItem(post: $0) }

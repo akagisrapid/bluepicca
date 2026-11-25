@@ -145,6 +145,15 @@ struct ModelDecodingTests {
     #expect(tab.uri == nil)
     #expect(tab.id != FeedTab.home.id)
   }
+
+  /// デモ TL（起動引数 -demoTimeline）の固定投稿が、モデルを変えたあともデコードできること
+  @Test func demoTimelineDecodes() throws {
+    let feed = try DemoTimeline.response().feed
+    #expect(feed.count == 8)
+    #expect(feed.allSatisfy { $0.post?.record?.text?.isEmpty == false })
+    #expect(feed.compactMap { $0.post?.embed?.resolvedImages?.count } == [1, 1, 2, 3, 4])
+    #expect(feed.last?.reason?.by?.handle == "demo99.bsky.social")
+  }
 }
 
 func label(_ val: String, neg: Bool? = nil) -> Label {
