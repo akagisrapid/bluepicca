@@ -28,7 +28,10 @@ struct SelectablePostTextView: UIViewRepresentable {
 
   /// 提案された幅で折り返したときの高さを返す。幅が変わるたびに呼ばれるので、画面幅を推測しない。
   func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context: Context) -> CGSize? {
-    guard let width = proposal.width else { return nil }
+    // 幅の指定がない・無限大のときは今の幅で折り返す（1行のまま横に伸ばさない）
+    let proposed = proposal.width.flatMap { $0.isFinite ? $0 : nil }
+    let width = proposed ?? uiView.bounds.width
+    guard width > 0 else { return nil }
     let size = uiView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
     return CGSize(width: width, height: size.height)
   }

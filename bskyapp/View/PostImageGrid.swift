@@ -31,28 +31,26 @@ struct PostImageGrid: View {
     quality == .full ? image.fullsizeUrl : image.thumbUrl
   }
 
-  private func gridHeight(width: CGFloat) -> CGFloat {
-    let singleCap: CGFloat = quality == .full ? 400 : 300
-    switch count {
-    case 1: return min(width / displayImages[0].displayAspectRatio, singleCap)
-    case 2, 3: return quality == .full ? 220 : 160
-    default: return quality == .full ? 280 : 200
-    }
+  var body: some View {
+    gridBox
+      .overlay { layout }
+      .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
   }
 
-  /// 実際に割り当てられた幅。画面幅ではなく自分の幅から高さを決める（分割表示・折りたたみ端末対応）。
-  @State private var width: CGFloat = 0
-
-  var body: some View {
-    layout
-      .frame(maxWidth: .infinity)
-      .frame(height: gridHeight(width: width))
-      .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-      .onGeometryChange(for: CGFloat.self) {
-        $0.size.width
-      } action: {
-        width = $0
-      }
+  /// グリッドの外枠。割り当てられた幅から最初のレイアウトで高さが決まるので、
+  /// 画面幅に頼らず、測り終えるまで高さ0になることもない（分割表示・折りたたみ端末対応）。
+  @ViewBuilder
+  private var gridBox: some View {
+    if count == 1 {
+      // 1枚: 幅いっぱいで画像の比率どおり、ただし高さは上限まで
+      Color.clear
+        .aspectRatio(displayImages[0].displayAspectRatio, contentMode: .fit)
+        .frame(maxWidth: .infinity, maxHeight: quality == .full ? 400 : 300)
+    } else {
+      Color.clear
+        .frame(maxWidth: .infinity)
+        .frame(height: count <= 3 ? (quality == .full ? 220 : 160) : (quality == .full ? 280 : 200))
+    }
   }
 
   @ViewBuilder
