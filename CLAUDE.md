@@ -31,6 +31,8 @@ xcrun simctl launch --terminate-running-process <UDID> lapipearpopo.bskyapp -dem
 
 In Xcode: Edit Scheme > Run > Arguments > add `-demoTimeline` (keep it unchecked in the shared scheme). Startup on the simulator can take ~10 s before the list appears.
 
+**Verify changes with the demo timeline by default**, not with a personal account's timeline (its contents change and may not include the case you need). Edit or add posts in `DemoTimeline.swift` to cover what you are checking (long text, image counts/ratios, reposts, quotes, ...), and update the expected counts in `ModelDecodingTests/demoTimelineDecodes` to match. Only screens the demo cannot show (thread replies, profiles, anything that calls the API) need a real login; say so when that is the case.
+
 ## Tests
 
 Unit tests live in `bskyappTests/` (Swift Testing, file-system synchronized like `bskyapp/`). CI (`.github/workflows/ios.yml`) runs them on every PR.
