@@ -12,6 +12,19 @@
       return try JSONDecoder().decode(FeedResponse.self, from: data)
     }
 
+    /// プロフィール画面と設定画面のプロフィールカード用（保存は API を呼ぶのでデモでは失敗する）
+    static let profile = GetProfileApiResponse(
+      did: "did:plc:demo", handle: "demo.bsky.social", displayName: "デモユーザー",
+      description: "設定画面のプロフィール編集カード確認用のアカウントです。", avatar: pink, banner: blue,
+      followersCount: 1234, followsCount: 56, postsCount: 12345,
+      labels: [], pronouns: "they/them",
+      links: [
+        ProfileLinkView(url: "https://example.com", title: "ポートフォリオ", icon: green),
+        ProfileLinkView(url: "https://ko-fi.com/demo"),
+        ProfileLinkView(
+          url: "https://example.org/a/very/long/path", title: "とても長いタイトルのリンクがどう省略されるかの確認用"),
+      ])
+
     private static let blue =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAEElEQVR4nGNwa7oDRAwQCgArpgaRxc+2BQAAAABJRU5ErkJggg=="
     private static let green =

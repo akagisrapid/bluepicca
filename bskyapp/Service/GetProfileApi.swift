@@ -2,6 +2,9 @@ import Foundation
 
 struct GetProfileApi {
   func getProfile(param: GetProfileApiRequest) async throws -> GetProfileApiResponse {
+    #if DEBUG
+      if DemoTimeline.isEnabled { return DemoTimeline.profile }
+    #endif
     let session = try await SessionManager.shared.getSession()
     let endPoint = "https://bsky.social/xrpc/"
     let repo = "app.bsky.actor.getProfile"

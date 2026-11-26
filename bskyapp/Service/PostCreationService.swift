@@ -235,7 +235,7 @@ class PostCreationService {
 
   // MARK: - Private Helpers
 
-  private func uploadBlob(imageData: Data) async throws -> UploadBlobResponse {
+  func uploadBlob(imageData: Data) async throws -> UploadBlobResponse {
     let urlString = endPoint + "com.atproto.repo.uploadBlob"
     let session = try await SessionManager.shared.getSession()
 
