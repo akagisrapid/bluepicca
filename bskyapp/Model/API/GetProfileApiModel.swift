@@ -18,6 +18,15 @@ struct GetProfileApiResponse: Codable {
     var createdAt: String?
     var viewer: AuthorViewer?
     var labels: [Label]
+    var pronouns: String?
+    /// プロフィールに並べるリンク（表示順）。取り下げられたものは AppView が除いて返す
+    var links: [ProfileLinkView]?
+}
+
+struct ProfileLinkView: Codable, Hashable {
+    var url: String
+    var title: String?
+    var icon: String?
 }
 
 extension GetProfileApiResponse{

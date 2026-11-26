@@ -112,3 +112,13 @@ struct LocalizationTests {
     #expect(en.localizedString(forKey: "非表示", value: nil, table: nil) == "Hidden")
   }
 }
+
+struct ProfileLinkURLTests {
+  @Test func normalizesLinkURL() {
+    #expect(ProfileRecordService.normalizedLinkURL(" yoursite.com ") == "https://yoursite.com")
+    #expect(ProfileRecordService.normalizedLinkURL("https://ko-fi.com/me") == "https://ko-fi.com/me")
+    #expect(ProfileRecordService.normalizedLinkURL("http://example.com") == nil)
+    #expect(ProfileRecordService.normalizedLinkURL("localhost") == nil)
+    #expect(ProfileRecordService.normalizedLinkURL("") == nil)
+  }
+}

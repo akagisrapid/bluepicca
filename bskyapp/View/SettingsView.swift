@@ -54,6 +54,8 @@ struct SettingsView: View {
   var body: some View {
     NavigationStack {
       List {
+        ProfileEditCard()
+
         Section("タイムライン") {
           Picker("フィード切り替え", selection: $feedSelectorStyle) {
             Text("ドロップダウン").tag("dropdown")

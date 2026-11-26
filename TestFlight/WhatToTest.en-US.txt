@@ -1,11 +1,24 @@
-Please try the following.
+Please try the following three things.
 
-1. Images and post text when the screen width changes
-   - On the home timeline, find posts with one, two, three and four images
-   - Check that the images fill the width without odd gaps above or below or too much cropping
-   - While scrolling, check that image heights do not grow after a post appears and shift the screen
-   - Turn the device to landscape and check that images and text adjust to the new width
-   - Open a post with long text and check that the detail screen wraps the text through the last line (also in landscape)
-   - On iPad, change the window width with Split View or Stage Manager and check that the same holds
+1. Edit your own profile
+   - Open Settings and tap your card at the top to expand it
+   - Change your name and bio, tap Save, and check that the profile screen shows the change
+   - Check that you can pick a new avatar and header image from Photos and save them
+   - Check that you can set pronouns with a button such as "they/them" or by typing
+   - Check that you can add a link (for example yoursite.com with a title), reorder it, delete it, and save
+   - Check that the official app or the web shows the same profile
 
-If anything looks wrong, please include what you did in your report.
+2. Profile screen
+   - Open someone's profile and check that their posts are listed right away
+   - Scroll down and check that the top part scrolls away while only the Posts / Followers / Following buttons stay at the top
+   - Check that the buttons show the post, follower and following counts
+   - Check that pronouns appear next to the @handle and links appear as buttons; with many links, check that you can scroll them sideways
+   - Check that "Follows you" appears when the person follows you
+
+3. Actions on the profile screen
+   - Swipe a post left or right and check that you can like or repost it, just like on the home timeline
+   - Check that pull to refresh works and that more posts load when you reach the bottom
+   - Check that the "…" menu at the top right lets you mute, hide reposts and block
+   - For someone you follow, tap "Following" and check that you are asked before unfollowing
+
+If something looks wrong, please report it along with what you did.

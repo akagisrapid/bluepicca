@@ -4,6 +4,9 @@ struct GetAuthorFeedApi {
   func getAuthorFeed(actor: String, limit: Int = 50, cursor: String? = nil) async throws
     -> FeedResponse
   {
+    #if DEBUG
+      if DemoTimeline.isEnabled { return try DemoTimeline.response() }
+    #endif
     dlog("Fetching author feed from API for actor: \(actor)")
 
     let session = try await SessionManager.shared.getSession()
