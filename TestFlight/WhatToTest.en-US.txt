@@ -1,26 +1,18 @@
 Please try the following.
 
-0. Fix for a bug in 1.2.7
-   - Check that you can switch to your saved feeds from "Home" at the top left (in 1.2.7 the list did not appear)
+1. Real-time updates for Home
+   - In Settings, turn on "Auto Refresh" and "Update Home in Real Time". Check that Home updates within a few seconds after someone you follow posts or reposts
+   - Turn off "Update Home in Real Time" and check that the label changes to "Refresh Interval", the note below changes to "All feeds refresh…", and Home refreshes at the interval
+   - Check that feeds other than Home refresh at "Interval for Other Feeds"
 
-1. Opening profiles
-   - Open a profile from an avatar on the timeline and from your own icon at the top right, and check that it slides in from the right
-   - Check that swiping from the left edge or tapping Back returns one screen at a time
-   - Scroll to the very top and check that the header image extends under the Back button with no gap
+2. Auto refresh keeps your reading position
+   - Scroll partway down the timeline, wait for an auto refresh, and check that the screen does not jump back or shift
+   - When new posts arrive while you are reading, check that "N new posts" appears at the top. Tap it and check that the new posts are added and the list scrolls to the top
+   - Also check that scrolling to the top yourself adds the new posts and hides "N new posts"
+   - While you are at the top, check that new posts are simply added above
 
-2. Profile screen
-   - Check that "No replies / With replies / Media" above the posts switches what is shown (No replies is the default)
-   - On your own profile, check that the Edit button opens the editor
-   - On someone else's profile, choose "…" → "Set background color" and check that the color also appears at the top of their profile
-   - Open one of your own posts and check that the trash button sits at the right of the name row and deletes the post
-
-3. Where mute words apply
-   - Add a mute word and check that posts are hidden when the word appears only in a quoted post, a link card, or an image description (ALT)
-   - Check that they are also hidden in search results, profiles, and thread replies
-
-4. Mute word duration, target and sync
-   - In Settings → Mute words, choose "Tags only" and a duration (such as 24 hours), add a word, and check that the list shows "Tags only · Until <date>"
-   - Check that a "Tags only" word hides posts with that hashtag but keeps posts that merely contain the same text
-   - Check that a mute word added in the official app appears in Bluepicca when you come back to it, and that a word added in Bluepicca appears in the official app
+3. Count after returning to your last position
+   - Reopen the app and, when it returns to your last position, check that the number of posts above it appears as "N new posts"
+   - Scroll to the top from there and check that it disappears
 
 If something looks wrong, please report it along with what you did.
