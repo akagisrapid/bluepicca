@@ -78,6 +78,7 @@ struct ContentView: View {
           guard let uri else { return }
           DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             withAnimation { scrollProxy?.scrollTo(uri, anchor: .top) }
+            viewModel.isRestoringPosition = false
           }
           viewModel.targetScrollUri = nil
         }

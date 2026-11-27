@@ -19,8 +19,10 @@ class ContentViewModel: ObservableObject {
 
   /// フィードロード後にスクロールすべき投稿URI（一度使ったらnilにする）
   @Published var targetScrollUri: String? = nil
-  /// 既読位置より上の新着投稿数（Topボタンのバッジ）
+  /// 既読位置より上の新着投稿数（TL の上の「N件の新着」）
   @Published var unreadCount: Int = 0
+  /// 起動時などに既読位置へスクロールし終わるまで true。その前は一番上が見えていても件数を消さない
+  var isRestoringPosition = false
   /// 読んでいる途中に自動更新で届いた新着。差し込むと画面がずれるので、一番上に戻るまで取っておく
   private var pendingNewer: [FeedItem] = []
   /// 現在画面上に表示されている先頭付近のセルURI（表示中セルの最小インデックス）
@@ -167,6 +169,7 @@ class ContentViewModel: ObservableObject {
         {
           self.targetScrollUri = uri
           self.unreadCount = index
+          self.isRestoringPosition = true
           UserDefaults.standard.removeObject(forKey: key)
         }
       } catch {
@@ -285,6 +288,11 @@ class ContentViewModel: ObservableObject {
   func cellDidAppear(uri: String) {
     visiblePostUris.insert(uri)
     refreshCurrentReadUri()
+    // 一番上の投稿まで戻ってきたら、取っておいた新着を足して件数を消す
+    if !isRestoringPosition, uri == validFeeds.first?.post?.uri {
+      insertPendingNewer()
+      unreadCount = 0
+    }
   }
 
   @MainActor
@@ -296,12 +304,6 @@ class ContentViewModel: ObservableObject {
   @MainActor
   private func refreshCurrentReadUri() {
     currentReadUri = validFeeds.compactMap { $0.post?.uri }.first { visiblePostUris.contains($0) }
-    // 一番上まで戻ってきたら、取っておいた新着を足して件数を消す
-    // （起動直後に既読位置へ移る前も一番上が見えるので、新着を足したときだけ消す）
-    if isAtTop, currentReadUri != nil, !pendingNewer.isEmpty {
-      insertPendingNewer()
-      unreadCount = 0
-    }
   }
 
   @MainActor
