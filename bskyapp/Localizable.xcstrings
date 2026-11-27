@@ -132,6 +132,16 @@
         }
       }
     },
+    "%lld人" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld people"
+          }
+        }
+      }
+    },
     "%lld件の新着" : {
       "localizations" : {
         "en" : {
@@ -896,6 +906,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hashtag Search"
+          }
+        }
+      }
+    },
+    "スターターパック" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starter Pack"
           }
         }
       }

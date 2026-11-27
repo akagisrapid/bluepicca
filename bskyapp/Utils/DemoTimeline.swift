@@ -79,6 +79,28 @@
             images: [(pink, 1, 1), (blue, 1, 1), (green, 1, 1), (orange, 1, 1)])
         ],
         [
+          "post": post(
+            9, text: "スターターパックを共有した投稿", minutesAgo: 45,
+            embed: [
+              "$type": "app.bsky.embed.record#view",
+              "record": [
+                "$type": "app.bsky.graph.defs#starterPackViewBasic",
+                "uri": "at://did:plc:demo9/app.bsky.graph.starterpack/3demo",
+                "cid": "demo-sp-cid",
+                "record": [
+                  "$type": "app.bsky.graph.starterpack",
+                  "name": "iOS 開発者のスターターパック",
+                  "description": "Swift や SwiftUI について発信している人たち。名前や説明が長いときの折り返しも確認します。",
+                  "list": "at://did:plc:demo9/app.bsky.graph.list/3demo",
+                  "createdAt": timestamp(minutesAgo: 600),
+                ],
+                "creator": author(9),
+                "listItemCount": 42, "joinedAllTimeCount": 7,
+                "indexedAt": timestamp(minutesAgo: 600),
+              ],
+            ])
+        ],
+        [
           "post": post(8, text: "リポストされた投稿 #デモ", minutesAgo: 60),
           "reason": [
             "$type": "app.bsky.feed.defs#reasonRepost",
@@ -97,7 +119,8 @@
     }
 
     private static func post(
-      _ n: Int, text: String, minutesAgo: Int, images: [(String, Int, Int)] = []
+      _ n: Int, text: String, minutesAgo: Int, images: [(String, Int, Int)] = [],
+      embed: [String: Any]? = nil
     ) -> [String: Any] {
       var post: [String: Any] = [
         "uri": "at://did:plc:demo\(n)/app.bsky.feed.post/demo\(n)",
@@ -121,6 +144,7 @@
           },
         ]
       }
+      if let embed { post["embed"] = embed }
       return post
     }
   }

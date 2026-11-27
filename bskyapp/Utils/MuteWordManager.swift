@@ -147,6 +147,7 @@ class MuteWordManager: ObservableObject {
       texts.append(embed.alt)
       if let quoted = embed.record {
         texts.append(quoted.value?.text)
+        texts += [quoted.record?.name, quoted.record?.description]
         texts += (quoted.embeds ?? []).flatMap { ($0.images ?? []).map(\.alt) }
       }
     }

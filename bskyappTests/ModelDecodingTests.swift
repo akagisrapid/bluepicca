@@ -129,6 +129,33 @@ struct ModelDecodingTests {
     #expect(embed.record?.displayName == "Discover")
   }
 
+  @Test func starterPackEmbedDecodes() throws {
+    let embed = try decode(
+      Embed.self,
+      #"""
+      {"$type": "app.bsky.embed.record#view", "record": {
+        "$type": "app.bsky.graph.defs#starterPackViewBasic",
+        "uri": "at://did:plc:sp/app.bsky.graph.starterpack/3abc",
+        "cid": "bafy",
+        "record": {"$type": "app.bsky.graph.starterpack", "name": "おすすめの人たち",
+                   "description": "説明", "list": "at://did:plc:sp/app.bsky.graph.list/3abc",
+                   "createdAt": "2026-01-01T00:00:00.000Z"},
+        "creator": {"did": "did:plc:sp", "handle": "sp.bsky.social"},
+        "listItemCount": 12, "joinedWeekCount": 0, "joinedAllTimeCount": 3,
+        "indexedAt": "2026-01-01T00:00:00.000Z"
+      }}
+      """#)
+    let record = try #require(embed.record)
+    #expect(record.isStarterPack)
+    #expect(!record.isFeedGenerator)
+    #expect(record.record?.name == "おすすめの人たち")
+    #expect(record.record?.description == "説明")
+    #expect(record.listItemCount == 12)
+    #expect(
+      record.starterPackWebUrl?.absoluteString
+        == "https://bsky.app/starter-pack/did:plc:sp/3abc")
+  }
+
   /// `Embed.type` は "type" キーを読むため、`$type` しか無い実際の応答では nil になる。
   /// 埋め込みの種類は images / record / media / playlist の有無で判断すること
   @Test func embedTypeIsNilForRealResponses() throws {
@@ -170,7 +197,8 @@ struct ModelDecodingTests {
   /// デモ TL（起動引数 -demoTimeline）の固定投稿が、モデルを変えたあともデコードできること
   @Test func demoTimelineDecodes() throws {
     let feed = try DemoTimeline.response().feed
-    #expect(feed.count == 8)
+    #expect(feed.count == 9)
+    #expect(feed.compactMap { $0.post?.embed?.record }.filter(\.isStarterPack).count == 1)
     #expect(feed.allSatisfy { $0.post?.record?.text?.isEmpty == false })
     #expect(feed.compactMap { $0.post?.embed?.resolvedImages?.count } == [1, 1, 2, 3, 4])
     #expect(feed.last?.reason?.by?.handle == "demo99.bsky.social")
