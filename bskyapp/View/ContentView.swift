@@ -108,8 +108,8 @@ struct ContentView: View {
           }
           while !Task.isCancelled {
             try? await Task.sleep(for: .seconds(autoRefreshIntervalSeconds))
-            guard !Task.isCancelled, !viewModel.isFetchingTimeline else { continue }
-            try? await viewModel.fetchTimeline()
+            guard !Task.isCancelled else { continue }
+            try? await viewModel.fetchNewer()
           }
         }
         // 開いている間も新着の返信などを通知で知らせる（設定で通知がオフなら何もしない）
@@ -318,7 +318,7 @@ struct ContentView: View {
       }
       Spacer()
       Button {
-        viewModel.clearUnreadCount()
+        viewModel.showNewest()
         let firstId = viewModel.validFeeds.first.map { $0.post?.uri ?? $0.id }
         withAnimation { scrollProxy?.scrollTo(firstId, anchor: .top) }
       } label: {
