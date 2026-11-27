@@ -132,6 +132,16 @@
         }
       }
     },
+    "%lld件の新着" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld new posts"
+          }
+        }
+      }
+    },
     "1. Blueskyアプリの設定画面を開く" : {
       "localizations" : {
         "en" : {

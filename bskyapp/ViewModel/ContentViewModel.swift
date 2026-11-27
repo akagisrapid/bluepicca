@@ -237,7 +237,7 @@ class ContentViewModel: ObservableObject {
     if isAtTop {
       insertPendingNewer()
     } else {
-      // 読んでいる途中は差し込まず、Top ボタンのバッジで知らせる
+      // 読んでいる途中は差し込まず、TL の上の「N件の新着」で知らせる
       unreadCount += newer.filter(isVisible).count
     }
   }
@@ -260,7 +260,7 @@ class ContentViewModel: ObservableObject {
     PostStateManager.shared.syncWithServerState(posts: posts)
   }
 
-  /// Top ボタン。取っておいた新着も足してから一番上へ
+  /// Top ボタンと「N件の新着」。取っておいた新着も足す（一番上へのスクロールは View がする）
   @MainActor
   func showNewest() {
     insertPendingNewer()
@@ -296,8 +296,12 @@ class ContentViewModel: ObservableObject {
   @MainActor
   private func refreshCurrentReadUri() {
     currentReadUri = validFeeds.compactMap { $0.post?.uri }.first { visiblePostUris.contains($0) }
-    // 一番上まで戻ってきたら、取っておいた新着を足す
-    if isAtTop, currentReadUri != nil { insertPendingNewer() }
+    // 一番上まで戻ってきたら、取っておいた新着を足して件数を消す
+    // （起動直後に既読位置へ移る前も一番上が見えるので、新着を足したときだけ消す）
+    if isAtTop, currentReadUri != nil, !pendingNewer.isEmpty {
+      insertPendingNewer()
+      unreadCount = 0
+    }
   }
 
   @MainActor

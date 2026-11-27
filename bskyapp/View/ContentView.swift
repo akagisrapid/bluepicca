@@ -187,7 +187,28 @@ struct ContentView: View {
         ProgressView()
           .progressViewStyle(LinearProgressViewStyle())
           .tint(.accentColor)
+      } else if viewModel.unreadCount > 0 {
+        // 件数はツールバーに出せない（ツールバーのボタンはアイコンへの重ね描きもバッジも描かない）
+        Button(action: scrollToNewest) {
+          SwiftUI.Label("\(viewModel.unreadCount)件の新着", systemImage: "arrow.up")
+            .font(.footnote.bold())
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .foregroundStyle(.white)
+            .background(Color.accentColor, in: Capsule())
+        }
+        .padding(.top, 8)
       }
+    }
+  }
+
+  /// 取っておいた新着も足してから一番上へ
+  private func scrollToNewest() {
+    viewModel.showNewest()
+    let firstId = viewModel.validFeeds.first.map { $0.post?.uri ?? $0.id }
+    // 新着を足した直後は List の並べ直しが終わっていないので、次の描画で動かす
+    DispatchQueue.main.async {
+      withAnimation { scrollProxy?.scrollTo(firstId, anchor: .top) }
     }
   }
 
@@ -317,30 +338,7 @@ struct ContentView: View {
         isShowBookmarks = true
       }
       Spacer()
-      Button {
-        viewModel.showNewest()
-        let firstId = viewModel.validFeeds.first.map { $0.post?.uri ?? $0.id }
-        withAnimation { scrollProxy?.scrollTo(firstId, anchor: .top) }
-      } label: {
-        SwiftUI.Label(
-          title: { Text("Top") },
-          icon: {
-            Image(systemName: "arrow.up.to.line")
-              .overlay(alignment: .topTrailing) {
-                if viewModel.unreadCount > 0 {
-                  Text(viewModel.unreadCount > 99 ? "99+" : "\(viewModel.unreadCount)")
-                    .font(.system(size: 8, weight: .bold))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 3)
-                    .padding(.vertical, 1)
-                    .background(Color.accentColor)
-                    .clipShape(Capsule())
-                    .offset(x: 10, y: -8)
-                }
-              }
-          }
-        )
-      }
+      Button("Top", systemImage: "arrow.up.to.line") { scrollToNewest() }
       Button("更新", systemImage: "arrow.clockwise") {
         Task {
           do {
