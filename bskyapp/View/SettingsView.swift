@@ -64,17 +64,6 @@ struct SettingsView: View {
           }
           .pickerStyle(.segmented)
           Toggle("フィード切り替え時に前回位置に戻る", isOn: $restoreScrollOnTabSwitch)
-          Toggle("自動更新", isOn: $autoRefreshEnabled)
-          if autoRefreshEnabled {
-            Picker("更新間隔", selection: $autoRefreshIntervalSeconds) {
-              Text("30秒").tag(30)
-              Text("1分").tag(60)
-              Text("3分").tag(180)
-              Text("5分").tag(300)
-            }
-            // オンならホームはフォロー中の人の新着が来たときだけ取り直す（更新間隔はその最短の間隔になる）
-            Toggle("ホームをリアルタイムで更新", isOn: $realtimeRefreshEnabled)
-          }
           Button(action: { showLanguageFilter = true }) {
             HStack {
               Text("表示する言語")
@@ -93,6 +82,33 @@ struct SettingsView: View {
             }
           }
           .foregroundColor(.primary)
+        }
+
+        Section {
+          Toggle("自動更新", isOn: $autoRefreshEnabled)
+          if autoRefreshEnabled {
+            Toggle("ホームはリアルタイムで更新", isOn: $realtimeRefreshEnabled)
+            Picker(selection: $autoRefreshIntervalSeconds) {
+              Text("30秒").tag(30)
+              Text("1分").tag(60)
+              Text("3分").tag(180)
+              Text("5分").tag(300)
+            } label: {
+              if realtimeRefreshEnabled {
+                Text("ホーム以外の更新間隔")
+              } else {
+                Text("更新間隔")
+              }
+            }
+          }
+        } footer: {
+          if autoRefreshEnabled {
+            if realtimeRefreshEnabled {
+              Text("ホームは、フォロー中の人が投稿・リポストしたときにすぐ取り直します。ほかのフィードは更新間隔ごとに取り直します。")
+            } else {
+              Text("すべてのフィードを更新間隔ごとに取り直します。")
+            }
+          }
         }
 
         Section {

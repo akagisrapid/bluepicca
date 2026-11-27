@@ -106,7 +106,8 @@ struct ContentView: View {
           // リアルタイム更新がオンなら、ホームはフォロー中の人の新着が来たときだけ取り直す。
           // オフのとき・ほかのフィード・フォロー一覧を取れなかったときは一定間隔で取り直す
           if realtimeRefreshEnabled, viewModel.selectedTab.id == FeedTab.home.id {
-            await viewModel.refreshOnJetstreamEvents(minInterval: autoRefreshIntervalSeconds)
+            // 更新間隔はホーム以外のもの。リアルタイムは合図が続いても 10 秒に1回までにまとめる
+            await viewModel.refreshOnJetstreamEvents(minInterval: 10)
           }
           while !Task.isCancelled {
             try? await Task.sleep(for: .seconds(autoRefreshIntervalSeconds))
