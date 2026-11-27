@@ -26,6 +26,7 @@ struct ContentView: View {
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
   @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
+  @AppStorage("realtimeRefreshEnabled") private var realtimeRefreshEnabled: Bool = true
 
   var body: some View {
     NavigationStack {
@@ -99,12 +100,12 @@ struct ContentView: View {
         .task { await MuteWordManager.shared.syncFromServer() }
         .task(
           id:
-            "\(autoRefreshEnabled)-\(autoRefreshIntervalSeconds)-\(viewModel.selectedTab.id)-\(scenePhase)"
+            "\(autoRefreshEnabled)-\(autoRefreshIntervalSeconds)-\(realtimeRefreshEnabled)-\(viewModel.selectedTab.id)-\(scenePhase)"
         ) {
           guard autoRefreshEnabled, scenePhase == .active else { return }
-          // ホームはフォロー中の人の新着が来たときだけ取り直す。ほかのフィードと、
-          // フォロー一覧を取れなかったときは一定間隔で取り直す
-          if viewModel.selectedTab.id == FeedTab.home.id {
+          // リアルタイム更新がオンなら、ホームはフォロー中の人の新着が来たときだけ取り直す。
+          // オフのとき・ほかのフィード・フォロー一覧を取れなかったときは一定間隔で取り直す
+          if realtimeRefreshEnabled, viewModel.selectedTab.id == FeedTab.home.id {
             await viewModel.refreshOnJetstreamEvents(minInterval: autoRefreshIntervalSeconds)
           }
           while !Task.isCancelled {

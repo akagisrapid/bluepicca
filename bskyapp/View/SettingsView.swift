@@ -43,6 +43,7 @@ struct SettingsView: View {
     .rawValue
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
   @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
+  @AppStorage("realtimeRefreshEnabled") private var realtimeRefreshEnabled: Bool = true
   @AppStorage("hideImagePreview") private var hideImagePreview: Bool = false
   @AppStorage("hideAvatars") private var hideAvatars: Bool = false
   @AppStorage("restoreScrollOnTabSwitch") private var restoreScrollOnTabSwitch: Bool = true
@@ -71,6 +72,8 @@ struct SettingsView: View {
               Text("3分").tag(180)
               Text("5分").tag(300)
             }
+            // オンならホームはフォロー中の人の新着が来たときだけ取り直す（更新間隔はその最短の間隔になる）
+            Toggle("ホームをリアルタイムで更新", isOn: $realtimeRefreshEnabled)
           }
           Button(action: { showLanguageFilter = true }) {
             HStack {
