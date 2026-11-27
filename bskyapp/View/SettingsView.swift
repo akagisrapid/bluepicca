@@ -207,6 +207,19 @@ struct SettingsView: View {
         }
 
         Section {
+          LabeledContent("バージョン") {
+            Text(verbatim: AppInfo.versionString)
+              .textSelection(.enabled)
+          }
+          LabeledContent("ライセンス") {
+            Text(verbatim: AppInfo.copyright)
+              .multilineTextAlignment(.trailing)
+          }
+        } header: {
+          Text("このアプリについて")
+        }
+
+        Section {
           Button(role: .destructive) {
             showLogoutConfirmation = true
           } label: {
