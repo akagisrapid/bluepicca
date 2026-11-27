@@ -80,8 +80,7 @@ class MuteWordManager: ObservableObject {
     uploadEntries()
   }
 
-  /// Bluesky の設定を正とする。公式アプリなどで足した・消した語もここで反映される。
-  /// サーバーに設定がまだ無ければ（初回）、手元の語を送って揃える
+  /// Bluesky の設定を正とする。公式アプリなどで足した・消した語もここで反映される
   @MainActor
   func syncFromServer() async {
     #if DEBUG
@@ -93,10 +92,9 @@ class MuteWordManager: ObservableObject {
     } catch {
       return  // 通信できないときは手元の設定のまま
     }
-    guard let serverWords else {
-      if !entries.isEmpty { uploadEntries() }
-      return
-    }
+    // サーバーにまだ設定が無ければ手元のまま。自動では送らず、次に追加・削除したときに送る
+    // （自動で送ると、テスト用に起動したアプリが手元の試験用の語を本物のアカウントに書き込んでしまった）
+    guard let serverWords else { return }
     entries = serverWords
     removeExpired()
     save()
@@ -107,7 +105,10 @@ class MuteWordManager: ObservableObject {
       // デモはログイン中の本物のアカウントに書き込まない
       if DemoTimeline.isEnabled { return }
     #endif
+    // 送り先は今この時点のものを使う。Task の中で self.upload を読むと、
+    // テストが差し替えを戻した後に本物の送信が走り、試験用の語がアカウントに書き込まれた
     let words = entries
+    let upload = upload
     Task { try? await upload(words) }
   }
 

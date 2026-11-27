@@ -1,4 +1,7 @@
-Please try the following four things.
+Please try the following.
+
+0. Fix for a bug in 1.2.7
+   - Check that you can switch to your saved feeds from "Home" at the top left (in 1.2.7 the list did not appear)
 
 1. Opening profiles
    - Open a profile from an avatar on the timeline and from your own icon at the top right, and check that it slides in from the right

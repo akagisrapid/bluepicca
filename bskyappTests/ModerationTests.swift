@@ -6,6 +6,7 @@ import Testing
 /// センシティブ表示の判定。App Store 審査（ガイドライン 1.2）に関わるので、
 /// 「hide が最優先」「否定ラベルは無視」「関係ないラベルでは隠さない」を固定する
 @Suite(.serialized)
+@MainActor  // 画面が見ている共有の設定を書き換えるので、メインスレッドで動かす
 struct ContentLabelManagerTests {
   private let manager = ContentLabelManager.shared
 
@@ -167,6 +168,27 @@ struct MuteWordManagerTests {
     #expect(MutedWordsPreferenceApi.item(from: content)["actorTarget"] as? String == "all")
   }
 
+  /// 送信は語を変えた時点の送り先で行う。後から送り先を差し替えても、そちらには送らない
+  /// （テストが差し替えを戻した後に本物の送信が走り、試験用の語がアカウントに書き込まれた）
+  @Test func uploadUsesSenderAtTimeOfChange() async {
+    let saved = manager.entries
+    let savedUpload = manager.upload
+    defer {
+      manager.upload = savedUpload
+      manager.entries = saved
+      UserDefaults.standard.set(try? JSONEncoder().encode(saved), forKey: "muteWordEntries")
+    }
+    var sentToFirst: [[String]] = []
+    var sentToSecond: [[String]] = []
+    manager.upload = { words in await MainActor.run { sentToFirst.append(words.map(\.value)) } }
+    manager.entries = []
+    manager.add("試験用の語")
+    manager.upload = { words in await MainActor.run { sentToSecond.append(words.map(\.value)) } }
+    try? await Task.sleep(for: .milliseconds(200))
+    #expect(sentToFirst == [["試験用の語"]])
+    #expect(sentToSecond.isEmpty)
+  }
+
   /// 期限を過ぎた語は効かず、一覧の muteWords にも出ない
   @Test func expiredWordDoesNotMatch() {
     withWords([]) {
@@ -180,6 +202,7 @@ struct MuteWordManagerTests {
 }
 
 @Suite(.serialized)
+@MainActor  // 画面が見ている共有の設定を書き換えるので、メインスレッドで動かす
 struct MutedUsersManagerTests {
   private let manager = MutedUsersManager.shared
 
@@ -196,6 +219,7 @@ struct MutedUsersManagerTests {
 }
 
 @Suite(.serialized)
+@MainActor  // 画面が見ている共有の設定を書き換えるので、メインスレッドで動かす
 struct PostStateManagerTests {
   private let manager = PostStateManager.shared
   private let uri = "at://did:plc:test/app.bsky.feed.post/state-test"
