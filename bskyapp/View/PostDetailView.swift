@@ -51,20 +51,6 @@ struct PostDetailView: View {
     .task {
       await viewModel.fetchThread()
     }
-    .toolbar {
-      if viewModel.isOwnPost {
-        ToolbarItem(placement: .navigationBarTrailing) {
-          Button(role: .destructive) {
-            showDeleteConfirm = true
-          } label: {
-            SwiftUI.Label("削除", systemImage: "trash")
-              .labelStyle(.iconOnly)
-              .foregroundColor(.red)
-          }
-          .disabled(viewModel.isDeleting)
-        }
-      }
-    }
     .alert("ポストを削除しますか？", isPresented: $showDeleteConfirm) {
       Button("削除", role: .destructive) {
         Task {
@@ -147,6 +133,17 @@ struct PostDetailView: View {
             .foregroundColor(.secondary)
         }
         Spacer()
+        // ナビゲーションバーではなく著者の行に置く。シートで開いたとき削除ボタンだけのバーが出ない
+        if viewModel.isOwnPost {
+          Button(role: .destructive) {
+            showDeleteConfirm = true
+          } label: {
+            SwiftUI.Label("削除", systemImage: "trash")
+              .labelStyle(.iconOnly)
+              .foregroundColor(.red)
+          }
+          .disabled(viewModel.isDeleting)
+        }
       }
       .padding(.top, 12)
       .padding(.bottom, 10)

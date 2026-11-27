@@ -7,12 +7,18 @@ struct ProfileView: View {
   @State private var showingMuteConfirm = false
   @State private var showingBlockConfirm = false
   @State private var showingUnfollowConfirm = false
+  @State private var showingEditor = false
   @ObservedObject private var rtFilter = RTFilterManager.shared
+  @ObservedObject private var highlightManager = UserHighlightManager.shared
+  @State private var showingHighlightPicker = false
   @State private var selectedFollowItem: FollowDisplayItem?
   @State private var followersLoaded = false
   @State private var followingLoaded = false
   @State private var likesLoaded = false
   @Environment(\.dismiss) private var dismiss
+
+  /// ナビゲーションバーとステータスバーの高さ。ヘッダー画像をその下まで広げて、戻るボタンだけの隙間をなくす
+  @State private var topInset: CGFloat = 0
 
   init(viewModel: ProfileViewModel) {
     self._viewModel = StateObject(wrappedValue: viewModel)
@@ -44,8 +50,14 @@ struct ProfileView: View {
         tabStrip
       }
     }
+    // ポストのアイコンから開くプロフィールも push で重ねる。「戻る」で 1 段ずつ確実に戻れる
+    .environment(\.navigateToProfile) { actor in
+      selectedFollowItem = FollowDisplayItem(
+        did: actor, handle: actor, displayName: nil, avatar: nil)
+    }
     .listStyle(.plain)
     .listSectionSpacing(0)
+    .onGeometryChange(for: CGFloat.self, of: { $0.safeAreaInsets.top }) { topInset = $0 }
     .refreshable {
       await viewModel.fetchProfile()
       switch selectedTab {
@@ -66,13 +78,30 @@ struct ProfileView: View {
     }
     .sheet(item: $selectedPost) { post in
       NavigationStack {
+        // シートの一番下は戻るボタンも無く空のバーになるので隠す
         PostDetailView(viewModel: PostDetailViewModel(post: post))
+          .toolbar(.hidden, for: .navigationBar)
       }
     }
-    .sheet(item: $selectedFollowItem) { item in
+    .sheet(isPresented: $showingEditor, onDismiss: { Task { await viewModel.fetchProfile() } }) {
+      NavigationStack {
+        List { ProfileEditCard(startExpanded: true) }
+          .navigationTitle("プロフィールを編集")
+          .navigationBarTitleDisplayMode(.inline)
+      }
+    }
+    .navigationDestination(item: $selectedFollowItem) { item in
       ProfileView(
         viewModel: ProfileViewModel(
-          actor: item.handle, profile: .init(did: "", handle: "", labels: [])))
+          actor: item.handle, profile: .init(did: "", handle: "", labels: []))
+      )
+    }
+    .sheet(isPresented: $showingHighlightPicker) {
+      HighlightColorPickerView(
+        did: viewModel.profile.did,
+        authorName: viewModel.profile.displayName ?? viewModel.profile.handle
+      )
+      .presentationDetents([.height(280)])
     }
     .alert(
       viewModel.isMuted ? "ミュートを解除しますか？" : "\(viewModel.profile.handle) をミュートしますか？",
@@ -128,9 +157,10 @@ struct ProfileView: View {
       } placeholder: {
         Color(.systemGray5)
       }
-      .frame(height: 100)
+      .frame(height: 100 + topInset)
       .frame(maxWidth: .infinity)
       .clipped()
+      .padding(.top, -topInset)
       .listRowInsets(EdgeInsets())
       .listRowSeparator(.hidden)
     }
@@ -174,7 +204,12 @@ struct ProfileView: View {
           }
         }
         Spacer()
-        if !viewModel.isOwnProfile {
+        if viewModel.isOwnProfile {
+          Button("編集") { showingEditor = true }
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.capsule)
+            .controlSize(.small)
+        } else {
           followButton
           actionMenu
         }
@@ -225,6 +260,8 @@ struct ProfileView: View {
     // 1 つの行に複数のボタン（リンク・メニュー・フォロー）があるので、行全体ではなくそれぞれが反応するようにする
     .buttonStyle(.borderless)
     .listRowSeparator(.hidden)
+    // TL と同じ背景色を敷き、「この人＝この色」を画面をまたいで続ける
+    .listRowBackground(highlightManager.color(for: viewModel.profile.did)?.opacity(0.12))
   }
 
   /// フォロー中は控えめに。うっかり外さないよう、解除だけ確認を挟む
@@ -252,6 +289,8 @@ struct ProfileView: View {
         viewModel.isMuted ? "ミュートを解除" : "ミュート",
         systemImage: viewModel.isMuted ? "speaker.wave.2" : "speaker.slash"
       ) { showingMuteConfirm = true }
+      // TL と同じ背景色。プロフィールのヘッダーにも出るので、ここで決めるのが分かりやすい
+      Button("背景色を設定", systemImage: "paintpalette") { showingHighlightPicker = true }
       if rtFilter.filteredDIDs.contains(viewModel.profile.did) {
         Button("リポストを表示", systemImage: "arrow.2.squarepath") {
           rtFilter.remove(did: viewModel.profile.did)
@@ -297,7 +336,10 @@ struct ProfileView: View {
   // MARK: - Tab strip
 
   private var tabCounts: [Int?] {
-    [viewModel.profile.postsCount, viewModel.profile.followersCount, viewModel.profile.followsCount]
+    [
+      viewModel.profile.postsCount, viewModel.profile.followersCount,
+      viewModel.profile.followsCount,
+    ]
   }
 
   private var tabStrip: some View {
@@ -316,11 +358,11 @@ struct ProfileView: View {
               }
             }
           }
-            .font(.subheadline.weight(selectedTab == index ? .semibold : .regular))
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.capsule)
-            .tint(selectedTab == index ? .accentColor : .secondary)
-            .accessibilityAddTraits(selectedTab == index ? .isSelected : [])
+          .font(.subheadline.weight(selectedTab == index ? .semibold : .regular))
+          .buttonStyle(.bordered)
+          .buttonBorderShape(.capsule)
+          .tint(selectedTab == index ? .accentColor : .secondary)
+          .accessibilityAddTraits(selectedTab == index ? .isSelected : [])
         }
       }
       .padding(.horizontal, 16)
@@ -364,6 +406,7 @@ struct ProfileView: View {
         hasMore: viewModel.likesCursor != nil,
         loadMore: { Task { await viewModel.fetchLikedPosts(loadMore: true) } })
     default:
+      postFilterRow
       feedRows(
         items: viewModel.posts,
         isLoading: viewModel.isFetchingPosts,
@@ -371,6 +414,30 @@ struct ProfileView: View {
         hasMore: viewModel.postsCursor != nil,
         loadMore: { Task { await viewModel.fetchPosts(loadMore: true) } })
     }
+  }
+
+  /// 既定は返信を除く。返信が多い人でも本人の発言が読める
+  private var postFilterRow: some View {
+    HStack(spacing: 8) {
+      ForEach(ProfileViewModel.PostFilter.allCases, id: \.self) { filter in
+        Button {
+          guard viewModel.postFilter != filter else { return }
+          viewModel.postFilter = filter
+          Task { await viewModel.refreshPosts() }
+        } label: {
+          Text(filter.label)
+        }
+        .font(.caption.weight(viewModel.postFilter == filter ? .semibold : .regular))
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
+        .controlSize(.small)
+        .tint(viewModel.postFilter == filter ? .accentColor : .secondary)
+        .accessibilityAddTraits(viewModel.postFilter == filter ? .isSelected : [])
+      }
+    }
+    .padding(.horizontal, 16)
+    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
+    .listRowSeparator(.hidden)
   }
 
   private func lazyLoadTab(_ tab: Int) {
@@ -457,7 +524,7 @@ struct ProfileView: View {
 
 // MARK: - FollowDisplayItem
 
-private struct FollowDisplayItem: Identifiable {
+private struct FollowDisplayItem: Identifiable, Hashable {
   let did: String
   let handle: String
   let displayName: String?

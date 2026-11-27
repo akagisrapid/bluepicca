@@ -7,6 +7,7 @@ struct MuteWordQuickAddView: View {
   @ObservedObject private var manager = MuteWordManager.shared
   @Environment(\.dismiss) private var dismiss
   @State private var customWord = ""
+  @State private var duration: MuteDuration = .forever
 
   private var candidateWords: [String] {
     let separators = CharacterSet(charactersIn: " \n\t、。！？!?,.\"'「」『』()（）[]【】/\\:;")
@@ -26,7 +27,7 @@ struct MuteWordQuickAddView: View {
   private func addWord(_ word: String) {
     let trimmed = word.trimmingCharacters(in: .whitespaces)
     guard !trimmed.isEmpty else { return }
-    manager.add(trimmed)
+    manager.add(trimmed, duration: duration.interval)
     ToastManager.shared.show(icon: "text.badge.xmark", text: "ミュートワードに追加")
     dismiss()
   }
@@ -36,6 +37,10 @@ struct MuteWordQuickAddView: View {
       Text("この投稿からミュートワードを追加")
         .font(.headline)
         .padding(.top, 20)
+        .padding(.horizontal, 20)
+
+      // ネタバレよけは一時的なことが多いので、ここでも期間を選べる
+      MuteDurationPicker(duration: $duration)
         .padding(.horizontal, 20)
 
       if candidateWords.isEmpty {

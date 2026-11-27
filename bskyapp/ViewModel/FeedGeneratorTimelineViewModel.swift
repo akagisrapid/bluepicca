@@ -24,8 +24,7 @@ class FeedGeneratorTimelineViewModel: ObservableObject {
       let viewer = post.author?.viewer
       if viewer?.muted == true { return false }
       if viewer?.blocking != nil { return false }
-      let text = post.record?.text ?? ""
-      if muteWordManager.matches(text) { return false }
+      if muteWordManager.matches(post) { return false }
       if !LanguageFilterManager.shared.allows(post.record?.langs) { return false }
       return true
     }

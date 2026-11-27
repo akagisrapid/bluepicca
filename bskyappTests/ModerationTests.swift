@@ -59,16 +59,22 @@ struct ContentLabelManagerTests {
   }
 }
 
+/// テストを走らせるアプリも起動時に Bluesky と同期して entries を書き換える。
+/// 同期と同じメインスレッドで動かし、途中で書き換わらないようにする
 @Suite(.serialized)
+@MainActor
 struct MuteWordManagerTests {
   private let manager = MuteWordManager.shared
 
   private func withWords(_ words: [String], _ body: () -> Void) {
-    let saved = manager.muteWords
+    let saved = manager.entries
+    let savedUpload = manager.upload
+    manager.upload = { _ in }  // 本物の Bluesky アカウントに書き込まない
     manager.muteWords = words
     defer {
-      manager.muteWords = saved
-      UserDefaults.standard.set(saved, forKey: "muteWords")
+      manager.upload = savedUpload
+      manager.entries = saved
+      UserDefaults.standard.set(try? JSONEncoder().encode(saved), forKey: "muteWordEntries")
     }
     body()
   }
@@ -87,6 +93,88 @@ struct MuteWordManagerTests {
       #expect(manager.matches("big SPOILER ahead"))
       #expect(manager.matches("これはネタバレです"))
       #expect(!manager.matches("nothing here"))
+    }
+  }
+
+  private func post(embed: String) throws -> Post {
+    let json =
+      #"{"uri": "at://did:plc:abc/app.bsky.feed.post/1", "cid": "c", "#
+      + #""record": {"text": "ふつうの本文", "createdAt": "2026-10-01T00:00:00Z"}, "#
+      + #""embed": "# + embed + "}"
+    return try JSONDecoder().decode(Post.self, from: Data(json.utf8))
+  }
+
+  /// 本文に無くても、引用元・リンクカード・ALT にあればミュートする
+  @Test func postMatchesQuoteLinkCardAndAlt() throws {
+    let quote = try post(embed: #"""
+      {"$type": "app.bsky.embed.record#view",
+       "record": {"$type": "app.bsky.embed.record#viewRecord", "uri": "at://x/app.bsky.feed.post/2",
+                  "value": {"text": "引用元のネタバレ", "createdAt": "2026-10-01T00:00:00Z"}}}
+      """#)
+    let link = try post(embed: #"""
+      {"$type": "app.bsky.embed.external#view",
+       "external": {"uri": "https://spoiler.example.com/a", "title": "記事", "description": ""}}
+      """#)
+    let image = try post(embed: #"""
+      {"$type": "app.bsky.embed.images#view",
+       "images": [{"thumb": "t", "fullsize": "f", "alt": "ネタバレ画像"}]}
+      """#)
+    withWords(["ネタバレ", "spoiler.example.com"]) {
+      #expect(manager.matches(quote))
+      #expect(manager.matches(link))
+      #expect(manager.matches(image))
+    }
+    withWords(["関係ない語"]) {
+      #expect(!manager.matches(quote))
+    }
+  }
+
+  /// タグのみの語は、本文に同じ文字があってもタグに無ければミュートしない
+  @Test func tagTargetMatchesOnlyHashtags() throws {
+    let tagged = try post(embed: "null").withRecord(
+      #"{"text": "実況 #ネタバレ", "createdAt": "2026-10-01T00:00:00Z", "#
+        + #""facets": [{"index": {"byteStart": 7, "byteEnd": 20}, "#
+        + #""features": [{"$type": "app.bsky.richtext.facet#tag", "tag": "ネタバレ"}]}]}"#)
+    let plain = try post(embed: "null").withRecord(
+      #"{"text": "ネタバレ注意", "createdAt": "2026-10-01T00:00:00Z"}"#)
+    withWords([]) {
+      manager.add("#ネタバレ", target: .tag)
+      #expect(manager.matches(tagged))
+      #expect(!manager.matches(plain))
+      #expect(!manager.matches("ネタバレ注意"))
+    }
+  }
+
+  /// Bluesky の mutedWord と相互に変換でき、id と actorTarget を失わない
+  @Test func convertsBlueskyMutedWord() throws {
+    let tagOnly = try #require(
+      MutedWordsPreferenceApi.muteWord(from: [
+        "id": "abc", "value": "ネタバレ", "targets": ["tag"],
+        "actorTarget": "exclude-following", "expiresAt": "2026-12-01T00:00:00.000Z",
+      ]))
+    #expect(tagOnly.target == .tag)
+    #expect(tagOnly.expiresAt == ISO8601DateFormatter().date(from: "2026-12-01T00:00:00Z"))
+    let back = MutedWordsPreferenceApi.item(from: tagOnly)
+    #expect(back["id"] as? String == "abc")
+    #expect(back["targets"] as? [String] == ["tag"])
+    #expect(back["actorTarget"] as? String == "exclude-following")
+    #expect(back["expiresAt"] as? String == "2026-12-01T00:00:00.000Z")
+
+    let content = try #require(
+      MutedWordsPreferenceApi.muteWord(from: ["value": "spoiler", "targets": ["content", "tag"]]))
+    #expect(content.target == .content && content.expiresAt == nil)
+    #expect(MutedWordsPreferenceApi.item(from: content)["targets"] as? [String] == ["content", "tag"])
+    #expect(MutedWordsPreferenceApi.item(from: content)["actorTarget"] as? String == "all")
+  }
+
+  /// 期限を過ぎた語は効かず、一覧の muteWords にも出ない
+  @Test func expiredWordDoesNotMatch() {
+    withWords([]) {
+      manager.entries = [MuteWord(value: "昨日の話題", expiresAt: .now - 1)]
+      #expect(!manager.matches("昨日の話題です"))
+      #expect(manager.muteWords.isEmpty)
+      manager.add("今日の話題", duration: 60)
+      #expect(manager.matches("今日の話題です"))
     }
   }
 }
@@ -126,5 +214,14 @@ struct PostStateManagerTests {
     manager.removeLiked(postUri: uri)
     #expect(!manager.isLiked(postUri: uri))
     #expect(manager.isReposted(postUri: uri))
+  }
+}
+
+extension Post {
+  /// テスト用に record だけ差し替えた投稿を作る
+  fileprivate func withRecord(_ recordJSON: String) throws -> Post {
+    let json =
+      #"{"uri": "at://did:plc:abc/app.bsky.feed.post/1", "cid": "c", "record": "# + recordJSON + "}"
+    return try JSONDecoder().decode(Post.self, from: Data(json.utf8))
   }
 }

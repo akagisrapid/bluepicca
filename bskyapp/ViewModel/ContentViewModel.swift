@@ -55,8 +55,7 @@ class ContentViewModel: ObservableObject {
       if viewer?.muted == true { return false }
       if let did = post.author?.did, mutedUsersManager.isMuted(did) { return false }
       if viewer?.blocking != nil { return false }
-      let text = post.record?.text ?? ""
-      if muteWordManager.matches(text) { return false }
+      if muteWordManager.matches(post) { return false }
       if let repostDid = feedItem.reason?.by?.did,
         rtFilterManager.isFiltered(repostDid)
       {

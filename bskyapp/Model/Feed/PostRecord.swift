@@ -5,6 +5,8 @@ struct PostRecord: Codable {
     let langs: [String]?
     let text: String?
     let facets: [Facet]?
+    /// 本文に出さないハッシュタグ（app.bsky.feed.post の tags）
+    let tags: [String]?
 }
 
 class Facet: Codable {
@@ -20,4 +22,6 @@ class FacetIndex: Codable {
 class FacetFeature: Codable {
     let type: String?
     let uri: String?
+    /// app.bsky.richtext.facet#tag のタグ（# なし）
+    let tag: String?
 }

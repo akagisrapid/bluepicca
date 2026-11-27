@@ -99,7 +99,7 @@ class SearchViewModel: ObservableObject {
       switch effectiveScope {
       case .posts:
         let response = try await SearchPostsApi().searchPosts(query: trimmed)
-        posts = response.posts
+        posts = response.posts.filter { !MuteWordManager.shared.matches($0) }
         searchCursor = response.cursor
       case .users:
         let actorQuery = Self.actorQuery(trimmed)
@@ -126,7 +126,7 @@ class SearchViewModel: ObservableObject {
       isLoadingMore = true
       do {
         let response = try await SearchPostsApi().searchPosts(query: trimmed, cursor: cursor)
-        posts.append(contentsOf: response.posts)
+        posts.append(contentsOf: response.posts.filter { !MuteWordManager.shared.matches($0) })
         searchCursor = response.cursor
       } catch {
         dlog("SearchViewModel: loadMore error: \(error)")
