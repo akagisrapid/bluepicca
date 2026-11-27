@@ -29,7 +29,8 @@ class PostDetailViewModel: ObservableObject {
     do {
       let response = try await GetPostThreadApi().getPostThread(uri: uri)
       post = response.thread.post
-      replies = response.thread.replies ?? []
+      // 親の文脈は残し、返信だけミュートワードで除く
+      replies = (response.thread.replies ?? []).filter { !MuteWordManager.shared.matches($0.post) }
       parentChain = extractParentChain(from: response.thread)
       if !isRoot, let firstReply = replies.first {
         mainChain = extractFirstChildChain(from: firstReply)

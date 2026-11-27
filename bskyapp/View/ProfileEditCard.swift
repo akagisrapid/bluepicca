@@ -5,7 +5,7 @@ import SwiftUI
 /// （twicca の「プロフィールを編集」に倣い、アイコン・ヘッダー・名前・自己紹介・代名詞・リンクを一画面で直す）
 struct ProfileEditCard: View {
   @State private var profile: GetProfileApiResponse?
-  @State private var isExpanded = false
+  @State private var isExpanded: Bool
   @State private var displayName = ""
   @State private var bio = ""
   @State private var pronouns = ""
@@ -28,6 +28,11 @@ struct ProfileEditCard: View {
   // app.bsky.actor.link の title と、profile の links の上限
   private static let maxLinkTitleLength = 40
   private static let maxLinks = 10
+  /// プロフィール画面の「編集」から開くときは最初から開いておく
+  init(startExpanded: Bool = false) {
+    _isExpanded = State(initialValue: startExpanded)
+  }
+
   private static let pronounPresets = ["she/her", "he/him", "they/them"]
 
   private var hasChanges: Bool {

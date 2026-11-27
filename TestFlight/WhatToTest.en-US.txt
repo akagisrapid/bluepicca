@@ -1,24 +1,23 @@
-Please try the following three things.
+Please try the following four things.
 
-1. Edit your own profile
-   - Open Settings and tap your card at the top to expand it
-   - Change your name and bio, tap Save, and check that the profile screen shows the change
-   - Check that you can pick a new avatar and header image from Photos and save them
-   - Check that you can set pronouns with a button such as "they/them" or by typing
-   - Check that you can add a link (for example yoursite.com with a title), reorder it, delete it, and save
-   - Check that the official app or the web shows the same profile
+1. Opening profiles
+   - Open a profile from an avatar on the timeline and from your own icon at the top right, and check that it slides in from the right
+   - Check that swiping from the left edge or tapping Back returns one screen at a time
+   - Scroll to the very top and check that the header image extends under the Back button with no gap
 
 2. Profile screen
-   - Open someone's profile and check that their posts are listed right away
-   - Scroll down and check that the top part scrolls away while only the Posts / Followers / Following buttons stay at the top
-   - Check that the buttons show the post, follower and following counts
-   - Check that pronouns appear next to the @handle and links appear as buttons; with many links, check that you can scroll them sideways
-   - Check that "Follows you" appears when the person follows you
+   - Check that "No replies / With replies / Media" above the posts switches what is shown (No replies is the default)
+   - On your own profile, check that the Edit button opens the editor
+   - On someone else's profile, choose "…" → "Set background color" and check that the color also appears at the top of their profile
+   - Open one of your own posts and check that the trash button sits at the right of the name row and deletes the post
 
-3. Actions on the profile screen
-   - Swipe a post left or right and check that you can like or repost it, just like on the home timeline
-   - Check that pull to refresh works and that more posts load when you reach the bottom
-   - Check that the "…" menu at the top right lets you mute, hide reposts and block
-   - For someone you follow, tap "Following" and check that you are asked before unfollowing
+3. Where mute words apply
+   - Add a mute word and check that posts are hidden when the word appears only in a quoted post, a link card, or an image description (ALT)
+   - Check that they are also hidden in search results, profiles, and thread replies
+
+4. Mute word duration, target and sync
+   - In Settings → Mute words, choose "Tags only" and a duration (such as 24 hours), add a word, and check that the list shows "Tags only · Until <date>"
+   - Check that a "Tags only" word hides posts with that hashtag but keeps posts that merely contain the same text
+   - Check that a mute word added in the official app appears in Bluepicca when you come back to it, and that a word added in Bluepicca appears in the official app
 
 If something looks wrong, please report it along with what you did.

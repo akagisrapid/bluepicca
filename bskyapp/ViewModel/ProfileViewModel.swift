@@ -56,6 +56,10 @@ class ProfileViewModel: ObservableObject {
       if let myDid = SessionManager.shared.currentDid {
         self.isOwnProfile = myDid == fetchedProfile.did
       }
+      #if DEBUG
+        // デモでは自分のプロフィールとして扱い、「編集」ボタンを確かめられるようにする
+        if DemoTimeline.isEnabled { self.isOwnProfile = true }
+      #endif
       self.isFetching = false
     } catch {
       self.isFetching = false
@@ -136,6 +140,23 @@ class ProfileViewModel: ObservableObject {
 
   // MARK: - 投稿
 
+  /// getAuthorFeed の filter。既定は返信を除き、本人の発言だけを読めるようにする
+  enum PostFilter: String, CaseIterable {
+    case noReplies = "posts_no_replies"
+    case withReplies = "posts_with_replies"
+    case media = "posts_with_media"
+
+    var label: LocalizedStringResource {
+      switch self {
+      case .noReplies: "返信なし"
+      case .withReplies: "返信あり"
+      case .media: "メディア"
+      }
+    }
+  }
+
+  @Published var postFilter: PostFilter = .noReplies
+
   @MainActor
   func fetchPosts(loadMore: Bool = false) async {
     guard !isFetchingPosts else { return }
@@ -144,11 +165,11 @@ class ProfileViewModel: ObservableObject {
     do {
       let cursor = loadMore ? postsCursor : nil
       let res = try await GetAuthorFeedApi().getAuthorFeed(
-        actor: self.actor, limit: 50, cursor: cursor)
+        actor: self.actor, limit: 50, cursor: cursor, filter: postFilter.rawValue)
       if loadMore {
-        posts.append(contentsOf: res.feed)
+        posts.append(contentsOf: res.feed.withoutMutedWords)
       } else {
-        posts = res.feed
+        posts = res.feed.withoutMutedWords
       }
       postsCursor = res.cursor
     } catch {
@@ -219,13 +240,20 @@ class ProfileViewModel: ObservableObject {
       let res = try await GetActorLikesApi().getActorLikes(
         param: .init(actor: actor, limit: 20, cursor: cursor))
       if loadMore {
-        likedPosts.append(contentsOf: res.feed)
+        likedPosts.append(contentsOf: res.feed.withoutMutedWords)
       } else {
-        likedPosts = res.feed
+        likedPosts = res.feed.withoutMutedWords
       }
       likesCursor = res.cursor
     } catch {
       dlog("fetchLikedPosts error: \(error)")
     }
+  }
+}
+
+extension [FeedItem] {
+  /// ミュートワードに当たる投稿を除く（TL の validFeeds と同じ判定）
+  var withoutMutedWords: [FeedItem] {
+    filter { item in item.post.map { !MuteWordManager.shared.matches($0) } ?? true }
   }
 }

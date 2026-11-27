@@ -1,7 +1,8 @@
 import Foundation
 
 struct GetAuthorFeedApi {
-  func getAuthorFeed(actor: String, limit: Int = 50, cursor: String? = nil) async throws
+  func getAuthorFeed(actor: String, limit: Int = 50, cursor: String? = nil, filter: String? = nil)
+    async throws
     -> FeedResponse
   {
     #if DEBUG
@@ -21,6 +22,9 @@ struct GetAuthorFeedApi {
 
     if let cursor = cursor {
       parameters["cursor"] = cursor
+    }
+    if let filter {
+      parameters["filter"] = filter
     }
 
     let headers: HTTPHeaders = [
