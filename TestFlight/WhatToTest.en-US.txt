@@ -1,18 +1,9 @@
 Please try the following.
 
-1. Real-time updates for Home
-   - In Settings, turn on "Auto Refresh" and "Update Home in Real Time". Check that Home updates within a few seconds after someone you follow posts or reposts
-   - Turn off "Update Home in Real Time" and check that the label changes to "Refresh Interval", the note below changes to "All feeds refresh…", and Home refreshes at the interval
-   - Check that feeds other than Home refresh at "Interval for Other Feeds"
-
-2. Auto refresh keeps your reading position
-   - Scroll partway down the timeline, wait for an auto refresh, and check that the screen does not jump back or shift
-   - When new posts arrive while you are reading, check that "N new posts" appears at the top. Tap it and check that the new posts are added and the list scrolls to the top
-   - Also check that scrolling to the top yourself adds the new posts and hides "N new posts"
-   - While you are at the top, check that new posts are simply added above
-
-3. Count after returning to your last position
-   - Reopen the app and, when it returns to your last position, check that the number of posts above it appears as "N new posts"
-   - Scroll to the top from there and check that it disappears
+1. Starter packs
+   - On a post that shares a starter pack, check that the card shows the "Starter Pack" label, its name, description, creator and number of people (it used to show an empty card with only "@")
+   - Tap the card and check that the starter pack page on bsky.app opens
+   - Check that the same card appears on the post detail screen
+   - Check that regular quote posts and feed cards look the same as before
 
 If something looks wrong, please report it along with what you did.

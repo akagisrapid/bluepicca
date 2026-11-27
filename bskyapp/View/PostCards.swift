@@ -38,6 +38,8 @@ struct QuotePostCard: View {
   var body: some View {
     if quoted.isFeedGenerator {
       FeedGeneratorCard(quoted: quoted)
+    } else if quoted.isStarterPack {
+      StarterPackCard(quoted: quoted)
     } else {
       NavigationLink(
         destination: PostDetailView(viewModel: PostDetailViewModel(post: quotedAsPost))
@@ -164,6 +166,83 @@ private struct FeedGeneratorCard: View {
       Spacer()
 
       Image(systemName: "chevron.right")
+        .font(.caption2)
+        .foregroundColor(.secondary)
+    }
+    .padding(10)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(Color(.systemGray6))
+    .clipShape(RoundedRectangle(cornerRadius: 8))
+    .overlay(
+      RoundedRectangle(cornerRadius: 8)
+        .stroke(Color(.systemGray4), lineWidth: 0.5)
+    )
+  }
+}
+
+// MARK: - スターターパックカード
+
+/// アプリ内にスターターパックの画面は無いので、タップで bsky.app のページを開く
+private struct StarterPackCard: View {
+  let quoted: EmbeddedRecordViewItem
+
+  var body: some View {
+    if let url = quoted.starterPackWebUrl {
+      Link(destination: url) { cardContent }
+        .buttonStyle(.plain)
+    } else {
+      cardContent
+    }
+  }
+
+  private var cardContent: some View {
+    HStack(spacing: 10) {
+      RoundedRectangle(cornerRadius: 6)
+        .fill(Color.accentColor.opacity(0.15))
+        .overlay(
+          Image(systemName: "person.3.fill")
+            .font(.caption)
+            .foregroundColor(.accentColor)
+        )
+        .frame(width: 36, height: 36)
+
+      VStack(alignment: .leading, spacing: 2) {
+        HStack(spacing: 4) {
+          Image(systemName: "person.3")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+          Text("スターターパック")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+        }
+        Text(quoted.record?.name ?? "")
+          .font(.caption)
+          .fontWeight(.semibold)
+          .foregroundColor(.primary)
+          .lineLimit(2)
+        if let description = quoted.record?.description, !description.isEmpty {
+          Text(description)
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .lineLimit(2)
+        }
+        HStack(spacing: 8) {
+          if let creator = quoted.creator {
+            Text("by \(creator.displayName.flatMap { $0.isEmpty ? nil : $0 } ?? creator.handle ?? "")")
+              .lineLimit(1)
+          }
+          if let count = quoted.listItemCount {
+            Text("\(count)人")
+              .layoutPriority(1)
+          }
+        }
+        .font(.caption2)
+        .foregroundColor(.secondary)
+      }
+
+      Spacer()
+
+      Image(systemName: "arrow.up.right")
         .font(.caption2)
         .foregroundColor(.secondary)
     }
