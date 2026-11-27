@@ -7,9 +7,24 @@ struct GetPreferencesResponse: Codable {
 }
 
 struct PreferenceItem: Codable {
-  // savedFeedsPrefV2 の items フィールドのみ取り出す。
-  // $type 等の他フィールドは無視。
+  static let savedFeedsType = "app.bsky.actor.defs#savedFeedsPrefV2"
+
+  let type: String?
+  /// savedFeedsPrefV2 の items だけを読む。mutedWordsPref など、ほかの設定も items を持つが形が違うので無視する
   let items: [SavedFeedItem]?
+
+  private enum CodingKeys: String, CodingKey {
+    case type = "$type"
+    case items
+  }
+
+  init(from decoder: Decoder) throws {
+    let c = try decoder.container(keyedBy: CodingKeys.self)
+    type = try c.decodeIfPresent(String.self, forKey: .type)
+    items =
+      type == Self.savedFeedsType
+      ? try c.decodeIfPresent([SavedFeedItem].self, forKey: .items) : nil
+  }
 }
 
 struct SavedFeedItem: Codable {

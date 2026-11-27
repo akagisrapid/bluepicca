@@ -34,6 +34,27 @@ struct ModelDecodingTests {
     }
     """#
 
+  /// mutedWordsPref も items を持つ。これを保存フィードとして読もうとすると設定全体の読み込みが失敗し、
+  /// フィードを切り替えられなくなった（1.2.7）
+  @Test func preferencesIgnoreItemsOfOtherPrefTypes() throws {
+    let prefs = try decode(
+      GetPreferencesResponse.self,
+      #"""
+      {"preferences": [
+        {"$type": "app.bsky.actor.defs#mutedWordsPref",
+         "items": [{"id": "a", "value": "ネタバレ", "targets": ["tag"], "actorTarget": "all"}]},
+        {"$type": "app.bsky.actor.defs#savedFeedsPrefV2",
+         "items": [
+           {"type": "timeline", "value": "following", "pinned": true, "id": "1"},
+           {"type": "feed", "value": "at://did:plc:x/app.bsky.feed.generator/y", "pinned": true, "id": "2"}
+         ]},
+        {"$type": "app.bluepicca.hashtag#hashtagFeedPref", "hashtags": ["デモ"]}
+      ]}
+      """#)
+    let items = prefs.preferences.compactMap(\.items).flatMap { $0 }
+    #expect(items.map(\.id) == ["1", "2"])
+  }
+
   @Test func postDecodesCountsViewerAndFacets() throws {
     let post = try decode(Post.self, postJSON)
     #expect(post.uri == "at://did:plc:abc/app.bsky.feed.post/3k")

@@ -43,6 +43,7 @@ struct LanguageFilterMatchingTests {
 }
 
 @Suite(.serialized)
+@MainActor  // 画面が見ている共有の設定を書き換えるので、メインスレッドで動かす
 struct LanguageFilterManagerTests {
   private let manager = LanguageFilterManager.shared
 
