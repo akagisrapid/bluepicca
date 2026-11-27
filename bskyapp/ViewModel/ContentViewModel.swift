@@ -178,6 +178,28 @@ class ContentViewModel: ObservableObject {
     try await task.value
   }
 
+  // MARK: - Jetstream で新着を待つ（ホームの自動更新）
+
+  /// フォロー中の人が投稿・リポストしたら TL を取り直す。取り直しは `minInterval` 秒に1回まで。
+  /// キャンセルされるまで戻らない（フォロー一覧を取れなければすぐ戻る）
+  @MainActor
+  func refreshOnJetstreamEvents(minInterval: Int) async {
+    // ponytail: 前面に戻るたびにフォロー一覧を取り直す。フォローが多くて遅ければキャッシュする
+    guard let actor = try? await SessionManager.shared.getSession().did,
+      let dids = try? await JetstreamService.timelineDids(actor: actor)
+    else { return }
+    // 合図が続いても溜めるのは1つだけ。取り直しの間に来た分はまとめて1回にする
+    let (signals, signal) = AsyncStream.makeStream(
+      of: Void.self, bufferingPolicy: .bufferingNewest(1))
+    await withDiscardingTaskGroup { group in
+      group.addTask { await JetstreamService.run(dids: dids) { signal.yield() } }
+      for await _ in signals {
+        try? await fetchTimeline()
+        try? await Task.sleep(for: .seconds(minInterval))
+      }
+    }
+  }
+
   // MARK: - 既読位置の保存
 
   func saveReadPosition(uri: String?) {

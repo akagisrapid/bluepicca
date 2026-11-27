@@ -96,8 +96,16 @@ struct ContentView: View {
           }
         }
         .task { await MuteWordManager.shared.syncFromServer() }
-        .task(id: "\(autoRefreshEnabled)-\(autoRefreshIntervalSeconds)") {
-          guard autoRefreshEnabled else { return }
+        .task(
+          id:
+            "\(autoRefreshEnabled)-\(autoRefreshIntervalSeconds)-\(viewModel.selectedTab.id)-\(scenePhase)"
+        ) {
+          guard autoRefreshEnabled, scenePhase == .active else { return }
+          // ホームはフォロー中の人の新着が来たときだけ取り直す。ほかのフィードと、
+          // フォロー一覧を取れなかったときは一定間隔で取り直す
+          if viewModel.selectedTab.id == FeedTab.home.id {
+            await viewModel.refreshOnJetstreamEvents(minInterval: autoRefreshIntervalSeconds)
+          }
           while !Task.isCancelled {
             try? await Task.sleep(for: .seconds(autoRefreshIntervalSeconds))
             guard !Task.isCancelled, !viewModel.isFetchingTimeline else { continue }
@@ -269,7 +277,8 @@ struct ContentView: View {
       do {
         profileNavActor = try await SessionManager.shared.getSession().did
       } catch {
-        toastManager.show(icon: "exclamationmark.triangle", text: String(localized: "プロフィールを開けませんでした"))
+        toastManager.show(
+          icon: "exclamationmark.triangle", text: String(localized: "プロフィールを開けませんでした"))
       }
     }
   }
