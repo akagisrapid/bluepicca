@@ -43,6 +43,7 @@ struct SettingsView: View {
     .rawValue
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
   @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
+  @AppStorage("realtimeRefreshEnabled") private var realtimeRefreshEnabled: Bool = true
   @AppStorage("hideImagePreview") private var hideImagePreview: Bool = false
   @AppStorage("hideAvatars") private var hideAvatars: Bool = false
   @AppStorage("restoreScrollOnTabSwitch") private var restoreScrollOnTabSwitch: Bool = true
@@ -63,15 +64,6 @@ struct SettingsView: View {
           }
           .pickerStyle(.segmented)
           Toggle("フィード切り替え時に前回位置に戻る", isOn: $restoreScrollOnTabSwitch)
-          Toggle("自動更新", isOn: $autoRefreshEnabled)
-          if autoRefreshEnabled {
-            Picker("更新間隔", selection: $autoRefreshIntervalSeconds) {
-              Text("30秒").tag(30)
-              Text("1分").tag(60)
-              Text("3分").tag(180)
-              Text("5分").tag(300)
-            }
-          }
           Button(action: { showLanguageFilter = true }) {
             HStack {
               Text("表示する言語")
@@ -90,6 +82,33 @@ struct SettingsView: View {
             }
           }
           .foregroundColor(.primary)
+        }
+
+        Section {
+          Toggle("自動更新", isOn: $autoRefreshEnabled)
+          if autoRefreshEnabled {
+            Toggle("ホームはリアルタイムで更新", isOn: $realtimeRefreshEnabled)
+            Picker(selection: $autoRefreshIntervalSeconds) {
+              Text("30秒").tag(30)
+              Text("1分").tag(60)
+              Text("3分").tag(180)
+              Text("5分").tag(300)
+            } label: {
+              if realtimeRefreshEnabled {
+                Text("ホーム以外の更新間隔")
+              } else {
+                Text("更新間隔")
+              }
+            }
+          }
+        } footer: {
+          if autoRefreshEnabled {
+            if realtimeRefreshEnabled {
+              Text("ホームは、フォロー中の人が投稿・リポストしたときにすぐ取り直します。ほかのフィードは更新間隔ごとに取り直します。")
+            } else {
+              Text("すべてのフィードを更新間隔ごとに取り直します。")
+            }
+          }
         }
 
         Section {

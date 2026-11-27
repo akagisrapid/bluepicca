@@ -19,8 +19,12 @@ class ContentViewModel: ObservableObject {
 
   /// フィードロード後にスクロールすべき投稿URI（一度使ったらnilにする）
   @Published var targetScrollUri: String? = nil
-  /// 既読位置より上の新着投稿数（Topボタンのバッジ）
+  /// 既読位置より上の新着投稿数（TL の上の「N件の新着」）
   @Published var unreadCount: Int = 0
+  /// 起動時などに既読位置へスクロールし終わるまで true。その前は一番上が見えていても件数を消さない
+  var isRestoringPosition = false
+  /// 読んでいる途中に自動更新で届いた新着。差し込むと画面がずれるので、一番上に戻るまで取っておく
+  private var pendingNewer: [FeedItem] = []
   /// 現在画面上に表示されている先頭付近のセルURI（表示中セルの最小インデックス）
   var currentReadUri: String? = nil
   private var visiblePostUris: Set<String> = []
@@ -43,28 +47,28 @@ class ContentViewModel: ObservableObject {
   private var feedsCache: [String: FeedCache] = [:]
 
   // ミュート・ブロック済みアカウント・ミュートワード・RTフィルタ・ラベルポリシー・言語フィルタに該当する投稿を除外する
-  var validFeeds: [FeedItem] {
+  var validFeeds: [FeedItem] { feeds.filter(isVisible) }
+
+  private func isVisible(_ feedItem: FeedItem) -> Bool {
     let muteWordManager = MuteWordManager.shared
     let rtFilterManager = RTFilterManager.shared
     let labelManager = ContentLabelManager.shared
     let mutedUsersManager = MutedUsersManager.shared
     let languageFilter = LanguageFilterManager.shared
-    return feeds.filter { feedItem in
-      guard let post = feedItem.post else { return false }
-      let viewer = post.author?.viewer
-      if viewer?.muted == true { return false }
-      if let did = post.author?.did, mutedUsersManager.isMuted(did) { return false }
-      if viewer?.blocking != nil { return false }
-      if muteWordManager.matches(post) { return false }
-      if let repostDid = feedItem.reason?.by?.did,
-        rtFilterManager.isFiltered(repostDid)
-      {
-        return false
-      }
-      if labelManager.policy(for: post) == .hide { return false }
-      if !languageFilter.allows(post.record?.langs) { return false }
-      return true
+    guard let post = feedItem.post else { return false }
+    let viewer = post.author?.viewer
+    if viewer?.muted == true { return false }
+    if let did = post.author?.did, mutedUsersManager.isMuted(did) { return false }
+    if viewer?.blocking != nil { return false }
+    if muteWordManager.matches(post) { return false }
+    if let repostDid = feedItem.reason?.by?.did,
+      rtFilterManager.isFiltered(repostDid)
+    {
+      return false
     }
+    if labelManager.policy(for: post) == .hide { return false }
+    if !languageFilter.allows(post.record?.langs) { return false }
+    return true
   }
 
   init() {
@@ -149,6 +153,7 @@ class ContentViewModel: ObservableObject {
           pages += 1
         }
         self.feeds = fetched
+        self.pendingNewer = []
         self.posts = self.feeds.compactMap { $0.post }
         self.timelineCursor = response.cursor
         self.feedsCache[self.selectedTab.id] = FeedCache(
@@ -164,6 +169,7 @@ class ContentViewModel: ObservableObject {
         {
           self.targetScrollUri = uri
           self.unreadCount = index
+          self.isRestoringPosition = true
           UserDefaults.standard.removeObject(forKey: key)
         }
       } catch {
@@ -178,6 +184,100 @@ class ContentViewModel: ObservableObject {
     try await task.value
   }
 
+  // MARK: - Jetstream で新着を待つ（ホームの自動更新）
+
+  /// フォロー中の人が投稿・リポストしたら TL を取り直す。取り直しは `minInterval` 秒に1回まで。
+  /// キャンセルされるまで戻らない（フォロー一覧を取れなければすぐ戻る）
+  @MainActor
+  func refreshOnJetstreamEvents(minInterval: Int) async {
+    #if DEBUG
+      // デモは一定間隔の更新で新着を足して確かめる
+      if DemoTimeline.isEnabled { return }
+    #endif
+    // ponytail: 前面に戻るたびにフォロー一覧を取り直す。フォローが多くて遅ければキャッシュする
+    guard let actor = try? await SessionManager.shared.getSession().did,
+      let dids = try? await JetstreamService.timelineDids(actor: actor)
+    else { return }
+    // 合図が続いても溜めるのは1つだけ。取り直しの間に来た分はまとめて1回にする
+    let (signals, signal) = AsyncStream.makeStream(
+      of: Void.self, bufferingPolicy: .bufferingNewest(1))
+    await withDiscardingTaskGroup { group in
+      group.addTask { await JetstreamService.run(dids: dids) { signal.yield() } }
+      for await _ in signals {
+        try? await fetchNewer()
+        try? await Task.sleep(for: .seconds(minInterval))
+      }
+    }
+  }
+
+  /// 自動更新用。TL を入れ替えずに、いま先頭にある投稿より新しいものだけを取る。
+  /// 手動の更新（fetchTimeline）は入れ替えて既読位置へ戻すので、読んでいる途中に使うと画面が戻ってしまう
+  @MainActor
+  func fetchNewer() async throws {
+    guard !isFetchingTimeline else { return }
+    guard let topId = (pendingNewer.first ?? feeds.first)?.id else {
+      return try await fetchTimeline()
+    }
+    var response = try await fetchNewerFeed(cursor: nil)
+    var fetched = response.feed
+    // ponytail: 5 ページ（約 250 件）さかのぼっても今の先頭に届かなければ、入れ替えて既読位置へ戻す
+    var pages = 1
+    while !fetched.contains(where: { $0.id == topId }), pages < 5, let cursor = response.cursor {
+      response = try await fetchNewerFeed(cursor: cursor)
+      fetched += response.feed
+      pages += 1
+    }
+    guard let overlap = fetched.firstIndex(where: { $0.id == topId }) else {
+      return try await fetchTimeline()
+    }
+    let newer = Array(fetched[..<overlap])
+    // 取りに行っている間に手動で更新された・タブを替えたなら、そちらを優先する
+    guard !newer.isEmpty, (pendingNewer.first ?? feeds.first)?.id == topId else { return }
+
+    let newIds = Set(newer.map(\.id))
+    pendingNewer = newer + pendingNewer.filter { !newIds.contains($0.id) }
+    lastFetchDate = Date()
+    if isAtTop {
+      insertPendingNewer()
+    } else {
+      // 読んでいる途中は差し込まず、TL の上の「N件の新着」で知らせる
+      unreadCount += newer.filter(isVisible).count
+    }
+  }
+
+  /// 一番上の投稿が見えている（currentReadUri は見えている中で一番上の投稿）
+  private var isAtTop: Bool {
+    currentReadUri == nil || currentReadUri == validFeeds.first?.post?.uri
+  }
+
+  /// 取っておいた新着を上に足す。一番上を見ているときだけ呼ぶ（それ以外で足すと画面がずれる）
+  @MainActor
+  private func insertPendingNewer() {
+    guard !pendingNewer.isEmpty else { return }
+    let newIds = Set(pendingNewer.map(\.id))
+    // 同じ投稿を別の人がリポストし直したなど、古い側にある同じ id は消す（List の id が重ならないように）
+    feeds = pendingNewer + feeds.filter { !newIds.contains($0.id) }
+    pendingNewer = []
+    posts = feeds.compactMap { $0.post }
+    feedsCache[selectedTab.id] = FeedCache(feeds: feeds, cursor: timelineCursor)
+    PostStateManager.shared.syncWithServerState(posts: posts)
+  }
+
+  /// Top ボタンと「N件の新着」。取っておいた新着も足す（一番上へのスクロールは View がする）
+  @MainActor
+  func showNewest() {
+    insertPendingNewer()
+    unreadCount = 0
+  }
+
+  @MainActor
+  private func fetchNewerFeed(cursor: String?) async throws -> FeedResponse {
+    #if DEBUG
+      if DemoTimeline.isEnabled, cursor == nil { return try DemoTimeline.newerResponse() }
+    #endif
+    return try await fetchFeed(cursor: cursor)
+  }
+
   // MARK: - 既読位置の保存
 
   func saveReadPosition(uri: String?) {
@@ -188,6 +288,11 @@ class ContentViewModel: ObservableObject {
   func cellDidAppear(uri: String) {
     visiblePostUris.insert(uri)
     refreshCurrentReadUri()
+    // 一番上の投稿まで戻ってきたら、取っておいた新着を足して件数を消す
+    if !isRestoringPosition, uri == validFeeds.first?.post?.uri {
+      insertPendingNewer()
+      unreadCount = 0
+    }
   }
 
   @MainActor
@@ -196,13 +301,9 @@ class ContentViewModel: ObservableObject {
     refreshCurrentReadUri()
   }
 
+  @MainActor
   private func refreshCurrentReadUri() {
     currentReadUri = validFeeds.compactMap { $0.post?.uri }.first { visiblePostUris.contains($0) }
-  }
-
-  @MainActor
-  func clearUnreadCount() {
-    unreadCount = 0
   }
 
   @MainActor
@@ -231,6 +332,7 @@ class ContentViewModel: ObservableObject {
     currentFetchTask?.cancel()
     currentReadUri = nil
     visiblePostUris = []
+    pendingNewer = []
     selectedTab = tab
     feedError = nil
 

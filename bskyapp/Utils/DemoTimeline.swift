@@ -8,8 +8,21 @@
     static let isEnabled = ProcessInfo.processInfo.arguments.contains("-demoTimeline")
 
     static func response() throws -> FeedResponse {
-      let data = try JSONSerialization.data(withJSONObject: ["feed": items])
+      let data = try JSONSerialization.data(withJSONObject: ["feed": newPosts + items])
       return try JSONDecoder().decode(FeedResponse.self, from: data)
+    }
+
+    /// 自動更新で取り直すたびに、上に新着を 1 件足す（新着を足しても位置が動かないかの確認用）
+    static func newerResponse() throws -> FeedResponse {
+      newPostCount += 1
+      return try response()
+    }
+
+    private static var newPostCount = 0
+    private static var newPosts: [[String: Any]] {
+      (0..<newPostCount).reversed().map { i in
+        ["post": post(100 + i, text: "自動更新で届いた新着 \(i + 1)", minutesAgo: 0)]
+      }
     }
 
     /// プロフィール画面と設定画面のプロフィールカード用（保存は API を呼ぶのでデモでは失敗する）

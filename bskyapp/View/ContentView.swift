@@ -26,6 +26,7 @@ struct ContentView: View {
   @AppStorage("feedSelectorStyle") private var feedSelectorStyle: String = "dropdown"
   @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled: Bool = false
   @AppStorage("autoRefreshIntervalSeconds") private var autoRefreshIntervalSeconds: Int = 60
+  @AppStorage("realtimeRefreshEnabled") private var realtimeRefreshEnabled: Bool = true
 
   var body: some View {
     NavigationStack {
@@ -78,6 +79,7 @@ struct ContentView: View {
           guard let uri else { return }
           DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             withAnimation { scrollProxy?.scrollTo(uri, anchor: .top) }
+            viewModel.isRestoringPosition = false
           }
           viewModel.targetScrollUri = nil
         }
@@ -96,12 +98,21 @@ struct ContentView: View {
           }
         }
         .task { await MuteWordManager.shared.syncFromServer() }
-        .task(id: "\(autoRefreshEnabled)-\(autoRefreshIntervalSeconds)") {
-          guard autoRefreshEnabled else { return }
+        .task(
+          id:
+            "\(autoRefreshEnabled)-\(autoRefreshIntervalSeconds)-\(realtimeRefreshEnabled)-\(viewModel.selectedTab.id)-\(scenePhase)"
+        ) {
+          guard autoRefreshEnabled, scenePhase == .active else { return }
+          // リアルタイム更新がオンなら、ホームはフォロー中の人の新着が来たときだけ取り直す。
+          // オフのとき・ほかのフィード・フォロー一覧を取れなかったときは一定間隔で取り直す
+          if realtimeRefreshEnabled, viewModel.selectedTab.id == FeedTab.home.id {
+            // 更新間隔はホーム以外のもの。リアルタイムは合図が続いても 10 秒に1回までにまとめる
+            await viewModel.refreshOnJetstreamEvents(minInterval: 10)
+          }
           while !Task.isCancelled {
             try? await Task.sleep(for: .seconds(autoRefreshIntervalSeconds))
-            guard !Task.isCancelled, !viewModel.isFetchingTimeline else { continue }
-            try? await viewModel.fetchTimeline()
+            guard !Task.isCancelled else { continue }
+            try? await viewModel.fetchNewer()
           }
         }
         // 開いている間も新着の返信などを通知で知らせる（設定で通知がオフなら何もしない）
@@ -179,7 +190,28 @@ struct ContentView: View {
         ProgressView()
           .progressViewStyle(LinearProgressViewStyle())
           .tint(.accentColor)
+      } else if viewModel.unreadCount > 0 {
+        // 件数はツールバーに出せない（ツールバーのボタンはアイコンへの重ね描きもバッジも描かない）
+        Button(action: scrollToNewest) {
+          SwiftUI.Label("\(viewModel.unreadCount)件の新着", systemImage: "arrow.up")
+            .font(.footnote.bold())
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .foregroundStyle(.white)
+            .background(Color.accentColor, in: Capsule())
+        }
+        .padding(.top, 8)
       }
+    }
+  }
+
+  /// 取っておいた新着も足してから一番上へ
+  private func scrollToNewest() {
+    viewModel.showNewest()
+    let firstId = viewModel.validFeeds.first.map { $0.post?.uri ?? $0.id }
+    // 新着を足した直後は List の並べ直しが終わっていないので、次の描画で動かす
+    DispatchQueue.main.async {
+      withAnimation { scrollProxy?.scrollTo(firstId, anchor: .top) }
     }
   }
 
@@ -269,7 +301,8 @@ struct ContentView: View {
       do {
         profileNavActor = try await SessionManager.shared.getSession().did
       } catch {
-        toastManager.show(icon: "exclamationmark.triangle", text: String(localized: "プロフィールを開けませんでした"))
+        toastManager.show(
+          icon: "exclamationmark.triangle", text: String(localized: "プロフィールを開けませんでした"))
       }
     }
   }
@@ -308,30 +341,7 @@ struct ContentView: View {
         isShowBookmarks = true
       }
       Spacer()
-      Button {
-        viewModel.clearUnreadCount()
-        let firstId = viewModel.validFeeds.first.map { $0.post?.uri ?? $0.id }
-        withAnimation { scrollProxy?.scrollTo(firstId, anchor: .top) }
-      } label: {
-        SwiftUI.Label(
-          title: { Text("Top") },
-          icon: {
-            Image(systemName: "arrow.up.to.line")
-              .overlay(alignment: .topTrailing) {
-                if viewModel.unreadCount > 0 {
-                  Text(viewModel.unreadCount > 99 ? "99+" : "\(viewModel.unreadCount)")
-                    .font(.system(size: 8, weight: .bold))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 3)
-                    .padding(.vertical, 1)
-                    .background(Color.accentColor)
-                    .clipShape(Capsule())
-                    .offset(x: 10, y: -8)
-                }
-              }
-          }
-        )
-      }
+      Button("Top", systemImage: "arrow.up.to.line") { scrollToNewest() }
       Button("更新", systemImage: "arrow.clockwise") {
         Task {
           do {
